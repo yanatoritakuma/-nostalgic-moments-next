@@ -136,5 +136,6 @@ const InputBox = css`
   .footSpan {
     display: block;
     text-align: center;
+    cursor: pointer;
   }
 `;

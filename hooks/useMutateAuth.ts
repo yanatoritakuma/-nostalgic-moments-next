@@ -2,27 +2,27 @@ import axios from 'axios';
 
 import { useMutation } from '@tanstack/react-query';
 import { useRouter } from 'next/router';
+import { TLogin, TRegister } from '@/types/auth';
+import { TError } from '@/types/error';
 
 export const useMutateAuth = () => {
   const router = useRouter();
   const loginMutation = useMutation(
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    async (user: any) => await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/login`, user),
+    async (user: TLogin) => await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/login`, user),
     {
       onSuccess: () => {
         router.push('/');
       },
-      onError: (err) => {
+      onError: () => {
         alert('ログインに失敗しました。');
       },
     }
   );
 
   const registerMutation = useMutation(
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    async (user: any) => await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/signup`, user),
+    async (user: TRegister) => await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/signup`, user),
     {
-      onError: (err) => {
+      onError: () => {
         alert('アカウント作成に失敗しました。');
       },
     }
@@ -34,8 +34,7 @@ export const useMutateAuth = () => {
       onSuccess: () => {
         router.push('/');
       },
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      onError: (err: any) => {
+      onError: (err: TError) => {
         if (err.response.data.message) {
           alert('ログアウトに失敗しました。');
         }
