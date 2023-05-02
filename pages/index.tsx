@@ -1,7 +1,14 @@
+import { useQueryAllPosts } from '@/hooks/useQueryAllPosts';
+import { useQueryUserPost } from '@/hooks/useQueryUserPost';
 import Head from 'next/head';
 import Link from 'next/link';
 
 export default function Home() {
+  const { data: userPost } = useQueryUserPost();
+  console.log('userPost', userPost);
+  const { data: allPosts } = useQueryAllPosts();
+  console.log('allPosts', allPosts);
+
   return (
     <>
       <Head>

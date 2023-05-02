@@ -3,9 +3,12 @@ import React, { memo, useState } from 'react';
 import IconButton from '@mui/material/IconButton';
 import MenuIcon from '@mui/icons-material/Menu';
 import CloseIcon from '@mui/icons-material/Close';
+import { useQueryUser } from '@/hooks/useQueryUser';
 
 const Header = memo(() => {
   const [hambBtn, setHambBtn] = useState(false);
+  const { data: user } = useQueryUser();
+  console.log('user', user);
 
   return (
     <header css={HeaderBox}>
