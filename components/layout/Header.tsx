@@ -4,6 +4,7 @@ import IconButton from '@mui/material/IconButton';
 import MenuIcon from '@mui/icons-material/Menu';
 import CloseIcon from '@mui/icons-material/Close';
 import { useQueryUser } from '@/hooks/useQueryUser';
+import { ButtonBox } from '@/components/elements/ButtonBox';
 
 const Header = memo(() => {
   const [hambBtn, setHambBtn] = useState(false);
@@ -14,9 +15,13 @@ const Header = memo(() => {
     <header css={HeaderBox}>
       <div css={HeaderInBox}>
         ロゴ
-        <IconButton onClick={() => setHambBtn(!hambBtn)}>
-          {!hambBtn ? <MenuIcon /> : <CloseIcon />}
-        </IconButton>
+        {user !== undefined ? (
+          <IconButton onClick={() => setHambBtn(!hambBtn)}>
+            {!hambBtn ? <MenuIcon /> : <CloseIcon />}
+          </IconButton>
+        ) : (
+          <ButtonBox>ログイン</ButtonBox>
+        )}
       </div>
     </header>
   );

@@ -1,6 +1,7 @@
 import { useRouter } from 'next/router';
 import axios from 'axios';
 import { useQuery } from '@tanstack/react-query';
+import { TError } from '@/types/error';
 
 export const useQueryAllPosts = () => {
   const getUser = async () => {
@@ -10,10 +11,9 @@ export const useQueryAllPosts = () => {
   return useQuery({
     queryKey: ['allPosts'],
     queryFn: getUser,
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    onError: (err: any) => {
+    onError: (err: TError) => {
       if (err.response.status === 401 || err.response.status === 403) {
-        // router.push("/");
+        console.error('全ての投稿取得失敗');
       }
     },
   });

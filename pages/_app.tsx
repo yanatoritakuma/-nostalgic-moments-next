@@ -16,8 +16,9 @@ const queryClient = new QueryClient({
 });
 
 export default function App({ Component, pageProps }: AppProps) {
+  axios.defaults.withCredentials = true;
+
   useEffect(() => {
-    axios.defaults.withCredentials = true;
     const getCsrfToken = async () => {
       const { data } = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/csrf`);
       axios.defaults.headers.common['X-CSRF-Token'] = data.csrf_token;

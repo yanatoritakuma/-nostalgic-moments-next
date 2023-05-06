@@ -4,13 +4,17 @@ import { useMutation } from '@tanstack/react-query';
 import { useRouter } from 'next/router';
 import { TLogin, TRegister } from '@/types/auth';
 import { TError } from '@/types/error';
+import { useQueryUser } from '@/hooks/useQueryUser';
 
 export const useMutateAuth = () => {
   const router = useRouter();
+  const { refetch: userRefetch } = useQueryUser();
+
   const loginMutation = useMutation(
     async (user: TLogin) => await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/login`, user),
     {
       onSuccess: () => {
+        userRefetch();
         router.push('/');
       },
       onError: () => {
