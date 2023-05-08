@@ -5,11 +5,13 @@ import MenuIcon from '@mui/icons-material/Menu';
 import CloseIcon from '@mui/icons-material/Close';
 import { useQueryUser } from '@/hooks/useQueryUser';
 import { ButtonBox } from '@/components/elements/ButtonBox';
+import { useRouter } from 'next/router';
+import HamburgerMenu from '@/components/features/hamburgerMenu/HamburgerMenu.tsx';
 
 const Header = memo(() => {
   const [hambBtn, setHambBtn] = useState(false);
   const { data: user } = useQueryUser();
-  console.log('user', user);
+  const router = useRouter();
 
   return (
     <header css={HeaderBox}>
@@ -20,9 +22,14 @@ const Header = memo(() => {
             {!hambBtn ? <MenuIcon /> : <CloseIcon />}
           </IconButton>
         ) : (
-          <ButtonBox>ログイン</ButtonBox>
+          <div css={BtnBox}>
+            <ButtonBox variant="outlined" onClick={() => router.push('/auth')}>
+              ログイン
+            </ButtonBox>
+          </div>
         )}
       </div>
+      <HamburgerMenu hambBtn={hambBtn} onClose={() => setHambBtn(false)} />
     </header>
   );
 });
@@ -34,6 +41,9 @@ Header.displayName = 'Header';
 const HeaderBox = css`
   background-color: #e2e1e1;
   width: 100%;
+  position: fixed;
+  top: 0;
+  z-index: 9999;
 `;
 
 const HeaderInBox = css`
@@ -43,4 +53,16 @@ const HeaderInBox = css`
   display: flex;
   justify-content: space-between;
   align-items: center;
+`;
+
+const BtnBox = css`
+  button {
+    border-radius: 20px;
+    border: 2px solid;
+    &:hover {
+      border-radius: 20px;
+      border: 2px solid;
+      opacity: 0.7;
+    }
+  }
 `;

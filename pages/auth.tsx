@@ -6,7 +6,7 @@ import { TextBox } from '@/components/elements/TextBox';
 
 const auth = () => {
   const [isLogin, setIsLogin] = useState(true);
-  const { loginMutation, registerMutation, logoutMutation } = useMutateAuth();
+  const { loginMutation, registerMutation } = useMutateAuth();
 
   const [authStatte, setAuthStatte] = useState({
     email: '',
@@ -38,7 +38,7 @@ const auth = () => {
     }
   };
   return (
-    <div css={AuthBox}>
+    <main css={AuthBox}>
       <h2>{isLogin ? 'ログイン' : 'アカウント作成'}</h2>
 
       <div css={InputBox}>
@@ -97,19 +97,18 @@ const auth = () => {
         <ButtonBox onClick={() => onClickAuth()}>
           {isLogin ? 'ログイン' : 'アカウント作成'}
         </ButtonBox>
-        <button onClick={() => logoutMutation.mutate()}>ログアウト</button>
         <span className="footSpan" onClick={() => setIsLogin(!isLogin)}>
           {isLogin ? 'アカウント作成' : 'ログイン'}
         </span>
       </div>
-    </div>
+    </main>
   );
 };
 
 export default auth;
 
 const AuthBox = css`
-  margin: 0 auto;
+  margin: 100px auto;
   max-width: 1440px;
   width: 100%;
 

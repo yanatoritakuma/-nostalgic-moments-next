@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useRouter } from 'next/router';
 import { TLogin, TRegister } from '@/types/auth';
 import { TError } from '@/types/error';
@@ -8,6 +8,7 @@ import { useQueryUser } from '@/hooks/useQueryUser';
 
 export const useMutateAuth = () => {
   const router = useRouter();
+  const queryClient = useQueryClient();
   const { refetch: userRefetch } = useQueryUser();
 
   const loginMutation = useMutation(
@@ -36,7 +37,11 @@ export const useMutateAuth = () => {
     async () => await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/logout`),
     {
       onSuccess: () => {
+        queryClient.clear();
         router.push('/');
+        setTimeout(() => {
+          router.reload();
+        }, 500);
       },
       onError: (err: TError) => {
         if (err.response.data.message) {

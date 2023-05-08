@@ -12,7 +12,7 @@ export const useQueryUserPost = () => {
     queryFn: getUser,
     onError: (err: TError) => {
       if (err.response.status === 401 || err.response.status === 403) {
-        console.log('ログインユーザーの投稿取得失敗');
+        console.error('ログインユーザーの投稿取得失敗');
       }
     },
   });
