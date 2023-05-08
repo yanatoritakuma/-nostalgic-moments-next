@@ -9,6 +9,7 @@ export type TPost = {
     name: string;
   };
   prefecture: string;
+  title: string;
   text: string;
   user_id: number;
 };

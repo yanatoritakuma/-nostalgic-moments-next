@@ -12,7 +12,7 @@ const HamburgerMenu = memo((props: Props) => {
   const { hambBtn, onClose } = props;
   const { logoutMutation } = useMutateAuth();
   return (
-    <div css={MenuBox(hambBtn)}>
+    <div css={menuBox(hambBtn)}>
       <Link href="/">投稿</Link>
       <Link href="/">マイページ</Link>
       <span
@@ -32,7 +32,7 @@ export default HamburgerMenu;
 
 HamburgerMenu.displayName = 'HamburgerMenu';
 
-const MenuBox = (hambBtn: boolean) => css`
+const menuBox = (hambBtn: boolean) => css`
   padding: 20px;
   background: #302833;
   border-radius: 0 0 0 10px;

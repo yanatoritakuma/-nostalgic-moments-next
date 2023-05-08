@@ -38,10 +38,10 @@ const auth = () => {
     }
   };
   return (
-    <main css={AuthBox}>
+    <main css={authBox}>
       <h2>{isLogin ? 'ログイン' : 'アカウント作成'}</h2>
 
-      <div css={InputBox}>
+      <div css={inputBox}>
         <TextBox
           className="text"
           label="メール"
@@ -107,7 +107,7 @@ const auth = () => {
 
 export default auth;
 
-const AuthBox = css`
+const authBox = css`
   margin: 100px auto;
   max-width: 1440px;
   width: 100%;
@@ -117,7 +117,7 @@ const AuthBox = css`
   }
 `;
 
-const InputBox = css`
+const inputBox = css`
   margin: 0 auto;
   width: 90%;
   max-width: 500px;
