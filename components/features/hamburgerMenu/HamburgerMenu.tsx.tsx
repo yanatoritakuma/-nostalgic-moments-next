@@ -37,7 +37,7 @@ const MenuBox = (hambBtn: boolean) => css`
   background: #302833;
   border-radius: 0 0 0 10px;
   position: fixed;
-  width: 100%;
+  width: 90%;
   height: 80vh;
   max-width: 600px;
 
