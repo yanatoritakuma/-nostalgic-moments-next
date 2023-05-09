@@ -4,7 +4,7 @@ import IconButton from '@mui/material/IconButton';
 import PhotoCamera from '@mui/icons-material/PhotoCamera';
 
 type Props = {
-  children: string;
+  children?: string;
   onClick?: () => void;
   upload?: boolean;
   onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
