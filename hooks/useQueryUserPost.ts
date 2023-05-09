@@ -1,10 +1,11 @@
 import axios from 'axios';
 import { useQuery } from '@tanstack/react-query';
 import { TError } from '@/types/error';
+import { TPost } from '@/types/post';
 
 export const useQueryUserPost = () => {
   const getUser = async () => {
-    const { data } = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/posts/userPosts`);
+    const { data } = await axios.get<TPost[]>(`${process.env.NEXT_PUBLIC_API_URL}/posts/userPosts`);
     return data;
   };
   return useQuery({

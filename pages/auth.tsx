@@ -1,21 +1,46 @@
 import { css } from '@emotion/react';
+import Image from 'next/image';
 import { useMutateAuth } from '@/hooks/useMutateAuth';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { ButtonBox } from '@/components/elements/ButtonBox';
 import { TextBox } from '@/components/elements/TextBox';
+import useChangeImage from '@/hooks/useChangeImage';
+import { imageRegistration } from '@/utils/imageRegistration';
 
 const auth = () => {
   const [isLogin, setIsLogin] = useState(true);
   const { loginMutation, registerMutation } = useMutateAuth();
+  const { onChangeImageHandler, photoUrl, setPhotoUrl } = useChangeImage();
+  const { onClickRegistration } = imageRegistration();
 
   const [authStatte, setAuthStatte] = useState({
     email: '',
     password: '',
     name: '',
-    image: '',
   });
 
-  const onClickAuth = async () => {
+  const [previewUrl, setPreviewUrl] = useState('');
+
+  useEffect(() => {
+    if (!photoUrl) {
+      return;
+    }
+
+    let reader: FileReader | null = new FileReader();
+    reader.onloadend = () => {
+      const res = reader?.result;
+      if (res && typeof res === 'string') {
+        setPreviewUrl(res);
+      }
+    };
+    reader.readAsDataURL(photoUrl);
+
+    return () => {
+      reader = null;
+    };
+  }, [photoUrl]);
+
+  const onClikcAuth = async (file: string | null) => {
     if (isLogin) {
       loginMutation.mutate({
         email: authStatte.email,
@@ -27,7 +52,7 @@ const auth = () => {
           email: authStatte.email,
           password: authStatte.password,
           name: authStatte.name,
-          image: authStatte.image,
+          image: file ? file : '',
         })
         .then(() =>
           loginMutation.mutate({
@@ -37,11 +62,12 @@ const auth = () => {
         );
     }
   };
+
   return (
-    <main css={AuthBox}>
+    <main css={authBox}>
       <h2>{isLogin ? 'ログイン' : 'アカウント作成'}</h2>
 
-      <div css={InputBox}>
+      <div css={inputBox}>
         <TextBox
           className="text"
           label="メール"
@@ -81,24 +107,22 @@ const auth = () => {
               }
               fullWidth
             />
-            <ButtonBox
-              onChange={(e) =>
-                setAuthStatte({
-                  ...authStatte,
-                  image: e.target.value,
-                })
-              }
-              upload
-            >
-              画像
-            </ButtonBox>
+            <ButtonBox onChange={onChangeImageHandler} upload />
           </>
         )}
-        <ButtonBox onClick={() => onClickAuth()}>
+        {previewUrl !== '' && (
+          <div css={previewBox}>
+            <Image src={previewUrl} fill alt="プレビュー" />
+          </div>
+        )}
+        <ButtonBox
+          onClick={() => onClickRegistration(photoUrl, onClikcAuth, setPhotoUrl, setPreviewUrl)}
+        >
           {isLogin ? 'ログイン' : 'アカウント作成'}
         </ButtonBox>
+
         <span className="footSpan" onClick={() => setIsLogin(!isLogin)}>
-          {isLogin ? 'アカウント作成' : 'ログイン'}
+          {isLogin ? 'アカウント作成画面に切り替え' : 'ログイン画面に切り替え'}
         </span>
       </div>
     </main>
@@ -107,7 +131,7 @@ const auth = () => {
 
 export default auth;
 
-const AuthBox = css`
+const authBox = css`
   margin: 100px auto;
   max-width: 1440px;
   width: 100%;
@@ -117,7 +141,7 @@ const AuthBox = css`
   }
 `;
 
-const InputBox = css`
+const inputBox = css`
   margin: 0 auto;
   width: 90%;
   max-width: 500px;
@@ -136,5 +160,17 @@ const InputBox = css`
     display: block;
     text-align: center;
     cursor: pointer;
+  }
+`;
+
+const previewBox = css`
+  margin: 12px auto;
+  width: 300px;
+  height: 284px;
+  position: relative;
+
+  img {
+    object-fit: cover;
+    border-radius: 50%;
   }
 `;
