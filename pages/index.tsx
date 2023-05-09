@@ -3,8 +3,7 @@ import { useQueryAllPosts } from '@/hooks/useQueryAllPosts';
 import { useQueryUserPost } from '@/hooks/useQueryUserPost';
 import Image from 'next/image';
 import TopImg from '@/images/top.jpg';
-import Link from 'next/link';
-import { AccordionBox } from '@/components/elements/AccordionBox';
+import Prefectures from '@/components/features/home/Prefectures';
 
 export default function Home() {
   const { data: userPost } = useQueryUserPost();
@@ -12,83 +11,14 @@ export default function Home() {
   const { data: allPosts } = useQueryAllPosts();
   console.log('allPosts', allPosts);
 
-  const tohoku = [
-    {
-      name: '青森',
-      url: '/prefectures/aomori',
-    },
-    {
-      name: '岩手県',
-      url: '/prefectures/iwate',
-    },
-    {
-      name: '秋田県',
-      url: '/prefectures/akita',
-    },
-    {
-      name: '宮城県',
-      url: '/prefectures/miyagi',
-    },
-    {
-      name: '山形県',
-      url: '/prefectures/yamagata',
-    },
-    {
-      name: '福島県',
-      url: '/prefectures/fukushima',
-    },
-  ];
-
-  const kantou = [
-    {
-      name: '茨城県',
-      url: '/prefectures/ibaraki',
-    },
-    {
-      name: '栃木県',
-      url: '/prefectures/tochigi',
-    },
-    {
-      name: '群馬県',
-      url: '/prefectures/gunma',
-    },
-    {
-      name: '埼玉県',
-      url: '/prefectures/saitama',
-    },
-    {
-      name: '千葉県',
-      url: '/prefectures/chiba',
-    },
-    {
-      name: '東京都',
-      url: '/prefectures/tokyo',
-    },
-    {
-      name: '神奈川県',
-      url: '/prefectures/kanagawa',
-    },
-  ];
-
   return (
     <main css={mainBox}>
-      <div css={topImgBox}>
+      <section css={topImgBox}>
         <div className="filter"></div>
         <h1>NostalgicMoments</h1>
         <Image src={TopImg} fill alt="TOP画像" />
-      </div>
-      <section css={refecturesBox}>
-        <h2>都道府県から選ぶ</h2>
-        <div className="refecturesBox__box">
-          <Link href="/prefectures/hokkaido">北海道</Link>
-          <div className="refecturesBox__accordionBox">
-            <AccordionBox title="東北地方" links={tohoku} />
-          </div>
-          <div className="refecturesBox__accordionBox">
-            <AccordionBox title="関東地方" links={kantou} />
-          </div>
-        </div>
       </section>
+      <Prefectures />
     </main>
   );
 }
@@ -134,31 +64,5 @@ const topImgBox = css`
 
   img {
     object-fit: cover;
-  }
-`;
-
-const refecturesBox = css`
-  padding: 60px 0;
-  background-color: #dddcd6;
-  width: 100%;
-
-  h2 {
-    margin: 0 0 40px 0;
-  }
-
-  .refecturesBox__box {
-    margin: 0 auto;
-    width: 90%;
-    display: flex;
-    justify-content: space-between;
-  }
-
-  a {
-    color: #0095d9;
-  }
-
-  .refecturesBox__accordionBox {
-    margin: 20px 0;
-    width: 34%;
   }
 `;

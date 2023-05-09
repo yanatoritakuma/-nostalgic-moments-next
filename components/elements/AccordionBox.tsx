@@ -45,7 +45,6 @@ AccordionBox.displayName = 'AccordionBox';
 
 const linkBox = css`
   display: flex;
-  justify-content: space-between;
   align-items: center;
   flex-wrap: wrap;
 
