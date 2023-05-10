@@ -6,12 +6,14 @@ import { ButtonBox } from '@/components/elements/ButtonBox';
 import { TextBox } from '@/components/elements/TextBox';
 import useChangeImage from '@/hooks/useChangeImage';
 import { imageRegistration } from '@/utils/imageRegistration';
+import { authValidation } from '@/utils/validations/authValidation';
 
 const auth = () => {
   const [isLogin, setIsLogin] = useState(true);
   const { loginMutation, registerMutation } = useMutateAuth();
   const { onChangeImageHandler, photoUrl, setPhotoUrl } = useChangeImage();
   const { onClickRegistration } = imageRegistration();
+  const { validation } = authValidation();
 
   const [authStatte, setAuthStatte] = useState({
     email: '',
@@ -116,7 +118,10 @@ const auth = () => {
           </div>
         )}
         <ButtonBox
-          onClick={() => onClickRegistration(photoUrl, onClikcAuth, setPhotoUrl, setPreviewUrl)}
+          onClick={() =>
+            validation(authStatte, isLogin) &&
+            onClickRegistration(photoUrl, onClikcAuth, setPhotoUrl, setPreviewUrl)
+          }
         >
           {isLogin ? 'ログイン' : 'アカウント作成'}
         </ButtonBox>

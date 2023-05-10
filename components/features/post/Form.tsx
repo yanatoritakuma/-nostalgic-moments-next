@@ -9,7 +9,7 @@ import useChangeImage from '@/hooks/useChangeImage';
 import { imageRegistration } from '@/utils/imageRegistration';
 import { useMutatePost } from '@/hooks/useMutatePost';
 import { useQueryUser } from '@/hooks/useQueryUser';
-import { postValidation } from '@/utils/postValidation';
+import { postValidation } from '@/utils/validations/postValidation';
 
 export const Form = memo(() => {
   const { onChangeImageHandler, photoUrl, setPhotoUrl } = useChangeImage();
