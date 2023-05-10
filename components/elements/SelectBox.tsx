@@ -1,25 +1,30 @@
-import { memo, useState } from 'react';
+import { memo } from 'react';
 import Box from '@mui/material/Box';
 import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
 
-export const SelectBox = memo(() => {
-  const [age, setAge] = useState('');
+type Props = {
+  label: string;
+  value: string;
+  onChange: (event: SelectChangeEvent) => void;
+  menuItem: string[];
+};
 
-  const handleChange = (event: SelectChangeEvent) => {
-    setAge(event.target.value as string);
-  };
+export const SelectBox = memo((props: Props) => {
+  const { label, value, onChange, menuItem } = props;
 
   return (
-    <Box sx={{ minWidth: 120 }}>
+    <Box>
       <FormControl fullWidth>
-        <InputLabel>Age</InputLabel>
-        <Select value={age} label="Age" onChange={handleChange}>
-          <MenuItem value={10}>Ten</MenuItem>
-          <MenuItem value={20}>Twenty</MenuItem>
-          <MenuItem value={30}>Thirty</MenuItem>
+        <InputLabel>{label}</InputLabel>
+        <Select value={value} label={label} onChange={onChange}>
+          {menuItem.map((item, index) => (
+            <MenuItem key={index} value={item}>
+              {item}
+            </MenuItem>
+          ))}
         </Select>
       </FormControl>
     </Box>

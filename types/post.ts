@@ -13,3 +13,11 @@ export type TPost = {
   text: string;
   user_id: number;
 };
+
+export type TReqPost = {
+  title: string;
+  text: string;
+  image: string | null;
+  prefecture: string;
+  address: string;
+};

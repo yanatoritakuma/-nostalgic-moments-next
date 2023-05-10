@@ -1,6 +1,6 @@
 import { css } from '@emotion/react';
 import React from 'react';
-import Form from '@/components/features/post/Form';
+import { Form } from '@/components/features/post/Form';
 
 const post = () => {
   return (
@@ -17,4 +17,6 @@ const postBox = css`
   padding: 20px;
   background-color: #f7fcfe;
   text-align: center;
+  height: 100%;
+  min-height: 100vh;
 `;

@@ -20,7 +20,7 @@ export const imageRegistration = () => {
       const fileName = randomChar + '_' + photoUrl.name;
 
       const uploadImg = storage
-        .ref(!user ? `userImages/${fileName}` : `coffeeImages/${user?.id}/${fileName}`)
+        .ref(!user ? `userImages/${fileName}` : `postImages/${user?.id}/${fileName}`)
         .put(photoUrl);
 
       uploadImg.on(
@@ -32,7 +32,7 @@ export const imageRegistration = () => {
         },
         async () => {
           await storage
-            .ref(!user ? 'userImages' : `coffeeImages/${user?.id}/`)
+            .ref(!user ? 'userImages' : `postImages/${user?.id}/`)
             .child(fileName)
             .getDownloadURL()
             .then((fireBaseUrl) => {
