@@ -1,15 +1,35 @@
+import { MessageContext } from '@/provider/MessageProvider';
 import { TReqPost } from '@/types/post';
+import { useContext } from 'react';
 
 export const postValidation = () => {
+  const { message, setMessage } = useContext(MessageContext);
+
   const validation = (post: TReqPost) => {
     if (post.title === '') {
-      return alert('タイトルは必須です。');
+      return setMessage({
+        ...message,
+        text: 'タイトルは必須です。',
+        type: 'error',
+      });
     } else if (post.text === '') {
-      return alert('テキストは必須です。');
+      return setMessage({
+        ...message,
+        text: 'テキストは必須です。',
+        type: 'error',
+      });
     } else if (post.prefecture === '') {
-      return alert('都道府県は必須です。');
+      return setMessage({
+        ...message,
+        text: '都道府県は必須です。',
+        type: 'error',
+      });
     } else if (post.address === '') {
-      return alert('住所は必須です。');
+      return setMessage({
+        ...message,
+        text: '住所は必須です。',
+        type: 'error',
+      });
     } else {
       return true;
     }

@@ -5,6 +5,8 @@ import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { useEffect } from 'react';
 import axios from 'axios';
 import Header from '@/components/layout/Header';
+import { MessageProvider } from '@/provider/MessageProvider';
+import { SnackbarBox } from '@/components/elements/SnackbarBox';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -28,9 +30,12 @@ export default function App({ Component, pageProps }: AppProps) {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <Header />
-      <Component {...pageProps} />
-      <ReactQueryDevtools />
+      <MessageProvider>
+        <Header />
+        <Component {...pageProps} />
+        <ReactQueryDevtools />
+        <SnackbarBox />
+      </MessageProvider>
     </QueryClientProvider>
   );
 }
