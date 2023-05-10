@@ -13,7 +13,7 @@ const HamburgerMenu = memo((props: Props) => {
   const { logoutMutation } = useMutateAuth();
   return (
     <div css={menuBox(hambBtn)}>
-      <Link href="/">投稿</Link>
+      <Link href="/post">投稿</Link>
       <Link href="/">マイページ</Link>
       <span
         onClick={() => {
