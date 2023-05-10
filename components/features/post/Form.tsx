@@ -9,12 +9,14 @@ import useChangeImage from '@/hooks/useChangeImage';
 import { imageRegistration } from '@/utils/imageRegistration';
 import { useMutatePost } from '@/hooks/useMutatePost';
 import { useQueryUser } from '@/hooks/useQueryUser';
+import { postValidation } from '@/utils/postValidation';
 
 export const Form = memo(() => {
   const { onChangeImageHandler, photoUrl, setPhotoUrl } = useChangeImage();
   const { onClickRegistration } = imageRegistration();
   const { postMutation } = useMutatePost();
   const { data: user } = useQueryUser();
+  const { validation } = postValidation();
   const [postState, setPostState] = useState({
     title: '',
     text: '',
@@ -116,15 +118,16 @@ export const Form = memo(() => {
         />
       </div>
       <ButtonBox
-        onClick={() => {
-          onClickRegistration(photoUrl, onClickRegister, setPhotoUrl, setPreviewUrl, user);
+        onClick={() =>
+          validation(postState) &&
+          (onClickRegistration(photoUrl, onClickRegister, setPhotoUrl, setPreviewUrl, user),
           setPostState({
             title: '',
             text: '',
             prefecture: '',
             address: '',
-          });
-        }}
+          }))
+        }
       >
         登録
       </ButtonBox>

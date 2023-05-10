@@ -17,7 +17,7 @@ export type TPost = {
 export type TReqPost = {
   title: string;
   text: string;
-  image: string | null;
+  image?: string | null;
   prefecture: string;
   address: string;
 };
