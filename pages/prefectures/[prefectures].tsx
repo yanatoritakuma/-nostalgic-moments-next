@@ -1,9 +1,6 @@
 import React from 'react';
 import { css } from '@emotion/react';
-import Image from 'next/image';
 import { useQueryPrefecturesPost } from '@/hooks/post/useQueryPrefecturesPost';
-import NoimageUser from '@/images/noimage-user.png';
-import Noimage from '@/images/noimage.png';
 import PostBox from '@/components/common/PostBox';
 
 export async function getStaticPaths() {
@@ -178,9 +175,7 @@ const Prefectures = (prefectures: Props) => {
   return (
     <main css={PrefecturesBox}>
       <h2>{prefecturesFormation(prefecturesName)}</h2>
-      {prefecturesPost?.map((post) => (
-        <PostBox key={post.id} post={post} />
-      ))}
+      <PostBox posts={prefecturesPost} />
     </main>
   );
 };
@@ -188,8 +183,16 @@ const Prefectures = (prefectures: Props) => {
 export default Prefectures;
 
 const PrefecturesBox = css`
-  padding: 20px;
+  padding: 40px 80px;
   width: 100%;
+
+  @media (max-width: 768px) {
+    padding: 20px 40px;
+  }
+
+  @media (max-width: 425px) {
+    padding: 20px 14px;
+  }
 
   h2 {
     text-align: center;

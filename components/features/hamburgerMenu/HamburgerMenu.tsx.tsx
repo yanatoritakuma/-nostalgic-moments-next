@@ -19,7 +19,7 @@ const HamburgerMenu = memo((props: Props) => {
       <Link href="/post" onClick={() => setHambBtn(false)}>
         投稿
       </Link>
-      <Link href="/" onClick={() => setHambBtn(false)}>
+      <Link href="/myPage" onClick={() => setHambBtn(false)}>
         マイページ
       </Link>
       <span

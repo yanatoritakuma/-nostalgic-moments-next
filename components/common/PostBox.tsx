@@ -6,41 +6,47 @@ import NoimageUser from '@/images/noimage-user.png';
 import Noimage from '@/images/noimage.png';
 
 type Props = {
-  post: TPost;
+  posts?: TPost[];
 };
 
 const PostBox = memo((props: Props) => {
-  const { post } = props;
+  const { posts } = props;
   return (
-    <div css={postBox}>
-      <div css={postUserBox}>
-        {post.postUserResponse.image !== '' ? (
-          <div css={userImgBox}>
-            <Image src={post.postUserResponse.image} fill alt="ユーザー画像" />
+    <>
+      {posts?.map((post) => {
+        return (
+          <div key={post.id} css={postBox}>
+            <div css={postUserBox}>
+              {post.postUserResponse.image !== '' ? (
+                <div css={userImgBox}>
+                  <Image src={post.postUserResponse.image} fill alt="ユーザー画像" />
+                </div>
+              ) : (
+                <div css={userImgBox}>
+                  <Image src={NoimageUser} fill alt="ユーザー画像" />
+                </div>
+              )}
+              <span className="postUserBox__name">{post.postUserResponse.name}</span>
+            </div>
+            <h3>{post.title}</h3>
+            <p>{post.text}</p>
+            <div>
+              <span>住所:</span>
+              <span>{post.address}</span>
+            </div>
+            {post.image !== '' ? (
+              <div css={postImgBox}>
+                <Image src={post.image} fill alt="投稿画像" />
+              </div>
+            ) : (
+              <div css={postImgBox}>
+                <Image src={Noimage} fill alt="投稿画像" />
+              </div>
+            )}
           </div>
-        ) : (
-          <div css={userImgBox}>
-            <Image src={NoimageUser} fill alt="ユーザー画像" />
-          </div>
-        )}
-        <span className="postUserBox__name">{post.postUserResponse.name}</span>
-      </div>
-      <h3>{post.title}</h3>
-      <p>{post.text}</p>
-      <div>
-        <span>住所:</span>
-        <span>{post.address}</span>
-      </div>
-      {post.image !== '' ? (
-        <div css={postImgBox}>
-          <Image src={post.image} fill alt="投稿画像" />
-        </div>
-      ) : (
-        <div css={postImgBox}>
-          <Image src={Noimage} fill alt="投稿画像" />
-        </div>
-      )}
-    </div>
+        );
+      })}
+    </>
   );
 });
 
