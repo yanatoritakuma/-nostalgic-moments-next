@@ -1,9 +1,12 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import firebase, { storage } from '../firebase/initFirebase';
 import { TUser } from '@/types/user';
+import { BackdropContext } from '@/provider/BackdropProvider';
 
 // 画像をfirebaseのstorageに保存
 export const imageRegistration = () => {
+  const { setBackdropFlag } = useContext(BackdropContext);
+
   const onClickRegistration = (
     photoUrl: File | null,
     dbRegistration: (file: string | null) => void,
@@ -11,6 +14,7 @@ export const imageRegistration = () => {
     setPreviewUrl: React.Dispatch<React.SetStateAction<string>>,
     user?: TUser
   ) => {
+    setBackdropFlag(true);
     if (photoUrl) {
       const S = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
       const N = 16;

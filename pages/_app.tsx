@@ -7,6 +7,8 @@ import axios from 'axios';
 import Header from '@/components/layout/Header';
 import { MessageProvider } from '@/provider/MessageProvider';
 import { SnackbarBox } from '@/components/elements/SnackbarBox';
+import { BackdropBox } from '@/components/elements/BackdropBox';
+import { BackdropProvider } from '@/provider/BackdropProvider';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -31,10 +33,13 @@ export default function App({ Component, pageProps }: AppProps) {
   return (
     <QueryClientProvider client={queryClient}>
       <MessageProvider>
-        <Header />
-        <Component {...pageProps} />
-        <ReactQueryDevtools />
-        <SnackbarBox />
+        <BackdropProvider>
+          <Header />
+          <Component {...pageProps} />
+          <ReactQueryDevtools />
+          <SnackbarBox />
+          <BackdropBox />
+        </BackdropProvider>
       </MessageProvider>
     </QueryClientProvider>
   );

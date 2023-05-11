@@ -10,7 +10,6 @@ const Alert = forwardRef<HTMLDivElement, AlertProps>(function Alert(props, ref) 
 
 export const SnackbarBox = memo(() => {
   const { message, setMessage } = useContext(MessageContext);
-  console.log('message', message);
   const [open, setOpen] = useState(false);
 
   useEffect(() => {
