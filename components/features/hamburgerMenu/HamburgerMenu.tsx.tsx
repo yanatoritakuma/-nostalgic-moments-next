@@ -1,4 +1,4 @@
-import { useMutateAuth } from '@/hooks/useMutateAuth';
+import { useMutateAuth } from '@/hooks/auth/useMutateAuth';
 import { css } from '@emotion/react';
 import Link from 'next/link';
 import React, { memo } from 'react';
@@ -10,7 +10,6 @@ type Props = {
 
 const HamburgerMenu = memo((props: Props) => {
   const { hambBtn, setHambBtn } = props;
-  console.log('hambBtn', hambBtn);
   const { logoutMutation } = useMutateAuth();
   return (
     <div css={menuBox(hambBtn)}>

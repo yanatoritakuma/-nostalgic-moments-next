@@ -22,6 +22,7 @@ export const useMutatePost = () => {
         });
       },
       onError: () => {
+        setBackdropFlag(false);
         setMessage({
           text: '登録失敗しました。',
           type: 'error',

@@ -1,6 +1,6 @@
 import { css } from '@emotion/react';
 import Image from 'next/image';
-import { useMutateAuth } from '@/hooks/useMutateAuth';
+import { useMutateAuth } from '@/hooks/auth/useMutateAuth';
 import { useEffect, useState } from 'react';
 import { ButtonBox } from '@/components/elements/ButtonBox';
 import { TextBox } from '@/components/elements/TextBox';
@@ -43,26 +43,19 @@ const auth = () => {
   }, [photoUrl]);
 
   const onClikcAuth = async (file: string | null) => {
-    if (isLogin) {
-      loginMutation.mutate({
+    await registerMutation
+      .mutateAsync({
         email: authStatte.email,
         password: authStatte.password,
-      });
-    } else {
-      await registerMutation
-        .mutateAsync({
+        name: authStatte.name,
+        image: file ? file : '',
+      })
+      .then(() =>
+        loginMutation.mutate({
           email: authStatte.email,
           password: authStatte.password,
-          name: authStatte.name,
-          image: file ? file : '',
         })
-        .then(() =>
-          loginMutation.mutate({
-            email: authStatte.email,
-            password: authStatte.password,
-          })
-        );
-    }
+      );
   };
 
   return (
@@ -119,8 +112,12 @@ const auth = () => {
         )}
         <ButtonBox
           onClick={() =>
-            validation(authStatte, isLogin) &&
-            onClickRegistration(photoUrl, onClikcAuth, setPhotoUrl, setPreviewUrl)
+            validation(authStatte, isLogin) && isLogin
+              ? loginMutation.mutate({
+                  email: authStatte.email,
+                  password: authStatte.password,
+                })
+              : onClickRegistration(photoUrl, onClikcAuth, setPhotoUrl, setPreviewUrl)
           }
         >
           {isLogin ? 'ログイン' : 'アカウント作成'}

@@ -12,10 +12,22 @@ export const postValidation = () => {
         text: 'タイトルは必須です。',
         type: 'error',
       });
+    } else if (post.title.length > 50) {
+      return setMessage({
+        ...message,
+        text: 'タイトルは50文字以下で入力してください。',
+        type: 'error',
+      });
     } else if (post.text === '') {
       return setMessage({
         ...message,
-        text: 'テキストは必須です。',
+        text: '内容は必須です。',
+        type: 'error',
+      });
+    } else if (post.text.length > 150) {
+      return setMessage({
+        ...message,
+        text: '内容は150文字以下で入力してください。',
         type: 'error',
       });
     } else if (post.prefecture === '') {
