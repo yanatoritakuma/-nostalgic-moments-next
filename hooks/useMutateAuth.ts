@@ -34,14 +34,12 @@ export const useMutateAuth = () => {
   const registerMutation = useMutation(
     async (user: TRegister) => await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/signup`, user),
     {
-      onError: (err: TError) => {
+      onError: () => {
         setMessage({
           ...message,
           text: 'アカウント作成に失敗しました。',
           type: 'error',
         });
-
-        console.log('err', err.response.data);
       },
     }
   );
