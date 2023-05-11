@@ -10,7 +10,6 @@ type Props = {
 
 const HamburgerMenu = memo((props: Props) => {
   const { hambBtn, setHambBtn } = props;
-  console.log('hambBtn', hambBtn);
   const { logoutMutation } = useMutateAuth();
   return (
     <div css={menuBox(hambBtn)}>

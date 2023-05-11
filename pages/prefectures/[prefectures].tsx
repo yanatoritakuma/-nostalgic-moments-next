@@ -181,9 +181,14 @@ const Prefectures = (prefectures: Props) => {
       {prefecturesPost?.map((post) => (
         <div key={post.id}>
           <span>{post.postUserResponse.name}</span>
-          {/* <div css={postImgBox}>
-            <Image src={post.image} fill alt="投稿画像" />
-          </div> */}
+          {post.image !== '' ? (
+            <div css={postImgBox}>
+              <Image src={post.image} fill alt="投稿画像" />
+            </div>
+          ) : (
+            <span>画像なし</span>
+          )}
+
           <h3>{post.title}</h3>
           <p>{post.text}</p>
         </div>
@@ -200,5 +205,21 @@ const PrefecturesBox = css`
 
   h2 {
     text-align: center;
+  }
+`;
+
+const postImgBox = css`
+  margin: 12px auto;
+  width: 300px;
+  height: 284px;
+  position: relative;
+
+  @media (max-width: 425px) {
+    width: 280px;
+    height: 264px;
+  }
+
+  img {
+    object-fit: cover;
   }
 `;
