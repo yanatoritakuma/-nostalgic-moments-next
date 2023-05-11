@@ -4,7 +4,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useRouter } from 'next/router';
 import { TLogin, TRegister } from '@/types/auth';
 import { TError } from '@/types/error';
-import { useQueryUser } from '@/hooks/useQueryUser';
+import { useQueryUser } from '@/hooks/auth/useQueryUser';
 import { MessageContext } from '@/provider/MessageProvider';
 import { useContext } from 'react';
 import { BackdropContext } from '@/provider/BackdropProvider';

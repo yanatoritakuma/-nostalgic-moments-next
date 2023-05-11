@@ -1,6 +1,6 @@
 import { css } from '@emotion/react';
 import Image from 'next/image';
-import { useMutateAuth } from '@/hooks/useMutateAuth';
+import { useMutateAuth } from '@/hooks/auth/useMutateAuth';
 import { useEffect, useState } from 'react';
 import { ButtonBox } from '@/components/elements/ButtonBox';
 import { TextBox } from '@/components/elements/TextBox';

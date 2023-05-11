@@ -7,8 +7,8 @@ import { prefectures } from '@/const/prefecture';
 import { ButtonBox } from '@/components/elements/ButtonBox';
 import useChangeImage from '@/hooks/useChangeImage';
 import { imageRegistration } from '@/utils/imageRegistration';
-import { useMutatePost } from '@/hooks/useMutatePost';
-import { useQueryUser } from '@/hooks/useQueryUser';
+import { useMutatePost } from '@/hooks/post/useMutatePost';
+import { useQueryUser } from '@/hooks/auth/useQueryUser';
 import { postValidation } from '@/utils/validations/postValidation';
 
 export const Form = memo(() => {

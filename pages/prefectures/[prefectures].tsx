@@ -1,7 +1,7 @@
 import React from 'react';
 import { css } from '@emotion/react';
 import Image from 'next/image';
-import { useQueryPrefecturesPost } from '@/hooks/useQueryPrefecturesPost';
+import { useQueryPrefecturesPost } from '@/hooks/post/useQueryPrefecturesPost';
 
 export async function getStaticPaths() {
   return {

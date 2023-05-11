@@ -1,4 +1,4 @@
-import { useMutateAuth } from '@/hooks/useMutateAuth';
+import { useMutateAuth } from '@/hooks/auth/useMutateAuth';
 import { css } from '@emotion/react';
 import Link from 'next/link';
 import React, { memo } from 'react';
