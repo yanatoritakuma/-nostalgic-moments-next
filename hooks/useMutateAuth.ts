@@ -7,12 +7,14 @@ import { TError } from '@/types/error';
 import { useQueryUser } from '@/hooks/useQueryUser';
 import { MessageContext } from '@/provider/MessageProvider';
 import { useContext } from 'react';
+import { BackdropContext } from '@/provider/BackdropProvider';
 
 export const useMutateAuth = () => {
   const router = useRouter();
   const queryClient = useQueryClient();
   const { refetch: userRefetch } = useQueryUser();
   const { message, setMessage } = useContext(MessageContext);
+  const { setBackdropFlag } = useContext(BackdropContext);
 
   const loginMutation = useMutation(
     async (user: TLogin) => await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/login`, user),
@@ -34,6 +36,9 @@ export const useMutateAuth = () => {
   const registerMutation = useMutation(
     async (user: TRegister) => await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/signup`, user),
     {
+      onSuccess: () => {
+        setBackdropFlag(false);
+      },
       onError: () => {
         setMessage({
           ...message,
