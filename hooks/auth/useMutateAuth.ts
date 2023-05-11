@@ -22,6 +22,11 @@ export const useMutateAuth = () => {
       onSuccess: () => {
         userRefetch();
         router.push('/');
+        setMessage({
+          ...message,
+          text: 'ログインに成功しました。',
+          type: 'success',
+        });
       },
       onError: () => {
         setMessage({
@@ -40,6 +45,7 @@ export const useMutateAuth = () => {
         setBackdropFlag(false);
       },
       onError: () => {
+        setBackdropFlag(false);
         setMessage({
           ...message,
           text: 'アカウント作成に失敗しました。',
@@ -55,6 +61,11 @@ export const useMutateAuth = () => {
       onSuccess: () => {
         queryClient.clear();
         router.push('/');
+        setMessage({
+          ...message,
+          text: 'ログアウトしました。',
+          type: 'success',
+        });
         setTimeout(() => {
           router.reload();
         }, 500);

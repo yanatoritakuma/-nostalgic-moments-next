@@ -2,15 +2,8 @@ import { css } from '@emotion/react';
 import Image from 'next/image';
 import TopImg from '@/images/top.jpg';
 import Prefectures from '@/components/features/home/Prefectures';
-import { useQueryUserPost } from '@/hooks/post/useQueryUserPost';
-import { useQueryAllPosts } from '@/hooks/post/useQueryAllPosts';
 
 export default function Home() {
-  const { data: userPost } = useQueryUserPost();
-  console.log('userPost', userPost);
-  const { data: allPosts } = useQueryAllPosts();
-  console.log('allPosts', allPosts);
-
   return (
     <main css={mainBox}>
       <section css={topImgBox}>
