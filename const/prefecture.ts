@@ -202,3 +202,194 @@ export const kyushu = [
     url: '/prefectures/okinawa',
   },
 ];
+
+export const prefectures = [
+  {
+    item: '北海道',
+    value: 'hokkaido',
+  },
+  {
+    item: '青森県',
+    value: 'aomori',
+  },
+  {
+    item: '岩手県',
+    value: 'iwate',
+  },
+  {
+    item: '宮城県',
+    value: 'miyagi',
+  },
+  {
+    item: '秋田県',
+    value: 'akita',
+  },
+  {
+    item: '山形県',
+    value: 'yamagata',
+  },
+  {
+    item: '福島県',
+    value: 'fukushima',
+  },
+  {
+    item: '茨城県',
+    value: 'ibaraki',
+  },
+  {
+    item: '栃木県',
+    value: 'tochigi',
+  },
+  {
+    item: '群馬県',
+    value: 'gunma',
+  },
+  {
+    item: '埼玉県',
+    value: 'saitama',
+  },
+  {
+    item: '千葉県',
+    value: 'chiba',
+  },
+  {
+    item: '東京都',
+    value: 'tokyo',
+  },
+  {
+    item: '神奈川県',
+    value: 'kanagawa',
+  },
+  {
+    item: '新潟県',
+    value: 'niigata',
+  },
+  {
+    item: '富山県',
+    value: 'toyama',
+  },
+  {
+    item: '石川県',
+    value: 'ishikawa',
+  },
+  {
+    item: '福井県',
+    value: 'fukui',
+  },
+  {
+    item: '山梨県',
+    value: 'yamanashi',
+  },
+  {
+    item: '長野県',
+    value: 'nagano',
+  },
+  {
+    item: '岐阜県',
+    value: 'gifu',
+  },
+  {
+    item: '静岡県',
+    value: 'shizuoka',
+  },
+  {
+    item: '愛知県',
+    value: 'aichi',
+  },
+  {
+    item: '三重県',
+    value: 'mie',
+  },
+  {
+    item: '滋賀県',
+    value: 'shiga',
+  },
+  {
+    item: '京都府',
+    value: 'kyoto',
+  },
+  {
+    item: '大阪府',
+    value: 'osaka',
+  },
+  {
+    item: '兵庫県',
+    value: 'hyogo',
+  },
+  {
+    item: '奈良県',
+    value: 'nara',
+  },
+  {
+    item: '和歌山県',
+    value: 'wakayama',
+  },
+  {
+    item: '鳥取県',
+    value: 'tottori',
+  },
+  {
+    item: '島根県',
+    value: 'shimane',
+  },
+  {
+    item: '岡山県',
+    value: 'okayama',
+  },
+  {
+    item: '広島県',
+    value: 'hiroshima',
+  },
+  {
+    item: '山口県',
+    value: 'yamaguchi',
+  },
+  {
+    item: '徳島県',
+    value: 'tokushima',
+  },
+  {
+    item: '香川県',
+    value: 'kagawa',
+  },
+  {
+    item: '愛媛県',
+    value: 'ehime',
+  },
+  {
+    item: '高知県',
+    value: 'kochi',
+  },
+  {
+    item: '福岡県',
+    value: 'fukuoka',
+  },
+  {
+    item: '佐賀県',
+    value: 'saga',
+  },
+  {
+    item: '長崎県',
+    value: 'nagasaki',
+  },
+  {
+    item: '熊本県',
+    value: 'kumamoto',
+  },
+  {
+    item: '大分県',
+    value: 'oita',
+  },
+  {
+    item: '宮崎県',
+    value: 'miyazaki',
+  },
+  {
+    item: '鹿児島県',
+    value: 'kagoshima',
+  },
+  {
+    item: '沖縄県',
+    value: 'okinawa',
+  },
+];

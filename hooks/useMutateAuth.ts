@@ -5,11 +5,14 @@ import { useRouter } from 'next/router';
 import { TLogin, TRegister } from '@/types/auth';
 import { TError } from '@/types/error';
 import { useQueryUser } from '@/hooks/useQueryUser';
+import { MessageContext } from '@/provider/MessageProvider';
+import { useContext } from 'react';
 
 export const useMutateAuth = () => {
   const router = useRouter();
   const queryClient = useQueryClient();
   const { refetch: userRefetch } = useQueryUser();
+  const { message, setMessage } = useContext(MessageContext);
 
   const loginMutation = useMutation(
     async (user: TLogin) => await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/login`, user),
@@ -19,7 +22,11 @@ export const useMutateAuth = () => {
         router.push('/');
       },
       onError: () => {
-        alert('ログインに失敗しました。');
+        setMessage({
+          ...message,
+          text: 'ログインに失敗しました。',
+          type: 'error',
+        });
       },
     }
   );
@@ -28,7 +35,11 @@ export const useMutateAuth = () => {
     async (user: TRegister) => await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/signup`, user),
     {
       onError: () => {
-        alert('アカウント作成に失敗しました。');
+        setMessage({
+          ...message,
+          text: 'アカウント作成に失敗しました。',
+          type: 'error',
+        });
       },
     }
   );
@@ -45,7 +56,11 @@ export const useMutateAuth = () => {
       },
       onError: (err: TError) => {
         if (err.response.data.message) {
-          alert('ログアウトに失敗しました。');
+          setMessage({
+            ...message,
+            text: 'ログアウトに失敗しました。',
+            type: 'error',
+          });
         }
       },
     }

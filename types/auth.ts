@@ -7,5 +7,5 @@ export type TRegister = {
   email: string;
   password: string;
   name: string;
-  image: string;
+  image?: string;
 };

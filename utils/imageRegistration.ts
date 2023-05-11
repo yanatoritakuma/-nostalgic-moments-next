@@ -1,9 +1,12 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import firebase, { storage } from '../firebase/initFirebase';
 import { TUser } from '@/types/user';
+import { BackdropContext } from '@/provider/BackdropProvider';
 
 // 画像をfirebaseのstorageに保存
 export const imageRegistration = () => {
+  const { setBackdropFlag } = useContext(BackdropContext);
+
   const onClickRegistration = (
     photoUrl: File | null,
     dbRegistration: (file: string | null) => void,
@@ -11,6 +14,7 @@ export const imageRegistration = () => {
     setPreviewUrl: React.Dispatch<React.SetStateAction<string>>,
     user?: TUser
   ) => {
+    setBackdropFlag(true);
     if (photoUrl) {
       const S = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
       const N = 16;
@@ -20,7 +24,7 @@ export const imageRegistration = () => {
       const fileName = randomChar + '_' + photoUrl.name;
 
       const uploadImg = storage
-        .ref(!user ? `userImages/${fileName}` : `coffeeImages/${user?.id}/${fileName}`)
+        .ref(!user ? `userImages/${fileName}` : `postImages/${user?.id}/${fileName}`)
         .put(photoUrl);
 
       uploadImg.on(
@@ -32,7 +36,7 @@ export const imageRegistration = () => {
         },
         async () => {
           await storage
-            .ref(!user ? 'userImages' : `coffeeImages/${user?.id}/`)
+            .ref(!user ? 'userImages' : `postImages/${user?.id}/`)
             .child(fileName)
             .getDownloadURL()
             .then((fireBaseUrl) => {

@@ -37,7 +37,7 @@ const Header = memo(() => {
             </div>
           )}
         </div>
-        <HamburgerMenu hambBtn={hambBtn} onClose={() => setHambBtn(false)} />
+        <HamburgerMenu hambBtn={hambBtn} setHambBtn={setHambBtn} />
       </header>
     </>
   );
@@ -52,7 +52,7 @@ const HeaderBox = css`
   width: 100%;
   position: fixed;
   top: 0;
-  z-index: 9999;
+  z-index: 999;
 `;
 
 const HeaderInBox = css`

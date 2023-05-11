@@ -5,25 +5,35 @@ import React, { memo } from 'react';
 
 type Props = {
   hambBtn: boolean;
-  onClose: React.Dispatch<React.SetStateAction<boolean>>;
+  setHambBtn: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
 const HamburgerMenu = memo((props: Props) => {
-  const { hambBtn, onClose } = props;
+  const { hambBtn, setHambBtn } = props;
+  console.log('hambBtn', hambBtn);
   const { logoutMutation } = useMutateAuth();
   return (
     <div css={menuBox(hambBtn)}>
-      <Link href="/">投稿</Link>
-      <Link href="/">マイページ</Link>
+      <Link href="/" onClick={() => setHambBtn(false)}>
+        HOME
+      </Link>
+      <Link href="/post" onClick={() => setHambBtn(false)}>
+        投稿
+      </Link>
+      <Link href="/" onClick={() => setHambBtn(false)}>
+        マイページ
+      </Link>
       <span
         onClick={() => {
           logoutMutation.mutate();
-          onClose;
+          setHambBtn(false);
         }}
       >
         ログアウト
       </span>
-      <Link href="/">退会</Link>
+      <Link href="/" onClick={() => setHambBtn(false)}>
+        退会
+      </Link>
     </div>
   );
 });
