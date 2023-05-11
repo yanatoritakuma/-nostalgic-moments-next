@@ -37,7 +37,7 @@ const Header = memo(() => {
             </div>
           )}
         </div>
-        <HamburgerMenu hambBtn={hambBtn} onClose={() => setHambBtn(false)} />
+        <HamburgerMenu hambBtn={hambBtn} setHambBtn={setHambBtn} />
       </header>
     </>
   );
