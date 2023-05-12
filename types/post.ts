@@ -14,6 +14,11 @@ export type TPost = {
   user_id: number;
 };
 
+export type TPostPages = {
+  posts: TPost[];
+  totalCount: number;
+};
+
 export type TReqPost = {
   title: string;
   text: string;
