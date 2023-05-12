@@ -1,7 +1,8 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { css } from '@emotion/react';
 import { useQueryPrefecturesPost } from '@/hooks/post/useQueryPrefecturesPost';
 import PostBox from '@/components/common/PostBox';
+import { PaginationBox } from '@/components/common/PaginationBox';
 
 export async function getStaticPaths() {
   return {
@@ -71,7 +72,23 @@ type Props = {
 
 const Prefectures = (prefectures: Props) => {
   const prefecturesName = prefectures.prefectures;
-  const { data: prefecturesPost } = useQueryPrefecturesPost(prefecturesName);
+  const [currentPage, setCurrentPage] = useState(1);
+
+  const { data: prefecturesPost, refetch: prefecturesRefetch } = useQueryPrefecturesPost(
+    prefecturesName,
+    currentPage,
+    10
+  );
+
+  // ページネーションで都道府県別投稿のAPI再取得
+  useEffect(() => {
+    prefecturesRefetch();
+  }, [currentPage]);
+
+  const countPages = (totalPage: number) => {
+    const total = totalPage / 10;
+    return Math.ceil(total);
+  };
 
   const prefecturesFormation = (prefecture: string) => {
     switch (prefecture) {
@@ -173,16 +190,27 @@ const Prefectures = (prefectures: Props) => {
   };
 
   return (
-    <main css={PrefecturesBox}>
+    <main css={prefecturesBox}>
       <h2>{prefecturesFormation(prefecturesName)}</h2>
-      <PostBox posts={prefecturesPost} />
+      {prefecturesPost !== undefined ? (
+        <>
+          <PostBox posts={prefecturesPost.posts} />
+          <PaginationBox
+            count={countPages(prefecturesPost.totalCount)}
+            currentPage={currentPage}
+            setCurrentPage={setCurrentPage}
+          />
+        </>
+      ) : (
+        <p className="prefecturesBox__noPosts">まだ投稿がありません。</p>
+      )}
     </main>
   );
 };
 
 export default Prefectures;
 
-const PrefecturesBox = css`
+const prefecturesBox = css`
   padding: 40px 80px;
   width: 100%;
 
@@ -195,6 +223,10 @@ const PrefecturesBox = css`
   }
 
   h2 {
+    text-align: center;
+  }
+
+  .prefecturesBox__noPosts {
     text-align: center;
   }
 `;
