@@ -1,14 +1,23 @@
-import React from 'react';
+import { useEffect, useState } from 'react';
 import { css } from '@emotion/react';
 import { useQueryUserPost } from '@/hooks/post/useQueryUserPost';
 import PostBox from '@/components/common/PostBox';
 import { useQueryUser } from '@/hooks/auth/useQueryUser';
 import Image from 'next/image';
 import Link from 'next/link';
+import { PaginationBox } from '@/components/common/PaginationBox';
+import { countPages } from '@/utils/countPages';
 
 const myPage = () => {
-  const { data: userPosts } = useQueryUserPost();
+  const [currentPage, setCurrentPage] = useState(1);
+  const { data: userPosts, refetch: userPostsRefetch } = useQueryUserPost(currentPage, 10);
   const { data: user } = useQueryUser();
+
+  // ページネーションで都道府県別投稿のAPI再取得
+  useEffect(() => {
+    userPostsRefetch();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentPage]);
 
   const StartDateUse = (dateString: string) => {
     const date = new Date(dateString);
@@ -31,11 +40,11 @@ const myPage = () => {
           </div>
           <span className="myPageBox__created">{StartDateUse(user.created_at)}</span>
           <div css={countBox}>
-            <span>投稿数: {userPosts?.length}</span>
+            <span>投稿数: {userPosts?.totalCount}</span>
             <span>いいね数:</span>
           </div>
 
-          <PostBox posts={userPosts} />
+          <PostBox posts={userPosts?.posts} />
         </>
       ) : (
         <>
@@ -44,6 +53,13 @@ const myPage = () => {
             ログイン画面へ
           </Link>
         </>
+      )}
+      {userPosts !== undefined && (
+        <PaginationBox
+          count={countPages(userPosts.totalCount)}
+          currentPage={currentPage}
+          setCurrentPage={setCurrentPage}
+        />
       )}
     </main>
   );

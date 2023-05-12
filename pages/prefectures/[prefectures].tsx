@@ -3,6 +3,7 @@ import { css } from '@emotion/react';
 import { useQueryPrefecturesPost } from '@/hooks/post/useQueryPrefecturesPost';
 import PostBox from '@/components/common/PostBox';
 import { PaginationBox } from '@/components/common/PaginationBox';
+import { countPages } from '@/utils/countPages';
 
 export async function getStaticPaths() {
   return {
@@ -83,12 +84,8 @@ const Prefectures = (prefectures: Props) => {
   // ページネーションで都道府県別投稿のAPI再取得
   useEffect(() => {
     prefecturesRefetch();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentPage]);
-
-  const countPages = (totalPage: number) => {
-    const total = totalPage / 10;
-    return Math.ceil(total);
-  };
 
   const prefecturesFormation = (prefecture: string) => {
     switch (prefecture) {
