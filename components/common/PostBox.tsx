@@ -1,16 +1,37 @@
 import { memo } from 'react';
 import { css } from '@emotion/react';
-import { TPost } from '@/types/post';
+import { TPost, TPostPages } from '@/types/post';
 import Image from 'next/image';
+import FavoriteIcon from '@mui/icons-material/Favorite';
+import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import NoimageUser from '@/images/noimage-user.png';
 import Noimage from '@/images/noimage.png';
+import { useMutateLike } from '@/hooks/like/useMutateLike';
+import { QueryObserverResult, RefetchOptions, RefetchQueryFilters } from '@tanstack/react-query';
+import { TError } from '@/types/error';
 
 type Props = {
   posts?: TPost[];
+  prefecturesRefetch: <TPageData>(
+    options?: (RefetchOptions & RefetchQueryFilters<TPageData>) | undefined
+  ) => Promise<QueryObserverResult<TPostPages, TError>>;
 };
 
-const PostBox = memo((props: Props) => {
-  const { posts } = props;
+export const PostBox = memo((props: Props) => {
+  const { posts, prefecturesRefetch } = props;
+  const { likeMutation, likeDeleteMutation } = useMutateLike();
+
+  const onClickLike = async (postId: number) => {
+    const req = {
+      post_id: postId,
+    };
+    await likeMutation.mutateAsync(req).then(() => prefecturesRefetch());
+  };
+
+  const onClickDeleteLike = async (likeId: number) => {
+    await likeDeleteMutation.mutateAsync(likeId).then(() => prefecturesRefetch());
+  };
+
   return (
     <>
       {posts?.map((post) => {
@@ -43,6 +64,26 @@ const PostBox = memo((props: Props) => {
                 <Image src={Noimage} fill alt="投稿画像" />
               </div>
             )}
+
+            <div css={favoriteBox}>
+              {post.like_flag ? (
+                <>
+                  <FavoriteIcon
+                    onClick={() => onClickDeleteLike(post.likes[0].id)}
+                    className="favoriteBox__liked"
+                  />
+                  {post.likes.length}
+                </>
+              ) : (
+                <>
+                  <FavoriteBorderIcon
+                    onClick={() => onClickLike(post.id)}
+                    className="favoriteBox__noLike"
+                  />
+                  {post.likes.length}
+                </>
+              )}
+            </div>
           </div>
         );
       })}
@@ -50,15 +91,14 @@ const PostBox = memo((props: Props) => {
   );
 });
 
-export default PostBox;
-
 PostBox.displayName = 'PostBox';
 
 const postBox = css`
-  margin: 20px 0;
+  margin: 20px auto;
   padding: 24px;
   border: 2px solid #aaa;
   border-radius: 10px;
+  max-width: 1200px;
 
   h3 {
   }
@@ -75,7 +115,7 @@ const postUserBox = css`
 
 const postImgBox = css`
   margin: 12px auto;
-  width: 80%;
+  width: 100%;
   height: 600px;
   position: relative;
 
@@ -84,7 +124,6 @@ const postImgBox = css`
   }
 
   @media (max-width: 425px) {
-    width: 100%;
     height: 200px;
   }
 
@@ -103,5 +142,18 @@ const userImgBox = css`
   img {
     object-fit: cover;
     border-radius: 50%;
+  }
+`;
+
+const favoriteBox = css`
+  display: flex;
+  align-items: center;
+
+  .favoriteBox__liked {
+    color: #e9546b;
+  }
+
+  svg {
+    margin-right: 8px;
   }
 `;

@@ -1,8 +1,6 @@
 export type TError = {
   response: {
-    data: {
-      message: string;
-    };
+    data: string;
     status: number;
   };
 };

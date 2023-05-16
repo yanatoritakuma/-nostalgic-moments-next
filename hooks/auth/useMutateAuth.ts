@@ -70,14 +70,12 @@ export const useMutateAuth = () => {
           router.reload();
         }, 500);
       },
-      onError: (err: TError) => {
-        if (err.response.data.message) {
-          setMessage({
-            ...message,
-            text: 'ログアウトに失敗しました。',
-            type: 'error',
-          });
-        }
+      onError: () => {
+        setMessage({
+          ...message,
+          text: 'ログアウトに失敗しました。',
+          type: 'error',
+        });
       },
     }
   );
