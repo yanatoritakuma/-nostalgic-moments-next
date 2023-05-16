@@ -200,7 +200,11 @@ const Prefectures = (prefectures: Props) => {
       <h2>{prefecturesFormation(prefecturesName)}</h2>
       {prefecturesPost !== undefined && prefecturesPost.posts.length > 0 ? (
         <>
-          <PostBox posts={prefecturesPost.posts} prefecturesRefetch={prefecturesRefetch} />
+          <PostBox
+            posts={prefecturesPost.posts}
+            prefecturesRefetch={prefecturesRefetch}
+            user={user}
+          />
           <PaginationBox
             count={countPages(prefecturesPost.totalCount)}
             currentPage={currentPage}

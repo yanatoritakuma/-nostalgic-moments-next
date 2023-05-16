@@ -1,4 +1,4 @@
-import { memo } from 'react';
+import { memo, useContext } from 'react';
 import { css } from '@emotion/react';
 import { TPost, TPostPages } from '@/types/post';
 import Image from 'next/image';
@@ -9,23 +9,35 @@ import Noimage from '@/images/noimage.png';
 import { useMutateLike } from '@/hooks/like/useMutateLike';
 import { QueryObserverResult, RefetchOptions, RefetchQueryFilters } from '@tanstack/react-query';
 import { TError } from '@/types/error';
+import { TUser } from '@/types/user';
+import { MessageContext } from '@/provider/MessageProvider';
 
 type Props = {
   posts?: TPost[];
   prefecturesRefetch: <TPageData>(
     options?: (RefetchOptions & RefetchQueryFilters<TPageData>) | undefined
   ) => Promise<QueryObserverResult<TPostPages, TError>>;
+  user: TUser | undefined;
 };
 
 export const PostBox = memo((props: Props) => {
-  const { posts, prefecturesRefetch } = props;
+  const { posts, prefecturesRefetch, user } = props;
   const { likeMutation, likeDeleteMutation } = useMutateLike();
+  const { message, setMessage } = useContext(MessageContext);
 
   const onClickLike = async (postId: number) => {
     const req = {
       post_id: postId,
     };
-    await likeMutation.mutateAsync(req).then(() => prefecturesRefetch());
+    if (user) {
+      await likeMutation.mutateAsync(req).then(() => prefecturesRefetch());
+    } else {
+      setMessage({
+        ...message,
+        text: 'いいねをするにはログインが必要です',
+        type: 'error',
+      });
+    }
   };
 
   const onClickDeleteLike = async (likeId: number) => {
@@ -66,13 +78,13 @@ export const PostBox = memo((props: Props) => {
             )}
 
             <div css={favoriteBox}>
-              {post.like_flag ? (
+              {post.like_id !== 0 ? (
                 <>
                   <FavoriteIcon
-                    onClick={() => onClickDeleteLike(post.likes[0].id)}
+                    onClick={() => onClickDeleteLike(post.like_id)}
                     className="favoriteBox__liked"
                   />
-                  {post.likes.length}
+                  {post.like_count}
                 </>
               ) : (
                 <>
@@ -80,7 +92,7 @@ export const PostBox = memo((props: Props) => {
                     onClick={() => onClickLike(post.id)}
                     className="favoriteBox__noLike"
                   />
-                  {post.likes.length}
+                  {post.like_count}
                 </>
               )}
             </div>

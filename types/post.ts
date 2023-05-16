@@ -12,11 +12,8 @@ export type TPost = {
   title: string;
   text: string;
   user_id: number;
-  likes: {
-    id: number;
-    user_id: string;
-  }[];
-  like_flag: boolean;
+  like_count: number;
+  like_id: number;
 };
 
 export type TPostPages = {
