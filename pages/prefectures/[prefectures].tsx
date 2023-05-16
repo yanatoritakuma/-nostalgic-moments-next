@@ -206,7 +206,7 @@ const Prefectures = (prefectures: Props) => {
             user={user}
           />
           <PaginationBox
-            count={countPages(prefecturesPost.totalCount)}
+            count={countPages(prefecturesPost.totalPageCount)}
             currentPage={currentPage}
             setCurrentPage={setCurrentPage}
           />

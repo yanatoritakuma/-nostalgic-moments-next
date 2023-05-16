@@ -30,7 +30,7 @@ const myPage = () => {
   return (
     <main css={myPageBox}>
       {user !== undefined ? (
-        <>
+        <div css={topBox}>
           <h2>マイページ</h2>
           <div css={userBox}>
             <div css={userImgBox}>
@@ -40,12 +40,12 @@ const myPage = () => {
           </div>
           <span className="myPageBox__created">{StartDateUse(user.created_at)}</span>
           <div css={countBox}>
-            <span>投稿数: {userPosts?.totalCount}</span>
-            <span>いいね数:</span>
+            <span>投稿数: {userPosts?.totalPageCount}</span>
+            <span>いいね数: {userPosts?.totalLikeCount}</span>
           </div>
 
-          <PostBox posts={userPosts?.posts} />
-        </>
+          <PostBox posts={userPosts?.posts} user={user} userPostsRefetch={userPostsRefetch} />
+        </div>
       ) : (
         <>
           <h2>ログインしていない場合マイページは閲覧できません。</h2>
@@ -56,7 +56,7 @@ const myPage = () => {
       )}
       {userPosts !== undefined && (
         <PaginationBox
-          count={countPages(userPosts.totalCount)}
+          count={countPages(userPosts.totalPageCount)}
           currentPage={currentPage}
           setCurrentPage={setCurrentPage}
         />
@@ -101,6 +101,11 @@ const myPageBox = css`
     border: 1px solid #0095d9;
     border-radius: 20px;
   }
+`;
+
+const topBox = css`
+  margin: 0 auto;
+  max-width: 1200px;
 `;
 
 const userBox = css`
