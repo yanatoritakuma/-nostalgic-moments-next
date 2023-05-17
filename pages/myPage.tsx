@@ -1,23 +1,33 @@
 import { useEffect, useState } from 'react';
 import { css } from '@emotion/react';
 import { useQueryUserPost } from '@/hooks/post/useQueryUserPost';
-import PostBox from '@/components/common/PostBox';
+import { PostBox } from '@/components/common/PostBox';
 import { useQueryUser } from '@/hooks/auth/useQueryUser';
 import Image from 'next/image';
 import Link from 'next/link';
 import { PaginationBox } from '@/components/common/PaginationBox';
 import { countPages } from '@/utils/countPages';
+import { TabsBox } from '@/components/elements/TabsBox';
+import CreateIcon from '@mui/icons-material/Create';
+import FavoriteIcon from '@mui/icons-material/Favorite';
 
 const myPage = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const { data: userPosts, refetch: userPostsRefetch } = useQueryUserPost(currentPage, 10);
   const { data: user } = useQueryUser();
 
+  const [selectTab, setSelectTab] = useState(0);
+
   // ページネーションで都道府県別投稿のAPI再取得
   useEffect(() => {
     userPostsRefetch();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentPage]);
+
+  // タブ切り替えしたらページを1ページ目に戻す
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [selectTab]);
 
   const StartDateUse = (dateString: string) => {
     const date = new Date(dateString);
@@ -30,7 +40,7 @@ const myPage = () => {
   return (
     <main css={myPageBox}>
       {user !== undefined ? (
-        <>
+        <div css={topBox}>
           <h2>マイページ</h2>
           <div css={userBox}>
             <div css={userImgBox}>
@@ -40,12 +50,21 @@ const myPage = () => {
           </div>
           <span className="myPageBox__created">{StartDateUse(user.created_at)}</span>
           <div css={countBox}>
-            <span>投稿数: {userPosts?.totalCount}</span>
-            <span>いいね数:</span>
+            <span>投稿数: {userPosts?.totalPageCount}</span>
+            <span>いいね数: {userPosts?.totalLikeCount}</span>
           </div>
-
-          <PostBox posts={userPosts?.posts} />
-        </>
+          <TabsBox
+            labels={['投稿', 'いいね']}
+            icon={[<CreateIcon key="CreateIcon" />, <FavoriteIcon key="FavoriteIcon" />]}
+            selectTab={selectTab}
+            setSelectTab={setSelectTab}
+          />
+          <PostBox
+            posts={selectTab === 0 ? userPosts?.posts : userPosts?.likePosts}
+            user={user}
+            userPostsRefetch={userPostsRefetch}
+          />
+        </div>
       ) : (
         <>
           <h2>ログインしていない場合マイページは閲覧できません。</h2>
@@ -56,7 +75,7 @@ const myPage = () => {
       )}
       {userPosts !== undefined && (
         <PaginationBox
-          count={countPages(userPosts.totalCount)}
+          count={countPages(selectTab === 0 ? userPosts.totalPageCount : userPosts.totalLikeCount)}
           currentPage={currentPage}
           setCurrentPage={setCurrentPage}
         />
@@ -101,6 +120,11 @@ const myPageBox = css`
     border: 1px solid #0095d9;
     border-radius: 20px;
   }
+`;
+
+const topBox = css`
+  margin: 0 auto;
+  max-width: 1200px;
 `;
 
 const userBox = css`

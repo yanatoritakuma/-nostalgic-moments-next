@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { css } from '@emotion/react';
 import { useQueryPrefecturesPost } from '@/hooks/post/useQueryPrefecturesPost';
-import PostBox from '@/components/common/PostBox';
+import { PostBox } from '@/components/common/PostBox';
 import { PaginationBox } from '@/components/common/PaginationBox';
 import { countPages } from '@/utils/countPages';
+import { useQueryUser } from '@/hooks/auth/useQueryUser';
 
 export async function getStaticPaths() {
   return {
@@ -74,11 +75,12 @@ type Props = {
 const Prefectures = (prefectures: Props) => {
   const prefecturesName = prefectures.prefectures;
   const [currentPage, setCurrentPage] = useState(1);
-
+  const { data: user } = useQueryUser();
   const { data: prefecturesPost, refetch: prefecturesRefetch } = useQueryPrefecturesPost(
     prefecturesName,
     currentPage,
-    10
+    10,
+    user?.id
   );
 
   // ページネーションで都道府県別投稿のAPI再取得
@@ -86,6 +88,13 @@ const Prefectures = (prefectures: Props) => {
     prefecturesRefetch();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentPage]);
+
+  useEffect(() => {
+    setTimeout(() => {
+      prefecturesRefetch();
+    }, 1000);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user]);
 
   const prefecturesFormation = (prefecture: string) => {
     switch (prefecture) {
@@ -189,11 +198,15 @@ const Prefectures = (prefectures: Props) => {
   return (
     <main css={prefecturesBox}>
       <h2>{prefecturesFormation(prefecturesName)}</h2>
-      {prefecturesPost !== undefined ? (
+      {prefecturesPost !== undefined && prefecturesPost.posts.length > 0 ? (
         <>
-          <PostBox posts={prefecturesPost.posts} />
+          <PostBox
+            posts={prefecturesPost.posts}
+            prefecturesRefetch={prefecturesRefetch}
+            user={user}
+          />
           <PaginationBox
-            count={countPages(prefecturesPost.totalCount)}
+            count={countPages(prefecturesPost.totalPageCount)}
             currentPage={currentPage}
             setCurrentPage={setCurrentPage}
           />

@@ -12,11 +12,15 @@ export type TPost = {
   title: string;
   text: string;
   user_id: number;
+  like_count: number;
+  like_id: number;
 };
 
 export type TPostPages = {
   posts: TPost[];
-  totalCount: number;
+  likePosts: TPost[];
+  totalPageCount: number;
+  totalLikeCount: number;
 };
 
 export type TReqPost = {

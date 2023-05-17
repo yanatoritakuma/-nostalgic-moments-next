@@ -3,10 +3,15 @@ import { useQuery } from '@tanstack/react-query';
 import { TError } from '@/types/error';
 import { TPostPages } from '@/types/post';
 
-export const useQueryPrefecturesPost = (prefecture: string, page: number, pageSize: number) => {
+export const useQueryPrefecturesPost = (
+  prefecture: string,
+  page: number,
+  pageSize: number,
+  userId: number | undefined
+) => {
   const getPrefecturesPost = async () => {
     const { data } = await axios.get<TPostPages>(
-      `${process.env.NEXT_PUBLIC_API_URL}/posts/prefecture/${prefecture}?page=${page}&pageSize=${pageSize}`
+      `${process.env.NEXT_PUBLIC_API_URL}/posts/prefecture/${prefecture}?page=${page}&pageSize=${pageSize}&userId=${userId}`
     );
     return data;
   };
