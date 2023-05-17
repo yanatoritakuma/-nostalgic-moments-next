@@ -18,6 +18,7 @@ export type TPost = {
 
 export type TPostPages = {
   posts: TPost[];
+  likePosts: TPost[];
   totalPageCount: number;
   totalLikeCount: number;
 };

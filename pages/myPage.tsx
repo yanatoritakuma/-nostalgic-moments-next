@@ -7,17 +7,27 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { PaginationBox } from '@/components/common/PaginationBox';
 import { countPages } from '@/utils/countPages';
+import { TabsBox } from '@/components/elements/TabsBox';
+import CreateIcon from '@mui/icons-material/Create';
+import FavoriteIcon from '@mui/icons-material/Favorite';
 
 const myPage = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const { data: userPosts, refetch: userPostsRefetch } = useQueryUserPost(currentPage, 10);
   const { data: user } = useQueryUser();
 
+  const [selectTab, setSelectTab] = useState(0);
+
   // ページネーションで都道府県別投稿のAPI再取得
   useEffect(() => {
     userPostsRefetch();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentPage]);
+
+  // タブ切り替えしたらページを1ページ目に戻す
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [selectTab]);
 
   const StartDateUse = (dateString: string) => {
     const date = new Date(dateString);
@@ -43,8 +53,17 @@ const myPage = () => {
             <span>投稿数: {userPosts?.totalPageCount}</span>
             <span>いいね数: {userPosts?.totalLikeCount}</span>
           </div>
-
-          <PostBox posts={userPosts?.posts} user={user} userPostsRefetch={userPostsRefetch} />
+          <TabsBox
+            labels={['投稿', 'いいね']}
+            icon={[<CreateIcon key="CreateIcon" />, <FavoriteIcon key="FavoriteIcon" />]}
+            selectTab={selectTab}
+            setSelectTab={setSelectTab}
+          />
+          <PostBox
+            posts={selectTab === 0 ? userPosts?.posts : userPosts?.likePosts}
+            user={user}
+            userPostsRefetch={userPostsRefetch}
+          />
         </div>
       ) : (
         <>
@@ -56,7 +75,7 @@ const myPage = () => {
       )}
       {userPosts !== undefined && (
         <PaginationBox
-          count={countPages(userPosts.totalPageCount)}
+          count={countPages(selectTab === 0 ? userPosts.totalPageCount : userPosts.totalLikeCount)}
           currentPage={currentPage}
           setCurrentPage={setCurrentPage}
         />
