@@ -11,6 +11,7 @@ import { QueryObserverResult, RefetchOptions, RefetchQueryFilters } from '@tanst
 import { TError } from '@/types/error';
 import { TUser } from '@/types/user';
 import { MessageContext } from '@/provider/MessageProvider';
+import { PostEditMenuBox } from '@/components/common/PostEditMenuBox';
 
 type Props = {
   posts?: TPost[];
@@ -71,6 +72,11 @@ export const PostBox = memo((props: Props) => {
                 </div>
               )}
               <span className="postUserBox__name">{post.postUserResponse.name}</span>
+              {post.user_id === user?.id && (
+                <div className="postUserBox__editBox">
+                  <PostEditMenuBox />
+                </div>
+              )}
             </div>
             <h3>{post.title}</h3>
             <p>{post.text}</p>
@@ -123,16 +129,24 @@ const postBox = css`
   border-radius: 10px;
   max-width: 1200px;
 
-  h3 {
+  @media (max-width: 425px) {
+    padding: 12px;
   }
 `;
 
 const postUserBox = css`
   display: flex;
   align-items: center;
+  position: relative;
 
   .postUserBox__name {
     font-size: 18px;
+  }
+
+  .postUserBox__editBox {
+    position: absolute;
+    top: 0;
+    right: 0;
   }
 `;
 
