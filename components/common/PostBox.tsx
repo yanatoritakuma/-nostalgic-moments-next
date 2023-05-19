@@ -1,4 +1,4 @@
-import { memo, useContext } from 'react';
+import { memo, useContext, useEffect } from 'react';
 import { css } from '@emotion/react';
 import { TPost, TPostPages } from '@/types/post';
 import Image from 'next/image';
@@ -11,6 +11,9 @@ import { QueryObserverResult, RefetchOptions, RefetchQueryFilters } from '@tanst
 import { TError } from '@/types/error';
 import { TUser } from '@/types/user';
 import { MessageContext } from '@/provider/MessageProvider';
+import { PostEditMenuBox } from '@/components/common/PostEditMenuBox';
+import { PostContext } from '@/provider/PostProvider';
+import { prefectures } from '@/const/prefecture';
 
 type Props = {
   posts?: TPost[];
@@ -27,6 +30,7 @@ export const PostBox = memo((props: Props) => {
   const { posts, prefecturesRefetch, userPostsRefetch, user } = props;
   const { likeMutation, likeDeleteMutation } = useMutateLike();
   const { message, setMessage } = useContext(MessageContext);
+  const { postProcess, setPostProcess } = useContext(PostContext);
 
   const onClickLike = async (postId: number) => {
     const req = {
@@ -55,9 +59,25 @@ export const PostBox = memo((props: Props) => {
     }
   };
 
+  useEffect(() => {
+    if (prefecturesRefetch && postProcess) {
+      prefecturesRefetch();
+      setPostProcess(false);
+    } else if (userPostsRefetch && postProcess) {
+      userPostsRefetch();
+      setPostProcess(false);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [postProcess]);
+
+  const getItemByValue = (value: string) => {
+    const foundItem = prefectures.find((prefecture) => prefecture.value === value);
+    return foundItem ? foundItem.item : null;
+  };
+
   return (
     <>
-      {posts?.map((post) => {
+      {posts?.map((post, index) => {
         return (
           <div key={post.id} css={postBox}>
             <div css={postUserBox}>
@@ -71,12 +91,19 @@ export const PostBox = memo((props: Props) => {
                 </div>
               )}
               <span className="postUserBox__name">{post.postUserResponse.name}</span>
+              {post.user_id === user?.id && (
+                <div className="postUserBox__editBox">
+                  <PostEditMenuBox posts={posts} index={index} />
+                </div>
+              )}
             </div>
             <h3>{post.title}</h3>
             <p>{post.text}</p>
             <div>
               <span>住所:</span>
-              <span>{post.address}</span>
+              <span>
+                {getItemByValue(post.prefecture)} {post.address}
+              </span>
             </div>
             {post.image !== '' ? (
               <div css={postImgBox}>
@@ -123,16 +150,24 @@ const postBox = css`
   border-radius: 10px;
   max-width: 1200px;
 
-  h3 {
+  @media (max-width: 425px) {
+    padding: 12px;
   }
 `;
 
 const postUserBox = css`
   display: flex;
   align-items: center;
+  position: relative;
 
   .postUserBox__name {
     font-size: 18px;
+  }
+
+  .postUserBox__editBox {
+    position: absolute;
+    top: 0;
+    right: 0;
   }
 `;
 

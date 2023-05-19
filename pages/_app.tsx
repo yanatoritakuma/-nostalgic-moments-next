@@ -9,6 +9,7 @@ import { MessageProvider } from '@/provider/MessageProvider';
 import { SnackbarBox } from '@/components/elements/SnackbarBox';
 import { BackdropBox } from '@/components/elements/BackdropBox';
 import { BackdropProvider } from '@/provider/BackdropProvider';
+import { PostProvider } from '@/provider/PostProvider';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -34,11 +35,13 @@ export default function App({ Component, pageProps }: AppProps) {
     <QueryClientProvider client={queryClient}>
       <MessageProvider>
         <BackdropProvider>
-          <Header />
-          <Component {...pageProps} />
-          <ReactQueryDevtools />
-          <SnackbarBox />
-          <BackdropBox />
+          <PostProvider>
+            <Header />
+            <Component {...pageProps} />
+            <ReactQueryDevtools />
+            <SnackbarBox />
+            <BackdropBox />
+          </PostProvider>
         </BackdropProvider>
       </MessageProvider>
     </QueryClientProvider>
