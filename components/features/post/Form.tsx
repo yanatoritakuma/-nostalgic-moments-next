@@ -147,7 +147,7 @@ export const Form = memo((props: Props) => {
       </div>
       <div css={textBox}>
         <TextBox
-          label="アドレス"
+          label="住所"
           value={postState.address}
           onChange={(e) =>
             setPostState({

@@ -13,6 +13,7 @@ import { TUser } from '@/types/user';
 import { MessageContext } from '@/provider/MessageProvider';
 import { PostEditMenuBox } from '@/components/common/PostEditMenuBox';
 import { PostContext } from '@/provider/PostProvider';
+import { prefectures } from '@/const/prefecture';
 
 type Props = {
   posts?: TPost[];
@@ -62,9 +63,17 @@ export const PostBox = memo((props: Props) => {
     if (prefecturesRefetch && postProcess) {
       prefecturesRefetch();
       setPostProcess(false);
+    } else if (userPostsRefetch && postProcess) {
+      userPostsRefetch();
+      setPostProcess(false);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [postProcess]);
+
+  const getItemByValue = (value: string) => {
+    const foundItem = prefectures.find((prefecture) => prefecture.value === value);
+    return foundItem ? foundItem.item : null;
+  };
 
   return (
     <>
@@ -92,7 +101,9 @@ export const PostBox = memo((props: Props) => {
             <p>{post.text}</p>
             <div>
               <span>住所:</span>
-              <span>{post.address}</span>
+              <span>
+                {getItemByValue(post.prefecture)} {post.address}
+              </span>
             </div>
             {post.image !== '' ? (
               <div css={postImgBox}>
