@@ -11,7 +11,7 @@ import { QueryObserverResult, RefetchOptions, RefetchQueryFilters } from '@tanst
 import { TError } from '@/types/error';
 import { TUser } from '@/types/user';
 import { MessageContext } from '@/provider/MessageProvider';
-import { PostEditMenuBox } from '@/components/common/PostEditMenuBox';
+import { PostEditMenuBox } from '@/components/features/post/PostEditMenuBox';
 import { PostContext } from '@/provider/PostProvider';
 import { prefectures } from '@/const/prefecture';
 

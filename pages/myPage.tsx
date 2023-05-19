@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { css } from '@emotion/react';
 import { useQueryUserPost } from '@/hooks/post/useQueryUserPost';
-import { PostBox } from '@/components/common/PostBox';
+import { PostBox } from '@/components/features/post/PostBox';
 import { useQueryUser } from '@/hooks/auth/useQueryUser';
 import Image from 'next/image';
 import Link from 'next/link';

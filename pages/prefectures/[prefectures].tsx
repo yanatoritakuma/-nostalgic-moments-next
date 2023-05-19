@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { css } from '@emotion/react';
 import { useQueryPrefecturesPost } from '@/hooks/post/useQueryPrefecturesPost';
-import { PostBox } from '@/components/common/PostBox';
+import { PostBox } from '@/components/features/post/PostBox';
 import { PaginationBox } from '@/components/common/PaginationBox';
 import { countPages } from '@/utils/countPages';
 import { useQueryUser } from '@/hooks/auth/useQueryUser';

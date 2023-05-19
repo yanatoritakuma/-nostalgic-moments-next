@@ -5,8 +5,8 @@ import MenuItem from '@mui/material/MenuItem';
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
-import { ModalPostEditBox } from '@/components/common/ModalPostEditBox';
-import { ModalPostDeleteBox } from '@/components/common/ModalPostDeleteBox';
+import { ModalPostEditBox } from '@/components/features/post/ModalPostEditBox';
+import { ModalPostDeleteBox } from '@/components/features/post/ModalPostDeleteBox';
 import { TPost } from '@/types/post';
 import { PostContext } from '@/provider/PostProvider';
 
