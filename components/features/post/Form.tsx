@@ -1,5 +1,5 @@
 import { css } from '@emotion/react';
-import React, { memo, useState, useEffect } from 'react';
+import { memo, useState, useEffect, useContext } from 'react';
 import Image from 'next/image';
 import { TextBox } from '@/components/elements/TextBox';
 import { SelectBox } from '@/components/elements/SelectBox';
@@ -10,13 +10,23 @@ import { imageRegistration } from '@/utils/imageRegistration';
 import { useMutatePost } from '@/hooks/post/useMutatePost';
 import { useQueryUser } from '@/hooks/auth/useQueryUser';
 import { postValidation } from '@/utils/validations/postValidation';
+import { PostContext } from '@/provider/PostProvider';
+import { deleteImgStorage } from '@/utils/deleteImgStorage';
 
-export const Form = memo(() => {
+type Props = {
+  type: 'new' | 'edit';
+  setOpen?: (value: React.SetStateAction<boolean>) => void;
+};
+
+export const Form = memo((props: Props) => {
+  const { type, setOpen } = props;
   const { onChangeImageHandler, photoUrl, setPhotoUrl } = useChangeImage();
   const { onClickRegistration } = imageRegistration();
-  const { postMutation } = useMutatePost();
+  const { postMutation, updatePostMutation } = useMutatePost();
   const { data: user } = useQueryUser();
   const { validation } = postValidation();
+  const { postGlobal } = useContext(PostContext);
+  const { deleteImg } = deleteImgStorage();
   const [postState, setPostState] = useState({
     title: '',
     text: '',
@@ -53,6 +63,32 @@ export const Form = memo(() => {
       address: postState.address,
     });
   };
+
+  const onClickUpdate = async (file: string | null) => {
+    await updatePostMutation.mutateAsync({
+      id: postGlobal.id,
+      title: postState.title,
+      text: postState.text,
+      image: file !== null ? file : postGlobal.image,
+      prefecture: postState.prefecture,
+      address: postState.address,
+    });
+    file !== null && deleteImg(postGlobal.image, 'postImages', postGlobal.userId);
+  };
+
+  useEffect(() => {
+    if (type === 'edit' && postGlobal.title !== undefined) {
+      setPostState({
+        ...postState,
+        title: postGlobal.title,
+        text: postGlobal.text,
+        prefecture: postGlobal.prefecture,
+        address: postGlobal.address,
+      });
+      setPreviewUrl(postGlobal.image);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [postGlobal]);
 
   return (
     <section css={formBox}>
@@ -120,7 +156,14 @@ export const Form = memo(() => {
       <ButtonBox
         onClick={() =>
           validation(postState) &&
-          (onClickRegistration(photoUrl, onClickRegister, setPhotoUrl, setPreviewUrl, user),
+          (onClickRegistration(
+            photoUrl,
+            type === 'new' ? onClickRegister : onClickUpdate,
+            setPhotoUrl,
+            setPreviewUrl,
+            user
+          ),
+          type === 'edit' && setOpen && setOpen(false),
           setPostState({
             title: '',
             text: '',
@@ -141,6 +184,7 @@ const formBox = css`
   margin: 0 auto;
   width: 100%;
   max-width: 500px;
+  text-align: center;
 `;
 
 const textBox = css`

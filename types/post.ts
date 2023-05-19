@@ -24,6 +24,7 @@ export type TPostPages = {
 };
 
 export type TReqPost = {
+  id?: number;
   title: string;
   text: string;
   image?: string | null;

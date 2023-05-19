@@ -10,7 +10,7 @@ const post = () => {
       {user?.id !== undefined ? (
         <>
           <h2>投稿</h2>
-          <Form />
+          <Form type="new" />
         </>
       ) : (
         <>

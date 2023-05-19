@@ -31,5 +31,26 @@ export const useMutatePost = () => {
     }
   );
 
-  return { postMutation };
+  const updatePostMutation = useMutation(
+    async (reqPost: TReqPost) =>
+      await axios.put(`${process.env.NEXT_PUBLIC_API_URL}/posts/${reqPost.id}`, reqPost),
+    {
+      onSuccess: () => {
+        setBackdropFlag(false);
+        setMessage({
+          text: '編集完了',
+          type: 'success',
+        });
+      },
+      onError: () => {
+        setBackdropFlag(false);
+        setMessage({
+          text: '編集失敗しました。',
+          type: 'error',
+        });
+      },
+    }
+  );
+
+  return { postMutation, updatePostMutation };
 };

@@ -58,7 +58,7 @@ export const PostBox = memo((props: Props) => {
 
   return (
     <>
-      {posts?.map((post) => {
+      {posts?.map((post, index) => {
         return (
           <div key={post.id} css={postBox}>
             <div css={postUserBox}>
@@ -74,7 +74,7 @@ export const PostBox = memo((props: Props) => {
               <span className="postUserBox__name">{post.postUserResponse.name}</span>
               {post.user_id === user?.id && (
                 <div className="postUserBox__editBox">
-                  <PostEditMenuBox />
+                  <PostEditMenuBox posts={posts} index={index} />
                 </div>
               )}
             </div>
