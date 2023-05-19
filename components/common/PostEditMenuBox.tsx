@@ -43,7 +43,13 @@ export const PostEditMenuBox = memo((props: Props) => {
     if (modalFlag.edit === false) {
       setSelectPost(-1);
     }
-  }, [modalFlag]);
+  }, [modalFlag.edit]);
+
+  useEffect(() => {
+    if (modalFlag.delete === false) {
+      setSelectPost(-1);
+    }
+  }, [modalFlag.delete]);
 
   const open = Boolean(anchorEl);
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -81,6 +87,7 @@ export const PostEditMenuBox = memo((props: Props) => {
               ...modalFlag,
               delete: true,
             });
+            setSelectPost(index);
           }}
         >
           <DeleteIcon />

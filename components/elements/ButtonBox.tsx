@@ -9,15 +9,20 @@ type Props = {
   upload?: boolean;
   onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
   variant?: 'text' | 'contained' | 'outlined';
+  disabled?: boolean;
 };
 
 export const ButtonBox = memo((props: Props) => {
-  const { children, onClick, upload, onChange, variant } = props;
+  const { children, onClick, upload, onChange, variant, disabled } = props;
 
   return (
     <>
       {!upload ? (
-        <Button onClick={onClick} variant={variant !== undefined ? variant : 'contained'}>
+        <Button
+          onClick={onClick}
+          variant={variant !== undefined ? variant : 'contained'}
+          disabled={disabled}
+        >
           {children}
         </Button>
       ) : (

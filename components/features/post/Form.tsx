@@ -74,8 +74,11 @@ export const Form = memo((props: Props) => {
         prefecture: postState.prefecture,
         address: postState.address,
       })
-      .then(() => setPostProcess(true));
-    file !== null && deleteImg(postGlobal.image, 'postImages', postGlobal.userId);
+      .then(() => setPostProcess(true))
+      .then(
+        () =>
+          postGlobal.image !== '' && deleteImg(postGlobal.image, 'postImages', postGlobal.userId)
+      );
   };
 
   useEffect(() => {
