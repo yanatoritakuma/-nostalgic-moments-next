@@ -4,19 +4,6 @@ import Box from '@mui/material/Box';
 import Modal from '@mui/material/Modal';
 import { Form } from '@/components/features/post/Form';
 
-const style = {
-  position: 'absolute',
-  top: '50%',
-  left: '50%',
-  transform: 'translate(-50%, -50%)',
-  width: '94%',
-  maxWidth: '500px',
-  bgcolor: 'background.paper',
-  border: '2px solid #000',
-  boxShadow: 24,
-  p: 4,
-};
-
 type Props = {
   open: boolean;
   setOpen: (value: React.SetStateAction<boolean>) => void;
@@ -27,7 +14,7 @@ export const ModalPostEditBox = memo((props: Props) => {
 
   return (
     <Modal open={open} onClose={() => setOpen(false)}>
-      <Box css={editBox} sx={style}>
+      <Box css={editBox}>
         <h3>編集</h3>
         <Form type="edit" setOpen={setOpen} />
       </Box>
@@ -38,15 +25,19 @@ export const ModalPostEditBox = memo((props: Props) => {
 ModalPostEditBox.displayName = 'ModalPostEditBox';
 
 const editBox = css`
+  padding: 20px;
   position: absolute;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  width: 94%;
+  width: 90%;
   max-width: 500px;
+  height: auto;
+  max-height: 90vh;
   background-color: #fff;
   border: 1px solid #333;
   border-radius: 10px;
+  overflow-y: scroll;
 
   h3 {
     text-align: center;

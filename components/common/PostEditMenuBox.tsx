@@ -39,6 +39,12 @@ export const PostEditMenuBox = memo((props: Props) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectPost]);
 
+  useEffect(() => {
+    if (modalFlag.edit === false) {
+      setSelectPost(-1);
+    }
+  }, [modalFlag]);
+
   const open = Boolean(anchorEl);
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget);

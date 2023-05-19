@@ -1,4 +1,4 @@
-import { memo, useContext } from 'react';
+import { memo, useContext, useEffect } from 'react';
 import { css } from '@emotion/react';
 import { TPost, TPostPages } from '@/types/post';
 import Image from 'next/image';
@@ -12,6 +12,7 @@ import { TError } from '@/types/error';
 import { TUser } from '@/types/user';
 import { MessageContext } from '@/provider/MessageProvider';
 import { PostEditMenuBox } from '@/components/common/PostEditMenuBox';
+import { PostContext } from '@/provider/PostProvider';
 
 type Props = {
   posts?: TPost[];
@@ -28,6 +29,7 @@ export const PostBox = memo((props: Props) => {
   const { posts, prefecturesRefetch, userPostsRefetch, user } = props;
   const { likeMutation, likeDeleteMutation } = useMutateLike();
   const { message, setMessage } = useContext(MessageContext);
+  const { postProcess, setPostProcess } = useContext(PostContext);
 
   const onClickLike = async (postId: number) => {
     const req = {
@@ -55,6 +57,14 @@ export const PostBox = memo((props: Props) => {
       await likeDeleteMutation.mutateAsync(likeId).then(() => userPostsRefetch());
     }
   };
+
+  useEffect(() => {
+    if (prefecturesRefetch && postProcess) {
+      prefecturesRefetch();
+      setPostProcess(false);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [postProcess]);
 
   return (
     <>

@@ -25,7 +25,7 @@ export const Form = memo((props: Props) => {
   const { postMutation, updatePostMutation } = useMutatePost();
   const { data: user } = useQueryUser();
   const { validation } = postValidation();
-  const { postGlobal } = useContext(PostContext);
+  const { postGlobal, setPostProcess } = useContext(PostContext);
   const { deleteImg } = deleteImgStorage();
   const [postState, setPostState] = useState({
     title: '',
@@ -65,14 +65,16 @@ export const Form = memo((props: Props) => {
   };
 
   const onClickUpdate = async (file: string | null) => {
-    await updatePostMutation.mutateAsync({
-      id: postGlobal.id,
-      title: postState.title,
-      text: postState.text,
-      image: file !== null ? file : postGlobal.image,
-      prefecture: postState.prefecture,
-      address: postState.address,
-    });
+    await updatePostMutation
+      .mutateAsync({
+        id: postGlobal.id,
+        title: postState.title,
+        text: postState.text,
+        image: file !== null ? file : postGlobal.image,
+        prefecture: postState.prefecture,
+        address: postState.address,
+      })
+      .then(() => setPostProcess(true));
     file !== null && deleteImg(postGlobal.image, 'postImages', postGlobal.userId);
   };
 
@@ -198,8 +200,8 @@ const previewBox = css`
   position: relative;
 
   @media (max-width: 425px) {
-    width: 280px;
-    height: 264px;
+    width: 100%;
+    height: 260px;
   }
 
   img {

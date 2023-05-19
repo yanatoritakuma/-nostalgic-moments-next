@@ -22,6 +22,9 @@ type TPostGlobal = {
       address: string;
     }>
   >;
+
+  postProcess: boolean;
+  setPostProcess: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
 export const PostContext = createContext<TPostGlobal>({
@@ -36,6 +39,10 @@ export const PostContext = createContext<TPostGlobal>({
   },
   // eslint-disable-next-line @typescript-eslint/no-empty-function
   setPostGlobal: () => {},
+
+  postProcess: false,
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
+  setPostProcess: () => {},
 });
 
 type Props = {
@@ -54,7 +61,11 @@ export const PostProvider = (props: Props) => {
     address: '',
   });
 
+  const [postProcess, setPostProcess] = useState(false);
+
   return (
-    <PostContext.Provider value={{ postGlobal, setPostGlobal }}>{children}</PostContext.Provider>
+    <PostContext.Provider value={{ postGlobal, setPostGlobal, postProcess, setPostProcess }}>
+      {children}
+    </PostContext.Provider>
   );
 };
