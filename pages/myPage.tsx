@@ -44,7 +44,7 @@ const myPage = () => {
           <h2>マイページ</h2>
           <div css={userBox}>
             <div css={userImgBox}>
-              <Image src={user.image} fill alt="ユーザー画像" />
+              <Image src={user.image} fill sizes="(max-width: 70px)" alt="ユーザー画像" />
             </div>
             {user.name}
           </div>
