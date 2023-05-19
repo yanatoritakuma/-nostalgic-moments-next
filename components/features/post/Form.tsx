@@ -129,7 +129,7 @@ export const Form = memo((props: Props) => {
 
       {previewUrl !== '' && (
         <div css={previewBox}>
-          <Image src={previewUrl} fill alt="プレビュー" />
+          <Image src={previewUrl} fill sizes="100%" alt="プレビュー" />
         </div>
       )}
       <div css={textBox}>
