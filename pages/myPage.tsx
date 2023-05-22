@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { css } from '@emotion/react';
 import { useQueryUserPost } from '@/hooks/post/useQueryUserPost';
 import { PostBox } from '@/components/features/post/PostBox';
-import { useQueryUser } from '@/hooks/auth/useQueryUser';
+import { useQueryUser } from '@/hooks/user/useQueryUser';
 import Image from 'next/image';
 import Link from 'next/link';
 import { PaginationBox } from '@/components/common/PaginationBox';
@@ -10,6 +10,7 @@ import { countPages } from '@/utils/countPages';
 import { TabsBox } from '@/components/elements/TabsBox';
 import CreateIcon from '@mui/icons-material/Create';
 import FavoriteIcon from '@mui/icons-material/Favorite';
+import { UserEditMenuBox } from '@/components/features/user/UserEditMenuBox';
 
 const myPage = () => {
   const [currentPage, setCurrentPage] = useState(1);
@@ -47,6 +48,9 @@ const myPage = () => {
               <Image src={user.image} fill sizes="(max-width: 70px)" alt="ユーザー画像" />
             </div>
             {user.name}
+            <div className="userBox__editBox">
+              <UserEditMenuBox />
+            </div>
           </div>
           <span className="myPageBox__created">{StartDateUse(user.created_at)}</span>
           <div css={countBox}>
@@ -130,9 +134,16 @@ const topBox = css`
 const userBox = css`
   display: flex;
   align-items: center;
+  position: relative;
 
   .postUserBox__name {
     font-size: 18px;
+  }
+
+  .userBox__editBox {
+    position: absolute;
+    top: 0;
+    right: 0;
   }
 `;
 

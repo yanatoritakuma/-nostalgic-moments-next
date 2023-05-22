@@ -4,7 +4,7 @@ import React, { memo, useState } from 'react';
 import IconButton from '@mui/material/IconButton';
 import MenuIcon from '@mui/icons-material/Menu';
 import CloseIcon from '@mui/icons-material/Close';
-import { useQueryUser } from '@/hooks/auth/useQueryUser';
+import { useQueryUser } from '@/hooks/user/useQueryUser';
 import { ButtonBox } from '@/components/elements/ButtonBox';
 import { useRouter } from 'next/router';
 import HamburgerMenu from '@/components/features/hamburgerMenu/HamburgerMenu.tsx';

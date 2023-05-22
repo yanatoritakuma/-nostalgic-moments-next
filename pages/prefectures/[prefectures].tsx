@@ -4,7 +4,7 @@ import { useQueryPrefecturesPost } from '@/hooks/post/useQueryPrefecturesPost';
 import { PostBox } from '@/components/features/post/PostBox';
 import { PaginationBox } from '@/components/common/PaginationBox';
 import { countPages } from '@/utils/countPages';
-import { useQueryUser } from '@/hooks/auth/useQueryUser';
+import { useQueryUser } from '@/hooks/user/useQueryUser';
 
 export async function getStaticPaths() {
   return {

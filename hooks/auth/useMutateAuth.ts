@@ -3,7 +3,7 @@ import axios from 'axios';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useRouter } from 'next/router';
 import { TLogin, TRegister } from '@/types/auth';
-import { useQueryUser } from '@/hooks/auth/useQueryUser';
+import { useQueryUser } from '@/hooks/user/useQueryUser';
 import { MessageContext } from '@/provider/MessageProvider';
 import { useContext } from 'react';
 import { BackdropContext } from '@/provider/BackdropProvider';
