@@ -11,7 +11,7 @@ import { QueryObserverResult, RefetchOptions, RefetchQueryFilters } from '@tanst
 import { TError } from '@/types/error';
 import { TUser } from '@/types/user';
 import { MessageContext } from '@/provider/MessageProvider';
-import { PostEditMenuBox } from '@/components/common/PostEditMenuBox';
+import { PostEditMenuBox } from '@/components/features/post/PostEditMenuBox';
 import { PostContext } from '@/provider/PostProvider';
 import { prefectures } from '@/const/prefecture';
 
@@ -83,11 +83,16 @@ export const PostBox = memo((props: Props) => {
             <div css={postUserBox}>
               {post.postUserResponse.image !== '' ? (
                 <div css={userImgBox}>
-                  <Image src={post.postUserResponse.image} fill alt="ユーザー画像" />
+                  <Image
+                    src={post.postUserResponse.image}
+                    fill
+                    sizes="(max-width: 70px)"
+                    alt="ユーザー画像"
+                  />
                 </div>
               ) : (
                 <div css={userImgBox}>
-                  <Image src={NoimageUser} fill alt="ユーザー画像" />
+                  <Image src={NoimageUser} fill sizes="(max-width: 70px)" alt="ユーザー画像" />
                 </div>
               )}
               <span className="postUserBox__name">{post.postUserResponse.name}</span>
@@ -107,11 +112,11 @@ export const PostBox = memo((props: Props) => {
             </div>
             {post.image !== '' ? (
               <div css={postImgBox}>
-                <Image src={post.image} fill alt="投稿画像" />
+                <Image src={post.image} fill priority sizes="100%" alt="投稿画像" />
               </div>
             ) : (
               <div css={postImgBox}>
-                <Image src={Noimage} fill alt="投稿画像" />
+                <Image src={Noimage} fill sizes="100%" alt="投稿画像" />
               </div>
             )}
 

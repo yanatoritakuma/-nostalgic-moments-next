@@ -42,7 +42,7 @@ const auth = () => {
     };
   }, [photoUrl]);
 
-  const onClikcAuth = async (file: string | null) => {
+  const createAccount = async (file: string | null) => {
     await registerMutation
       .mutateAsync({
         email: authStatte.email,
@@ -56,6 +56,17 @@ const auth = () => {
           password: authStatte.password,
         })
       );
+  };
+
+  const onClikcAuth = () => {
+    if (isLogin) {
+      loginMutation.mutate({
+        email: authStatte.email,
+        password: authStatte.password,
+      });
+    } else {
+      onClickRegistration(photoUrl, createAccount, setPhotoUrl, setPreviewUrl);
+    }
   };
 
   return (
@@ -110,16 +121,7 @@ const auth = () => {
             <Image src={previewUrl} fill alt="プレビュー" />
           </div>
         )}
-        <ButtonBox
-          onClick={() =>
-            validation(authStatte, isLogin) && isLogin
-              ? loginMutation.mutate({
-                  email: authStatte.email,
-                  password: authStatte.password,
-                })
-              : onClickRegistration(photoUrl, onClikcAuth, setPhotoUrl, setPreviewUrl)
-          }
-        >
+        <ButtonBox onClick={() => validation(authStatte, isLogin) && onClikcAuth()}>
           {isLogin ? 'ログイン' : 'アカウント作成'}
         </ButtonBox>
 

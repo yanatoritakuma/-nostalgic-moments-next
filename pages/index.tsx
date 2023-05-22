@@ -9,7 +9,7 @@ export default function Home() {
       <section css={topImgBox}>
         <div className="filter"></div>
         <h1>NostalgicMoments</h1>
-        <Image src={TopImg} fill alt="TOP画像" />
+        <Image src={TopImg} fill priority alt="TOP画像" />
       </section>
       <Prefectures />
     </main>

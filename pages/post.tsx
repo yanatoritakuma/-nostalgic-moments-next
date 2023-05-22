@@ -1,6 +1,6 @@
 import { css } from '@emotion/react';
 import { Form } from '@/components/features/post/Form';
-import { useQueryUser } from '@/hooks/auth/useQueryUser';
+import { useQueryUser } from '@/hooks/user/useQueryUser';
 import Link from 'next/link';
 
 const post = () => {

@@ -8,7 +8,7 @@ import { ButtonBox } from '@/components/elements/ButtonBox';
 import useChangeImage from '@/hooks/useChangeImage';
 import { imageRegistration } from '@/utils/imageRegistration';
 import { useMutatePost } from '@/hooks/post/useMutatePost';
-import { useQueryUser } from '@/hooks/auth/useQueryUser';
+import { useQueryUser } from '@/hooks/user/useQueryUser';
 import { postValidation } from '@/utils/validations/postValidation';
 import { PostContext } from '@/provider/PostProvider';
 import { deleteImgStorage } from '@/utils/deleteImgStorage';
@@ -129,7 +129,7 @@ export const Form = memo((props: Props) => {
 
       {previewUrl !== '' && (
         <div css={previewBox}>
-          <Image src={previewUrl} fill alt="プレビュー" />
+          <Image src={previewUrl} fill sizes="100%" alt="プレビュー" />
         </div>
       )}
       <div css={textBox}>
