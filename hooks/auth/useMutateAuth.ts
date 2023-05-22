@@ -65,9 +65,9 @@ export const useMutateAuth = () => {
           text: 'ログアウトしました。',
           type: 'success',
         });
-        setTimeout(() => {
-          router.reload();
-        }, 500);
+        // setTimeout(() => {
+        //   router.reload();
+        // }, 500);
       },
       onError: () => {
         setMessage({

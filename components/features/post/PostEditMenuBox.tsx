@@ -6,7 +6,7 @@ import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { ModalPostEditBox } from '@/components/features/post/ModalPostEditBox';
-import { ModalPostDeleteBox } from '@/components/features/post/ModalPostDeleteBox';
+import { ModalUserPostDeleteBox } from '@/components/features/post/ModalUserPostDeleteBox';
 import { TPost } from '@/types/post';
 import { PostContext } from '@/provider/PostProvider';
 
@@ -103,7 +103,7 @@ export const PostEditMenuBox = memo((props: Props) => {
           })
         }
       />
-      <ModalPostDeleteBox
+      <ModalUserPostDeleteBox
         open={modalFlag.delete}
         setOpen={() =>
           setModalFlag({
@@ -111,6 +111,7 @@ export const PostEditMenuBox = memo((props: Props) => {
             delete: false,
           })
         }
+        type="post"
       />
     </div>
   );

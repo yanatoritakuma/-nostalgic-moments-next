@@ -7,28 +7,41 @@ import { ButtonBox } from '@/components/elements/ButtonBox';
 import { PostContext } from '@/provider/PostProvider';
 import { useMutatePost } from '@/hooks/post/useMutatePost';
 import { deleteImgStorage } from '@/utils/deleteImgStorage';
+import { useMutateUser } from '@/hooks/user/useMutateUser';
+import { useQueryUser } from '@/hooks/user/useQueryUser';
 
 type Props = {
   open: boolean;
   setOpen: (value: React.SetStateAction<boolean>) => void;
+  type: 'user' | 'post';
 };
 
-export const ModalPostDeleteBox = memo((props: Props) => {
-  const { open, setOpen } = props;
+export const ModalUserPostDeleteBox = memo((props: Props) => {
+  const { open, setOpen, type } = props;
   const { postGlobal, setPostProcess } = useContext(PostContext);
   const { deletePostMutation } = useMutatePost();
-  const { deleteImg } = deleteImgStorage();
+  const { deleteUserMutation } = useMutateUser();
+  const { data: user } = useQueryUser();
+  const { deleteImg, deleteAllUserPostsImg } = deleteImgStorage();
   const [confirmFlag, setConfirmFlag] = useState(false);
 
   const onClickDelete = async () => {
     setOpen(false);
-    await deletePostMutation
-      .mutateAsync(postGlobal.id)
-      .then(() => setPostProcess(true))
-      .then(
-        () =>
-          postGlobal.image !== '' && deleteImg(postGlobal.image, 'postImages', postGlobal.userId)
-      );
+    if (type === 'user') {
+      user?.id &&
+        (await deleteUserMutation
+          .mutateAsync(user.id)
+          .then(() => deleteAllUserPostsImg(user.id))
+          .then(() => deleteImg(user.image, 'userImages', user.id)));
+    } else {
+      await deletePostMutation
+        .mutateAsync(postGlobal.id)
+        .then(() => setPostProcess(true))
+        .then(
+          () =>
+            postGlobal.image !== '' && deleteImg(postGlobal.image, 'postImages', postGlobal.userId)
+        );
+    }
   };
 
   return (
@@ -37,9 +50,19 @@ export const ModalPostDeleteBox = memo((props: Props) => {
         <Box css={deleteBox}>
           <h3>削除</h3>
           <p>
-            この投稿を削除しますか？
-            <br />
-            この操作は元に戻せません。
+            {type === 'user' ? (
+              <>
+                アカウントを削除しますか？
+                <br />
+                この操作は元に戻せません。
+              </>
+            ) : (
+              <>
+                この投稿を削除しますか？
+                <br />
+                この操作は元に戻せません。
+              </>
+            )}
           </p>
           <div css={checkBox}>
             <CheckBox
@@ -57,7 +80,7 @@ export const ModalPostDeleteBox = memo((props: Props) => {
   );
 });
 
-ModalPostDeleteBox.displayName = 'ModalPostDeleteBox';
+ModalUserPostDeleteBox.displayName = 'ModalUserPostDeleteBox';
 
 const deleteBox = css`
   padding: 20px;

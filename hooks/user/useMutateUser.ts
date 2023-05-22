@@ -5,8 +5,10 @@ import { MessageContext } from '@/provider/MessageProvider';
 import { useContext } from 'react';
 import { BackdropContext } from '@/provider/BackdropProvider';
 import { TReqUser, TUser } from '@/types/user';
+import { useRouter } from 'next/router';
 
 export const useMutateUser = () => {
+  const router = useRouter();
   const queryClient = useQueryClient();
   const { message, setMessage } = useContext(MessageContext);
   const { setBackdropFlag } = useContext(BackdropContext);
@@ -37,5 +39,27 @@ export const useMutateUser = () => {
     }
   );
 
-  return { updateUserMutation };
+  const deleteUserMutation = useMutation(
+    async (id: number) => await axios.delete(`${process.env.NEXT_PUBLIC_API_URL}/user/${id}`),
+    {
+      onSuccess: () => {
+        queryClient.clear();
+        router.push('/');
+        setBackdropFlag(false);
+        setMessage({
+          text: 'アカウント削除完了',
+          type: 'success',
+        });
+      },
+      onError: () => {
+        setBackdropFlag(false);
+        setMessage({
+          text: 'アカウント削除失敗しました。',
+          type: 'error',
+        });
+      },
+    }
+  );
+
+  return { updateUserMutation, deleteUserMutation };
 };
