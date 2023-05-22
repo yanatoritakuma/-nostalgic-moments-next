@@ -30,7 +30,7 @@ export const UserEditMenuBox = memo(() => {
           <MoreHorizIcon style={{ fontSize: 34, color: '#333' }} />
         </span>
       </Button>
-      <Menu id="basic-menu" anchorEl={anchorEl} open={open} onClose={handleClose}>
+      <Menu anchorEl={anchorEl} open={open} onClose={handleClose}>
         <MenuItem
           onClick={() => {
             setAnchorEl(null);

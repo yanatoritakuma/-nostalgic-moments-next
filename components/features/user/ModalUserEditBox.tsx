@@ -9,6 +9,7 @@ import { ButtonBox } from '@/components/elements/ButtonBox';
 import { useMutateUser } from '@/hooks/user/useMutateUser';
 import { imageRegistration } from '@/utils/imageRegistration';
 import { deleteImgStorage } from '@/utils/deleteImgStorage';
+import { userValidation } from '@/utils/validations/userValidation';
 
 type Props = {
   open: boolean;
@@ -22,6 +23,7 @@ export const ModalUserEditBox = memo((props: Props) => {
   const { updateUserMutation } = useMutateUser();
   const { onClickRegistration } = imageRegistration();
   const { deleteImg } = deleteImgStorage();
+  const { upDateValidation } = userValidation();
 
   const [authStatte, setAuthStatte] = useState({
     email: '',
@@ -40,7 +42,7 @@ export const ModalUserEditBox = memo((props: Props) => {
       setPreviewUrl(user.image);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [user]);
+  }, [user, open]);
 
   useEffect(() => {
     if (!photoUrl) {
@@ -61,7 +63,7 @@ export const ModalUserEditBox = memo((props: Props) => {
     };
   }, [photoUrl]);
 
-  const onClickUpDate = (file: string | null) => {
+  const upDate = (file: string | null) => {
     if (user) {
       updateUserMutation
         .mutateAsync({
@@ -85,8 +87,10 @@ export const ModalUserEditBox = memo((props: Props) => {
         />
         <ButtonBox
           onClick={() => {
-            onClickRegistration(photoUrl, onClickUpDate, setPhotoUrl, setPreviewUrl);
-            setOpen(false);
+            if (upDateValidation(authStatte)) {
+              onClickRegistration(photoUrl, upDate, setPhotoUrl, setPreviewUrl);
+              setOpen(false);
+            }
           }}
         >
           更新
