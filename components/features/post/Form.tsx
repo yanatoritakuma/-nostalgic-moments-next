@@ -75,10 +75,7 @@ export const Form = memo((props: Props) => {
         address: postState.address,
       })
       .then(() => setPostProcess(true))
-      .then(
-        () =>
-          postGlobal.image !== '' && deleteImg(postGlobal.image, 'postImages', postGlobal.userId)
-      );
+      .then(() => file !== null && deleteImg(postGlobal.image, 'postImages', postGlobal.userId));
   };
 
   useEffect(() => {
@@ -160,7 +157,7 @@ export const Form = memo((props: Props) => {
       </div>
       <ButtonBox
         onClick={() =>
-          validation(postState) &&
+          validation(postState, photoUrl) &&
           (onClickRegistration(
             photoUrl,
             type === 'new' ? onClickRegister : onClickUpdate,
