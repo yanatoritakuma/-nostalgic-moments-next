@@ -157,7 +157,7 @@ export const Form = memo((props: Props) => {
       </div>
       <ButtonBox
         onClick={() =>
-          validation(postState) &&
+          validation(postState, photoUrl) &&
           (onClickRegistration(
             photoUrl,
             type === 'new' ? onClickRegister : onClickUpdate,

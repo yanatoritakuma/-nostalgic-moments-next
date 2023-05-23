@@ -27,7 +27,7 @@ const Header = memo(() => {
       <header css={headerBox}>
         <div css={headerInBox}>
           <div className="headerInBox__logo">
-            <Image src={HeaderIcon} fill sizes="100%" alt="ロゴ" />
+            <Image src={HeaderIcon} fill priority sizes="100%" alt="ロゴ" />
           </div>
           {user !== undefined ? (
             <IconButton onClick={() => setHambBtn(!hambBtn)}>
