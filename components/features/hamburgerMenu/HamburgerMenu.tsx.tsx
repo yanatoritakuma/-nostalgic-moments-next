@@ -1,7 +1,9 @@
 import { useMutateAuth } from '@/hooks/auth/useMutateAuth';
 import { css } from '@emotion/react';
 import Link from 'next/link';
-import React, { memo } from 'react';
+import { memo, useEffect } from 'react';
+import Box from '@mui/material/Box';
+import Drawer from '@mui/material/Drawer';
 
 type Props = {
   hambBtn: boolean;
@@ -11,8 +13,16 @@ type Props = {
 const HamburgerMenu = memo((props: Props) => {
   const { hambBtn, setHambBtn } = props;
   const { logoutMutation } = useMutateAuth();
-  return (
-    <div css={menuBox(hambBtn)}>
+
+  useEffect(() => {
+    if (hambBtn) {
+      setHambBtn(true);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [hambBtn]);
+
+  const list = () => (
+    <Box css={menuBox} role="presentation" onClick={() => setHambBtn(false)}>
       <Link href="/" onClick={() => setHambBtn(false)}>
         HOME
       </Link>
@@ -33,7 +43,13 @@ const HamburgerMenu = memo((props: Props) => {
       <Link href="/" onClick={() => setHambBtn(false)}>
         退会
       </Link>
-    </div>
+    </Box>
+  );
+
+  return (
+    <Drawer anchor="right" open={hambBtn} onClose={() => setHambBtn(false)}>
+      {list()}
+    </Drawer>
   );
 });
 
@@ -41,26 +57,20 @@ export default HamburgerMenu;
 
 HamburgerMenu.displayName = 'HamburgerMenu';
 
-const menuBox = (hambBtn: boolean) => css`
+const menuBox = css`
   padding: 20px;
-  background: #302833;
-  border-radius: 0 0 0 10px;
-  position: fixed;
-  width: 90%;
-  height: 80vh;
-  max-width: 600px;
+  width: 400px;
 
-  right: ${hambBtn ? '0px' : '-800px'};
-  transition: 0.3s;
+  @media (max-width: 425px) {
+    width: 240px;
+  }
 
-  a,
-  span {
-    margin-bottom: 20px;
-    padding-bottom: 8px;
+  a {
+    margin: 20px 0;
     display: block;
+    width: fit-content;
     text-decoration: none;
-    color: #fff;
-    border-bottom: 1px solid #fff;
     cursor: pointer;
+    color: #333;
   }
 `;
