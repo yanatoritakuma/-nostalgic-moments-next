@@ -14,6 +14,7 @@ import { PostContext } from '@/provider/PostProvider';
 import { deleteImgStorage } from '@/utils/deleteImgStorage';
 import { MessageContext } from '@/provider/MessageProvider';
 import { useMutateTag } from '@/hooks/tag/useMutateTag';
+import { ChipBox } from '@/components/elements/ChipBox';
 
 type Props = {
   type: 'new' | 'edit';
@@ -129,6 +130,11 @@ export const Form = memo((props: Props) => {
     }
   };
 
+  const onClickTagDelete = (ind: number) => {
+    const newTagArray = tagArray.filter((_, index) => index !== ind);
+    setTagArray(newTagArray);
+  };
+
   return (
     <section css={formBox}>
       <div css={textBox}>
@@ -204,7 +210,9 @@ export const Form = memo((props: Props) => {
 
       <div css={tagArrayBox}>
         {tagArray.map((tag, index) => (
-          <span key={index}>#{tag}</span>
+          <div className="tagArrayBox__chipBox" key={index}>
+            <ChipBox label={`#${tag}`} onClick={() => onClickTagDelete(index)} />
+          </div>
         ))}
       </div>
 
@@ -258,7 +266,7 @@ const tagArrayBox = css`
   align-items: center;
   text-align: start;
 
-  span {
+  .tagArrayBox__chipBox {
     margin: 0 18px 12px 0;
     font-size: 16px;
   }
