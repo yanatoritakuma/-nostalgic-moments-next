@@ -5,7 +5,7 @@ import { useContext } from 'react';
 export const postValidation = () => {
   const { message, setMessage } = useContext(MessageContext);
 
-  const validation = (post: TReqPost, photoUrl: File | null) => {
+  const postValid = (post: TReqPost, photoUrl: File | null) => {
     const containsJapanese = (fileName: string) => {
       const japaneseRegex =
         /[一-龠々〆ヵヶぁ-ゔゞァ-・ヽヾ゛゜ー「」｢｣()〔〕［］｛｝〈〉《》【】〖〗〘〙〚〛〜～]/;
@@ -48,6 +48,12 @@ export const postValidation = () => {
         text: '住所は必須です。',
         type: 'error',
       });
+    } else if (post.address.length > 50) {
+      return setMessage({
+        ...message,
+        text: '住所は50文字以下で入力してください。',
+        type: 'error',
+      });
     } else if (photoUrl && containsJapanese(photoUrl.name)) {
       return setMessage({
         ...message,
@@ -59,5 +65,5 @@ export const postValidation = () => {
     }
   };
 
-  return { validation };
+  return { postValid };
 };

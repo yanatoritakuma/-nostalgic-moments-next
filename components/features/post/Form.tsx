@@ -12,7 +12,6 @@ import { useQueryUser } from '@/hooks/user/useQueryUser';
 import { postValidation } from '@/utils/validations/postValidation';
 import { PostContext } from '@/provider/PostProvider';
 import { deleteImgStorage } from '@/utils/deleteImgStorage';
-import { MessageContext } from '@/provider/MessageProvider';
 import { useMutateTag } from '@/hooks/tag/useMutateTag';
 import { ChipBox } from '@/components/elements/ChipBox';
 import { tagValidation } from '@/utils/validations/tagValidation';
@@ -29,10 +28,9 @@ export const Form = memo((props: Props) => {
   const { postMutation, updatePostMutation } = useMutatePost();
   const { tagMutation } = useMutateTag();
   const { data: user } = useQueryUser();
-  const { validation } = postValidation();
+  const { postValid } = postValidation();
   const { tagVali } = tagValidation();
   const { postGlobal, setPostProcess } = useContext(PostContext);
-  const { setMessage } = useContext(MessageContext);
   const { deleteImg } = deleteImgStorage();
   const [postState, setPostState] = useState({
     title: '',
@@ -214,7 +212,7 @@ export const Form = memo((props: Props) => {
 
       <ButtonBox
         onClick={() =>
-          validation(postState, photoUrl) &&
+          postValid(postState, photoUrl) &&
           (onClickRegistration(
             photoUrl,
             type === 'new' ? onClickRegister : onClickUpdate,
