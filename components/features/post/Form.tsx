@@ -12,6 +12,8 @@ import { useQueryUser } from '@/hooks/user/useQueryUser';
 import { postValidation } from '@/utils/validations/postValidation';
 import { PostContext } from '@/provider/PostProvider';
 import { deleteImgStorage } from '@/utils/deleteImgStorage';
+import { MessageContext } from '@/provider/MessageProvider';
+import { useMutateTag } from '@/hooks/tag/useMutateTag';
 
 type Props = {
   type: 'new' | 'edit';
@@ -23,9 +25,11 @@ export const Form = memo((props: Props) => {
   const { onChangeImageHandler, photoUrl, setPhotoUrl } = useChangeImage();
   const { onClickRegistration } = imageRegistration();
   const { postMutation, updatePostMutation } = useMutatePost();
+  const { tagMutation } = useMutateTag();
   const { data: user } = useQueryUser();
   const { validation } = postValidation();
   const { postGlobal, setPostProcess } = useContext(PostContext);
+  const { setMessage } = useContext(MessageContext);
   const { deleteImg } = deleteImgStorage();
   const [postState, setPostState] = useState({
     title: '',
@@ -33,6 +37,8 @@ export const Form = memo((props: Props) => {
     prefecture: '',
     address: '',
   });
+  const [tagState, setTagState] = useState('');
+  const [tagArray, setTagArray] = useState<string[]>([]);
   const [previewUrl, setPreviewUrl] = useState('');
 
   useEffect(() => {
@@ -55,13 +61,32 @@ export const Form = memo((props: Props) => {
   }, [photoUrl]);
 
   const onClickRegister = async (file: string | null) => {
-    await postMutation.mutateAsync({
-      title: postState.title,
-      text: postState.text,
-      image: file,
-      prefecture: postState.prefecture,
-      address: postState.address,
-    });
+    try {
+      const res = await postMutation.mutateAsync({
+        title: postState.title,
+        text: postState.text,
+        image: file,
+        prefecture: postState.prefecture,
+        address: postState.address,
+      });
+
+      if (tagArray.length !== 0) {
+        await tagMutation.mutateAsync(
+          tagArray.map((tag) => {
+            return { name: tag, post_id: res.data.id };
+          })
+        );
+      }
+      setPostState({
+        title: '',
+        text: '',
+        prefecture: '',
+        address: '',
+      });
+      setTagArray([]);
+    } catch (err) {
+      console.error('err:', err);
+    }
   };
 
   const onClickUpdate = async (file: string | null) => {
@@ -91,6 +116,18 @@ export const Form = memo((props: Props) => {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [postGlobal]);
+
+  const onClickTagAdd = () => {
+    if (tagArray.length >= 10) {
+      setMessage({
+        text: 'タグは最大で10個までしか登録できません。',
+        type: 'error',
+      });
+    } else {
+      setTagArray([...tagArray, tagState]);
+      setTagState('');
+    }
+  };
 
   return (
     <section css={formBox}>
@@ -155,6 +192,22 @@ export const Form = memo((props: Props) => {
           fullWidth
         />
       </div>
+      <div css={tagBox}>
+        <TextBox
+          label="タグ"
+          value={tagState}
+          onChange={(e) => setTagState(e.target.value)}
+          fullWidth
+        />
+        <ButtonBox onClick={() => onClickTagAdd()}>追加</ButtonBox>
+      </div>
+
+      <div css={tagArrayBox}>
+        {tagArray.map((tag, index) => (
+          <span key={index}>#{tag}</span>
+        ))}
+      </div>
+
       <ButtonBox
         onClick={() =>
           validation(postState, photoUrl) &&
@@ -165,13 +218,7 @@ export const Form = memo((props: Props) => {
             setPreviewUrl,
             user
           ),
-          type === 'edit' && setOpen && setOpen(false),
-          setPostState({
-            title: '',
-            text: '',
-            prefecture: '',
-            address: '',
-          }))
+          type === 'edit' && setOpen && setOpen(false))
         }
       >
         登録
@@ -191,6 +238,30 @@ const formBox = css`
 
 const textBox = css`
   margin: 20px 0;
+`;
+
+const tagBox = css`
+  margin: 20px 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  button {
+    margin-left: 20px;
+  }
+`;
+
+const tagArrayBox = css`
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: left;
+  align-items: center;
+  text-align: start;
+
+  span {
+    margin: 0 18px 12px 0;
+    font-size: 16px;
+  }
 `;
 
 const previewBox = css`
