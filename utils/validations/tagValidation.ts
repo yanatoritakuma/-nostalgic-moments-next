@@ -19,7 +19,12 @@ export const tagValidation = () => {
       });
     } else if (tagArray.length >= 10) {
       return setMessage({
-        text: 'タグは最大で10個までしか登録できません。',
+        text: 'タグは最大で10個までしか追加できません。',
+        type: 'error',
+      });
+    } else if (tagArray.includes(tag)) {
+      return setMessage({
+        text: '同じ名前のタグは追加できません。',
         type: 'error',
       });
     } else {

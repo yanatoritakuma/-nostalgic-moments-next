@@ -90,18 +90,38 @@ export const Form = memo((props: Props) => {
     }
   };
 
+  const postGlobalTagNames = postGlobal.tags?.map((tag) => {
+    return tag.name;
+  });
+
+  const updateTargetTags = tagArray.filter((element) => !postGlobalTagNames.includes(element));
+
   const onClickUpdate = async (file: string | null) => {
-    await updatePostMutation
-      .mutateAsync({
+    try {
+      await updatePostMutation.mutateAsync({
         id: postGlobal.id,
         title: postState.title,
         text: postState.text,
         image: file !== null ? file : postGlobal.image,
         prefecture: postState.prefecture,
         address: postState.address,
-      })
-      .then(() => setPostProcess(true))
-      .then(() => file !== null && deleteImg(postGlobal.image, 'postImages', postGlobal.userId));
+      });
+      setPostProcess(true);
+      if (file !== null) {
+        deleteImg(postGlobal.image, 'postImages', postGlobal.userId);
+      }
+      // 更新 タグが追加されている場合
+      if (updateTargetTags.length !== 0) {
+        await tagMutation.mutateAsync(
+          updateTargetTags.map((tag) => {
+            return { name: tag, post_id: postGlobal.id };
+          })
+        );
+      }
+      // 更新 タグが削除されている場合 todo:未実装
+    } catch (err) {
+      console.error('err:', err);
+    }
   };
 
   useEffect(() => {
@@ -114,6 +134,10 @@ export const Form = memo((props: Props) => {
         address: postGlobal.address,
       });
       setPreviewUrl(postGlobal.image);
+      const tagNames = postGlobal.tags.map((tag) => {
+        return tag.name;
+      });
+      setTagArray(tagNames);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [postGlobal]);

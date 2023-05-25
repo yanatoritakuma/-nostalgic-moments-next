@@ -1,3 +1,4 @@
+import { TTagRes } from '@/types/tag';
 import React, { createContext, useState } from 'react';
 
 type TPostGlobal = {
@@ -9,6 +10,7 @@ type TPostGlobal = {
     image: string;
     prefecture: string;
     address: string;
+    tags: TTagRes[];
   };
 
   setPostGlobal: React.Dispatch<
@@ -20,6 +22,7 @@ type TPostGlobal = {
       image: string;
       prefecture: string;
       address: string;
+      tags: TTagRes[];
     }>
   >;
 
@@ -36,6 +39,7 @@ export const PostContext = createContext<TPostGlobal>({
     image: '',
     prefecture: '',
     address: '',
+    tags: [{ id: 0, name: '' }],
   },
   // eslint-disable-next-line @typescript-eslint/no-empty-function
   setPostGlobal: () => {},
@@ -59,6 +63,7 @@ export const PostProvider = (props: Props) => {
     image: '',
     prefecture: '',
     address: '',
+    tags: [{ id: 0, name: '' }],
   });
 
   const [postProcess, setPostProcess] = useState(false);
