@@ -1,3 +1,5 @@
+import { TTagRes } from '@/types/tag';
+
 export type TPost = {
   address: string;
   created_at: string;
@@ -14,6 +16,7 @@ export type TPost = {
   user_id: number;
   like_count: number;
   like_id: number;
+  tagResponse: TTagRes[];
 };
 
 export type TPostPages = {

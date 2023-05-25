@@ -1,4 +1,4 @@
-import { memo, useContext, useEffect } from 'react';
+import { memo, useContext, useEffect, useState } from 'react';
 import { css } from '@emotion/react';
 import { TPost, TPostPages } from '@/types/post';
 import Image from 'next/image';
@@ -31,6 +31,7 @@ export const PostBox = memo((props: Props) => {
   const { likeMutation, likeDeleteMutation } = useMutateLike();
   const { message, setMessage } = useContext(MessageContext);
   const { postProcess, setPostProcess } = useContext(PostContext);
+  const [moreFlag, setMoreFlag] = useState(-1);
 
   const onClickLike = async (postId: number) => {
     const req = {
@@ -109,6 +110,34 @@ export const PostBox = memo((props: Props) => {
               <span>
                 {getItemByValue(post.prefecture)} {post.address}
               </span>
+            </div>
+            <div css={tagBox}>
+              {moreFlag !== index ? (
+                <>
+                  {post.tagResponse.slice(0, 3).map((tag, tagInd) => (
+                    <span key={tagInd}>#{tag.name}</span>
+                  ))}
+                  {post.tagResponse.length > 3 && (
+                    <>
+                      <span>...</span>
+                      <span className="tagBox__more" onClick={() => setMoreFlag(index)}>
+                        もっとみる
+                      </span>
+                    </>
+                  )}
+                </>
+              ) : (
+                <>
+                  {post.tagResponse.map((tag, tagInd) => (
+                    <span key={tagInd}>#{tag.name}</span>
+                  ))}
+                  {post.tagResponse.length > 3 && (
+                    <span className="tagBox__more" onClick={() => setMoreFlag(-1)}>
+                      元に戻す
+                    </span>
+                  )}
+                </>
+              )}
             </div>
             {post.image !== '' ? (
               <div css={postImgBox}>
@@ -218,5 +247,28 @@ const favoriteBox = css`
 
   svg {
     margin-right: 8px;
+  }
+`;
+
+const tagBox = css`
+  margin: 20px 0;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: left;
+  align-items: center;
+
+  span {
+    margin: 0 8px 8px 0;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .tagBox__more {
+    font-size: 14px;
+    color: #aaa;
+    cursor: pointer;
   }
 `;

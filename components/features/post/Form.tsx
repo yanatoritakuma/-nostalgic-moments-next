@@ -15,6 +15,7 @@ import { deleteImgStorage } from '@/utils/deleteImgStorage';
 import { MessageContext } from '@/provider/MessageProvider';
 import { useMutateTag } from '@/hooks/tag/useMutateTag';
 import { ChipBox } from '@/components/elements/ChipBox';
+import { tagValidation } from '@/utils/validations/tagValidation';
 
 type Props = {
   type: 'new' | 'edit';
@@ -29,6 +30,7 @@ export const Form = memo((props: Props) => {
   const { tagMutation } = useMutateTag();
   const { data: user } = useQueryUser();
   const { validation } = postValidation();
+  const { tagVali } = tagValidation();
   const { postGlobal, setPostProcess } = useContext(PostContext);
   const { setMessage } = useContext(MessageContext);
   const { deleteImg } = deleteImgStorage();
@@ -119,14 +121,8 @@ export const Form = memo((props: Props) => {
   }, [postGlobal]);
 
   const onClickTagAdd = () => {
-    if (tagArray.length >= 10) {
-      setMessage({
-        text: 'タグは最大で10個までしか登録できません。',
-        type: 'error',
-      });
-    } else {
-      setTagArray([...tagArray, tagState]);
-      setTagState('');
+    if (tagVali(tagState, tagArray)) {
+      setTagArray([...tagArray, tagState]), setTagState('');
     }
   };
 
@@ -265,10 +261,14 @@ const tagArrayBox = css`
   justify-content: left;
   align-items: center;
   text-align: start;
+  overflow: hidden;
 
   .tagArrayBox__chipBox {
     margin: 0 18px 12px 0;
     font-size: 16px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 `;
 
