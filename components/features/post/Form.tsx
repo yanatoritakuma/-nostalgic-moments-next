@@ -26,7 +26,7 @@ export const Form = memo((props: Props) => {
   const { onChangeImageHandler, photoUrl, setPhotoUrl } = useChangeImage();
   const { onClickRegistration } = imageRegistration();
   const { postMutation, updatePostMutation } = useMutatePost();
-  const { tagMutation } = useMutateTag();
+  const { tagMutation, deleteTagMutation } = useMutateTag();
   const { data: user } = useQueryUser();
   const { postValid } = postValidation();
   const { tagVali } = tagValidation();
@@ -94,7 +94,11 @@ export const Form = memo((props: Props) => {
     return tag.name;
   });
 
-  const updateTargetTags = tagArray.filter((element) => !postGlobalTagNames.includes(element));
+  const updateTargetTags = tagArray.filter((tag) => !postGlobalTagNames.includes(tag));
+  const deleteTargetTags = postGlobalTagNames?.filter((tag) => !tagArray.includes(tag));
+  const deleteTagIds = postGlobal.tags
+    ?.filter((tag) => deleteTargetTags.includes(tag.name))
+    .map((tag) => tag.id);
 
   const onClickUpdate = async (file: string | null) => {
     try {
@@ -119,6 +123,10 @@ export const Form = memo((props: Props) => {
         );
       }
       // 更新 タグが削除されている場合 todo:未実装
+      if (deleteTagIds.length !== 0) {
+        console.log('deleteTagIds', deleteTagIds);
+        deleteTagMutation.mutateAsync(deleteTagIds);
+      }
     } catch (err) {
       console.error('err:', err);
     }

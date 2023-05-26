@@ -27,5 +27,22 @@ export const useMutateTag = () => {
     }
   );
 
-  return { tagMutation };
+  const deleteTagMutation = useMutation(
+    async (ids: number[]) =>
+      await axios.delete(`${process.env.NEXT_PUBLIC_API_URL}/tags`, { data: { ids } }),
+    {
+      onSuccess: () => {
+        console.log('タグ削除完了');
+      },
+      onError: () => {
+        setBackdropFlag(false);
+        setMessage({
+          text: 'タグ削除失敗しました。',
+          type: 'error',
+        });
+      },
+    }
+  );
+
+  return { tagMutation, deleteTagMutation };
 };
