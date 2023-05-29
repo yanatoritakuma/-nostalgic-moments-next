@@ -12,12 +12,12 @@ const tagSearch = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const { tag } = router.query;
   const { data: user } = useQueryUser();
-  const {
-    data: tagPost,
-    isLoading,
-    refetch: tagPostRefetch,
-  } = useQueryTagPost(String(tag), currentPage, 10, user?.id);
-  console.log('isLoading', isLoading);
+  const { data: tagPost, refetch: tagPostRefetch } = useQueryTagPost(
+    String(tag),
+    currentPage,
+    10,
+    user?.id
+  );
 
   useEffect(() => {
     tagPostRefetch();
@@ -35,7 +35,7 @@ const tagSearch = () => {
       <h2>検索結果</h2>
       <span className="tagSearchBox__text">#{tag}で検索</span>
       {tagPost !== undefined &&
-        (tagPost.posts.length < 0 ? (
+        (tagPost.posts.length > 0 ? (
           <>
             <PostBox posts={tagPost.posts} user={user} refetch={tagPostRefetch} />
             <PaginationBox
