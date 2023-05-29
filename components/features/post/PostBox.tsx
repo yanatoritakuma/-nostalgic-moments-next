@@ -17,17 +17,14 @@ import { prefectures } from '@/const/prefecture';
 
 type Props = {
   posts?: TPost[];
-  prefecturesRefetch?: <TPageData>(
-    options?: (RefetchOptions & RefetchQueryFilters<TPageData>) | undefined
-  ) => Promise<QueryObserverResult<TPostPages, TError>>;
-  userPostsRefetch?: <TPageData>(
+  refetch?: <TPageData>(
     options?: (RefetchOptions & RefetchQueryFilters<TPageData>) | undefined
   ) => Promise<QueryObserverResult<TPostPages, TError>>;
   user: TUser | undefined;
 };
 
 export const PostBox = memo((props: Props) => {
-  const { posts, prefecturesRefetch, userPostsRefetch, user } = props;
+  const { posts, refetch, user } = props;
   const { likeMutation, likeDeleteMutation } = useMutateLike();
   const { message, setMessage } = useContext(MessageContext);
   const { postProcess, setPostProcess } = useContext(PostContext);
@@ -38,10 +35,8 @@ export const PostBox = memo((props: Props) => {
       post_id: postId,
     };
     if (user) {
-      if (prefecturesRefetch) {
-        await likeMutation.mutateAsync(req).then(() => prefecturesRefetch());
-      } else if (userPostsRefetch) {
-        await likeMutation.mutateAsync(req).then(() => userPostsRefetch());
+      if (refetch) {
+        await likeMutation.mutateAsync(req).then(() => refetch());
       }
     } else {
       setMessage({
@@ -53,19 +48,14 @@ export const PostBox = memo((props: Props) => {
   };
 
   const onClickDeleteLike = async (likeId: number) => {
-    if (prefecturesRefetch) {
-      await likeDeleteMutation.mutateAsync(likeId).then(() => prefecturesRefetch());
-    } else if (userPostsRefetch) {
-      await likeDeleteMutation.mutateAsync(likeId).then(() => userPostsRefetch());
+    if (refetch) {
+      await likeDeleteMutation.mutateAsync(likeId).then(() => refetch());
     }
   };
 
   useEffect(() => {
-    if (prefecturesRefetch && postProcess) {
-      prefecturesRefetch();
-      setPostProcess(false);
-    } else if (userPostsRefetch && postProcess) {
-      userPostsRefetch();
+    if (refetch && postProcess) {
+      refetch();
       setPostProcess(false);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps

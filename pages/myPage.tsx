@@ -66,7 +66,7 @@ const myPage = () => {
           <PostBox
             posts={selectTab === 0 ? userPosts?.posts : userPosts?.likePosts}
             user={user}
-            userPostsRefetch={userPostsRefetch}
+            refetch={userPostsRefetch}
           />
         </div>
       ) : (
