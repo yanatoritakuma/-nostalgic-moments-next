@@ -36,7 +36,7 @@ TagSearch.displayName = 'TagSearch';
 
 const tagSearchBox = css`
   padding: 60px 0;
-  background-color: #eaf4fc;
+  background-color: #e6eae6;
 `;
 
 const searchBox = css`
