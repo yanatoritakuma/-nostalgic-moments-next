@@ -4,7 +4,6 @@ import { useMutation } from '@tanstack/react-query';
 import { useContext } from 'react';
 import { MessageContext } from '@/provider/MessageProvider';
 import { TReqLike } from '@/types/like';
-import { TError } from '@/types/error';
 
 export const useMutateLike = () => {
   const { setMessage } = useContext(MessageContext);
@@ -19,7 +18,7 @@ export const useMutateLike = () => {
           type: 'success',
         });
       },
-      onError: (err: TError) => {
+      onError: () => {
         setMessage({
           text: 'いいね失敗しました。',
           type: 'error',
@@ -40,7 +39,7 @@ export const useMutateLike = () => {
       onError: () => {
         setMessage({
           text: 'いいね取り消しに失敗しました。',
-          type: 'success',
+          type: 'error',
         });
       },
     }
