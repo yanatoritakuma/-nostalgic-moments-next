@@ -12,6 +12,9 @@ import { useQueryUser } from '@/hooks/user/useQueryUser';
 import { postValidation } from '@/utils/validations/postValidation';
 import { PostContext } from '@/provider/PostProvider';
 import { deleteImgStorage } from '@/utils/deleteImgStorage';
+import { useMutateTag } from '@/hooks/tag/useMutateTag';
+import { ChipBox } from '@/components/elements/ChipBox';
+import { tagValidation } from '@/utils/validations/tagValidation';
 
 type Props = {
   type: 'new' | 'edit';
@@ -23,8 +26,10 @@ export const Form = memo((props: Props) => {
   const { onChangeImageHandler, photoUrl, setPhotoUrl } = useChangeImage();
   const { onClickRegistration } = imageRegistration();
   const { postMutation, updatePostMutation } = useMutatePost();
+  const { tagMutation, deleteTagMutation } = useMutateTag();
   const { data: user } = useQueryUser();
-  const { validation } = postValidation();
+  const { postValid } = postValidation();
+  const { tagVali } = tagValidation();
   const { postGlobal, setPostProcess } = useContext(PostContext);
   const { deleteImg } = deleteImgStorage();
   const [postState, setPostState] = useState({
@@ -33,6 +38,8 @@ export const Form = memo((props: Props) => {
     prefecture: '',
     address: '',
   });
+  const [tagState, setTagState] = useState('');
+  const [tagArray, setTagArray] = useState<string[]>([]);
   const [previewUrl, setPreviewUrl] = useState('');
 
   useEffect(() => {
@@ -55,27 +62,74 @@ export const Form = memo((props: Props) => {
   }, [photoUrl]);
 
   const onClickRegister = async (file: string | null) => {
-    await postMutation.mutateAsync({
-      title: postState.title,
-      text: postState.text,
-      image: file,
-      prefecture: postState.prefecture,
-      address: postState.address,
-    });
+    try {
+      const res = await postMutation.mutateAsync({
+        title: postState.title,
+        text: postState.text,
+        image: file,
+        prefecture: postState.prefecture,
+        address: postState.address,
+      });
+
+      if (tagArray.length !== 0) {
+        await tagMutation.mutateAsync(
+          tagArray.map((tag) => {
+            return { name: tag, post_id: res.data.id };
+          })
+        );
+      }
+      setPostState({
+        title: '',
+        text: '',
+        prefecture: '',
+        address: '',
+      });
+      setTagArray([]);
+    } catch (err) {
+      console.error('err:', err);
+    }
   };
 
+  const postGlobalTagNames = postGlobal.tags?.map((tag) => {
+    return tag.name;
+  });
+
+  const updateTargetTags = tagArray.filter((tag) => !postGlobalTagNames.includes(tag));
+  const deleteTargetTags = postGlobalTagNames?.filter((tag) => !tagArray.includes(tag));
+  const deleteTagIds = postGlobal.tags
+    ?.filter((tag) => deleteTargetTags.includes(tag.name))
+    .map((tag) => tag.id);
+
   const onClickUpdate = async (file: string | null) => {
-    await updatePostMutation
-      .mutateAsync({
+    try {
+      await updatePostMutation.mutateAsync({
         id: postGlobal.id,
         title: postState.title,
         text: postState.text,
         image: file !== null ? file : postGlobal.image,
         prefecture: postState.prefecture,
         address: postState.address,
-      })
-      .then(() => setPostProcess(true))
-      .then(() => file !== null && deleteImg(postGlobal.image, 'postImages', postGlobal.userId));
+      });
+      setPostProcess(true);
+      if (file !== null) {
+        deleteImg(postGlobal.image, 'postImages', postGlobal.userId);
+      }
+      // 更新 タグが追加されている場合
+      if (updateTargetTags.length !== 0) {
+        await tagMutation.mutateAsync(
+          updateTargetTags.map((tag) => {
+            return { name: tag, post_id: postGlobal.id };
+          })
+        );
+      }
+      // 更新 タグが削除されている場合 todo:未実装
+      if (deleteTagIds.length !== 0) {
+        console.log('deleteTagIds', deleteTagIds);
+        deleteTagMutation.mutateAsync(deleteTagIds);
+      }
+    } catch (err) {
+      console.error('err:', err);
+    }
   };
 
   useEffect(() => {
@@ -88,9 +142,24 @@ export const Form = memo((props: Props) => {
         address: postGlobal.address,
       });
       setPreviewUrl(postGlobal.image);
+      const tagNames = postGlobal.tags.map((tag) => {
+        return tag.name;
+      });
+      setTagArray(tagNames);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [postGlobal]);
+
+  const onClickTagAdd = () => {
+    if (tagVali(tagState, tagArray)) {
+      setTagArray([...tagArray, tagState]), setTagState('');
+    }
+  };
+
+  const onClickTagDelete = (ind: number) => {
+    const newTagArray = tagArray.filter((_, index) => index !== ind);
+    setTagArray(newTagArray);
+  };
 
   return (
     <section css={formBox}>
@@ -155,9 +224,27 @@ export const Form = memo((props: Props) => {
           fullWidth
         />
       </div>
+      <div css={tagBox}>
+        <TextBox
+          label="タグ"
+          value={tagState}
+          onChange={(e) => setTagState(e.target.value)}
+          fullWidth
+        />
+        <ButtonBox onClick={() => onClickTagAdd()}>追加</ButtonBox>
+      </div>
+
+      <div css={tagArrayBox}>
+        {tagArray.map((tag, index) => (
+          <div className="tagArrayBox__chipBox" key={index}>
+            <ChipBox label={`#${tag}`} onClick={() => onClickTagDelete(index)} />
+          </div>
+        ))}
+      </div>
+
       <ButtonBox
         onClick={() =>
-          validation(postState, photoUrl) &&
+          postValid(postState, photoUrl) &&
           (onClickRegistration(
             photoUrl,
             type === 'new' ? onClickRegister : onClickUpdate,
@@ -165,13 +252,7 @@ export const Form = memo((props: Props) => {
             setPreviewUrl,
             user
           ),
-          type === 'edit' && setOpen && setOpen(false),
-          setPostState({
-            title: '',
-            text: '',
-            prefecture: '',
-            address: '',
-          }))
+          type === 'edit' && setOpen && setOpen(false))
         }
       >
         登録
@@ -191,6 +272,34 @@ const formBox = css`
 
 const textBox = css`
   margin: 20px 0;
+`;
+
+const tagBox = css`
+  margin: 20px 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  button {
+    margin-left: 20px;
+  }
+`;
+
+const tagArrayBox = css`
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: left;
+  align-items: center;
+  text-align: start;
+  overflow: hidden;
+
+  .tagArrayBox__chipBox {
+    margin: 0 18px 12px 0;
+    font-size: 16px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
 `;
 
 const previewBox = css`

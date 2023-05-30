@@ -1,4 +1,4 @@
-import { memo, useContext, useEffect } from 'react';
+import { memo, useContext, useEffect, useState } from 'react';
 import { css } from '@emotion/react';
 import { TPost, TPostPages } from '@/types/post';
 import Image from 'next/image';
@@ -17,30 +17,26 @@ import { prefectures } from '@/const/prefecture';
 
 type Props = {
   posts?: TPost[];
-  prefecturesRefetch?: <TPageData>(
-    options?: (RefetchOptions & RefetchQueryFilters<TPageData>) | undefined
-  ) => Promise<QueryObserverResult<TPostPages, TError>>;
-  userPostsRefetch?: <TPageData>(
+  refetch?: <TPageData>(
     options?: (RefetchOptions & RefetchQueryFilters<TPageData>) | undefined
   ) => Promise<QueryObserverResult<TPostPages, TError>>;
   user: TUser | undefined;
 };
 
 export const PostBox = memo((props: Props) => {
-  const { posts, prefecturesRefetch, userPostsRefetch, user } = props;
+  const { posts, refetch, user } = props;
   const { likeMutation, likeDeleteMutation } = useMutateLike();
   const { message, setMessage } = useContext(MessageContext);
   const { postProcess, setPostProcess } = useContext(PostContext);
+  const [moreFlag, setMoreFlag] = useState(-1);
 
   const onClickLike = async (postId: number) => {
     const req = {
       post_id: postId,
     };
     if (user) {
-      if (prefecturesRefetch) {
-        await likeMutation.mutateAsync(req).then(() => prefecturesRefetch());
-      } else if (userPostsRefetch) {
-        await likeMutation.mutateAsync(req).then(() => userPostsRefetch());
+      if (refetch) {
+        await likeMutation.mutateAsync(req).then(() => refetch());
       }
     } else {
       setMessage({
@@ -52,19 +48,14 @@ export const PostBox = memo((props: Props) => {
   };
 
   const onClickDeleteLike = async (likeId: number) => {
-    if (prefecturesRefetch) {
-      await likeDeleteMutation.mutateAsync(likeId).then(() => prefecturesRefetch());
-    } else if (userPostsRefetch) {
-      await likeDeleteMutation.mutateAsync(likeId).then(() => userPostsRefetch());
+    if (refetch) {
+      await likeDeleteMutation.mutateAsync(likeId).then(() => refetch());
     }
   };
 
   useEffect(() => {
-    if (prefecturesRefetch && postProcess) {
-      prefecturesRefetch();
-      setPostProcess(false);
-    } else if (userPostsRefetch && postProcess) {
-      userPostsRefetch();
+    if (refetch && postProcess) {
+      refetch();
       setPostProcess(false);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -109,6 +100,34 @@ export const PostBox = memo((props: Props) => {
               <span>
                 {getItemByValue(post.prefecture)} {post.address}
               </span>
+            </div>
+            <div css={tagBox}>
+              {moreFlag !== index ? (
+                <>
+                  {post.tagResponse.slice(0, 3).map((tag, tagInd) => (
+                    <span key={tagInd}>#{tag.name}</span>
+                  ))}
+                  {post.tagResponse.length > 3 && (
+                    <>
+                      <span>...</span>
+                      <span className="tagBox__more" onClick={() => setMoreFlag(index)}>
+                        もっとみる
+                      </span>
+                    </>
+                  )}
+                </>
+              ) : (
+                <>
+                  {post.tagResponse.map((tag, tagInd) => (
+                    <span key={tagInd}>#{tag.name}</span>
+                  ))}
+                  {post.tagResponse.length > 3 && (
+                    <span className="tagBox__more" onClick={() => setMoreFlag(-1)}>
+                      元に戻す
+                    </span>
+                  )}
+                </>
+              )}
             </div>
             {post.image !== '' ? (
               <div css={postImgBox}>
@@ -218,5 +237,28 @@ const favoriteBox = css`
 
   svg {
     margin-right: 8px;
+  }
+`;
+
+const tagBox = css`
+  margin: 20px 0;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: left;
+  align-items: center;
+
+  span {
+    margin: 0 8px 8px 0;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .tagBox__more {
+    font-size: 14px;
+    color: #aaa;
+    cursor: pointer;
   }
 `;

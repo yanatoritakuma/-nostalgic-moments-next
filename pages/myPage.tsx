@@ -11,6 +11,7 @@ import { TabsBox } from '@/components/elements/TabsBox';
 import CreateIcon from '@mui/icons-material/Create';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import { UserEditMenuBox } from '@/components/features/user/UserEditMenuBox';
+import NoimageUser from '@/images/noimage-user.png';
 
 const myPage = () => {
   const [currentPage, setCurrentPage] = useState(1);
@@ -45,7 +46,11 @@ const myPage = () => {
           <h2>マイページ</h2>
           <div css={userBox}>
             <div css={userImgBox}>
-              <Image src={user.image} fill sizes="(max-width: 70px)" alt="ユーザー画像" />
+              {user.image !== '' ? (
+                <Image src={user.image} fill sizes="(max-width: 70px)" alt="ユーザー画像" />
+              ) : (
+                <Image src={NoimageUser} fill sizes="(max-width: 70px)" alt="ユーザー画像" />
+              )}
             </div>
             {user.name}
             <div className="userBox__editBox">
@@ -66,8 +71,17 @@ const myPage = () => {
           <PostBox
             posts={selectTab === 0 ? userPosts?.posts : userPosts?.likePosts}
             user={user}
-            userPostsRefetch={userPostsRefetch}
+            refetch={userPostsRefetch}
           />
+          {selectTab === 0
+            ? userPosts &&
+              userPosts?.posts.length <= 0 && (
+                <span className="topBox__notExist">まだ投稿がありません。</span>
+              )
+            : userPosts &&
+              userPosts?.likePosts.length <= 0 && (
+                <span className="topBox__notExist">まだいいねがありません。</span>
+              )}
         </div>
       ) : (
         <>
@@ -77,7 +91,7 @@ const myPage = () => {
           </Link>
         </>
       )}
-      {userPosts !== undefined && (
+      {userPosts && (
         <PaginationBox
           count={countPages(selectTab === 0 ? userPosts.totalPageCount : userPosts.totalLikeCount)}
           currentPage={currentPage}
@@ -129,6 +143,12 @@ const myPageBox = css`
 const topBox = css`
   margin: 0 auto;
   max-width: 1200px;
+
+  .topBox__notExist {
+    margin: 20px 0;
+    display: block;
+    text-align: center;
+  }
 `;
 
 const userBox = css`

@@ -35,6 +35,7 @@ export const PostEditMenuBox = memo((props: Props) => {
       image: posts[selectPost]?.image,
       prefecture: posts[selectPost]?.prefecture,
       address: posts[selectPost]?.address,
+      tags: posts[selectPost]?.tagResponse,
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectPost]);

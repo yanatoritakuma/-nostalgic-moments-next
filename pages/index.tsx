@@ -2,6 +2,7 @@ import { css } from '@emotion/react';
 import Image from 'next/image';
 import TopImg from '@/images/top.jpg';
 import Prefectures from '@/components/features/home/Prefectures';
+import TagSearch from '@/components/features/home/TagSearch';
 
 export default function Home() {
   return (
@@ -12,6 +13,7 @@ export default function Home() {
         <Image src={TopImg} fill priority alt="TOP画像" />
       </section>
       <Prefectures />
+      <TagSearch />
     </main>
   );
 }
