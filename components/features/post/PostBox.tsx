@@ -31,25 +31,37 @@ export const PostBox = memo((props: Props) => {
   const [moreFlag, setMoreFlag] = useState(-1);
 
   const onClickLike = async (postId: number) => {
-    const req = {
-      post_id: postId,
-    };
-    if (user) {
-      if (refetch) {
-        await likeMutation.mutateAsync(req).then(() => refetch());
+    try {
+      const req = {
+        post_id: postId,
+      };
+
+      if (!user) {
+        setMessage({
+          ...message,
+          text: 'いいねをするにはログインが必要です',
+          type: 'error',
+        });
+        return;
       }
-    } else {
-      setMessage({
-        ...message,
-        text: 'いいねをするにはログインが必要です',
-        type: 'error',
-      });
+
+      if (refetch) {
+        await likeMutation.mutateAsync(req);
+        refetch();
+      }
+    } catch (err) {
+      console.error(err);
     }
   };
 
   const onClickDeleteLike = async (likeId: number) => {
-    if (refetch) {
-      await likeDeleteMutation.mutateAsync(likeId).then(() => refetch());
+    try {
+      if (refetch) {
+        await likeDeleteMutation.mutateAsync(likeId);
+        refetch();
+      }
+    } catch (err) {
+      console.error(err);
     }
   };
 

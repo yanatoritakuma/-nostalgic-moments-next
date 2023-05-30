@@ -43,19 +43,21 @@ const auth = () => {
   }, [photoUrl]);
 
   const createAccount = async (file: string | null) => {
-    await registerMutation
-      .mutateAsync({
+    try {
+      await registerMutation.mutateAsync({
         email: authStatte.email,
         password: authStatte.password,
         name: authStatte.name,
-        image: file ? file : '',
-      })
-      .then(() =>
-        loginMutation.mutate({
-          email: authStatte.email,
-          password: authStatte.password,
-        })
-      );
+        image: file || '',
+      });
+
+      await loginMutation.mutateAsync({
+        email: authStatte.email,
+        password: authStatte.password,
+      });
+    } catch (err) {
+      console.error(err);
+    }
   };
 
   const onClikcAuth = () => {
