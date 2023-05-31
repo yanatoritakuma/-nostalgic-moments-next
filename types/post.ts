@@ -1,15 +1,12 @@
 import { TTagRes } from '@/types/tag';
+import { TResPostUser } from '@/types/user';
 
 export type TPost = {
   address: string;
   created_at: string;
   id: number;
   image: string;
-  postUserResponse: {
-    id: number;
-    image: string;
-    name: string;
-  };
+  postUserResponse: TResPostUser;
   prefecture: string;
   title: string;
   text: string;
@@ -17,6 +14,7 @@ export type TPost = {
   like_count: number;
   like_id: number;
   tagResponse: TTagRes[];
+  commentCount: number;
 };
 
 export type TPostPages = {

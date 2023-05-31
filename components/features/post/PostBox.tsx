@@ -4,6 +4,7 @@ import { TPost, TPostPages } from '@/types/post';
 import Image from 'next/image';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
+import ChatBubbleOutlineIcon from '@mui/icons-material/ChatBubbleOutline';
 import NoimageUser from '@/images/noimage-user.png';
 import Noimage from '@/images/noimage.png';
 import { useMutateLike } from '@/hooks/like/useMutateLike';
@@ -14,6 +15,12 @@ import { MessageContext } from '@/provider/MessageProvider';
 import { PostEditMenuBox } from '@/components/features/post/PostEditMenuBox';
 import { PostContext } from '@/provider/PostProvider';
 import { prefectures } from '@/const/prefecture';
+import { useQueryPostComment } from '@/hooks/postComment/useQueryPostComment';
+import { TextBox } from '@/components/elements/TextBox';
+import { ButtonBox } from '@/components/elements/ButtonBox';
+import { useMutatePostComment } from '@/hooks/postComment/useMutatePostComment';
+import { PaginationBox } from '@/components/common/PaginationBox';
+import { countPages } from '@/utils/countPages';
 
 type Props = {
   posts?: TPost[];
@@ -29,6 +36,24 @@ export const PostBox = memo((props: Props) => {
   const { message, setMessage } = useContext(MessageContext);
   const { postProcess, setPostProcess } = useContext(PostContext);
   const [moreFlag, setMoreFlag] = useState(-1);
+  const [selectComment, setSelectComment] = useState(-1);
+  const [commentState, setCommentState] = useState('');
+  const [currentPage, setCurrentPage] = useState(1);
+  const { postCommentMutation } = useMutatePostComment();
+  const { data: postComment, refetch: postCommentRefetch } = useQueryPostComment(
+    selectComment,
+    currentPage,
+    10
+  );
+  console.log('postComment', postComment);
+  console.log('selectComment', selectComment);
+
+  useEffect(() => {
+    if (selectComment !== -1) {
+      postCommentRefetch();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectComment]);
 
   const onClickLike = async (postId: number) => {
     try {
@@ -77,6 +102,28 @@ export const PostBox = memo((props: Props) => {
     const foundItem = prefectures.find((prefecture) => prefecture.value === value);
     return foundItem ? foundItem.item : null;
   };
+
+  const onClickPostComment = async (postId: number) => {
+    try {
+      await postCommentMutation.mutateAsync({
+        comment: commentState,
+        post_id: postId,
+      });
+      postCommentRefetch();
+      if (refetch) {
+        refetch();
+      }
+      setCommentState('');
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  // ページネーションで都道府県別投稿のAPI再取得
+  useEffect(() => {
+    postCommentRefetch();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentPage]);
 
   return (
     <>
@@ -150,26 +197,85 @@ export const PostBox = memo((props: Props) => {
                 <Image src={Noimage} fill sizes="100%" alt="投稿画像" />
               </div>
             )}
-
-            <div css={favoriteBox}>
-              {post.like_id !== 0 ? (
-                <>
-                  <FavoriteIcon
-                    onClick={() => onClickDeleteLike(post.like_id)}
-                    className="favoriteBox__liked"
-                  />
-                  {post.like_count}
-                </>
-              ) : (
-                <>
-                  <FavoriteBorderIcon
-                    onClick={() => onClickLike(post.id)}
-                    className="favoriteBox__noLike"
-                  />
-                  {post.like_count}
-                </>
-              )}
+            <div css={postFootBox}>
+              <div css={favoriteBox}>
+                {post.like_id !== 0 ? (
+                  <>
+                    <FavoriteIcon
+                      onClick={() => onClickDeleteLike(post.like_id)}
+                      className="favoriteBox__liked"
+                    />
+                    {post.like_count}
+                  </>
+                ) : (
+                  <>
+                    <FavoriteBorderIcon
+                      onClick={() => onClickLike(post.id)}
+                      className="favoriteBox__noLike"
+                    />
+                    {post.like_count}
+                  </>
+                )}
+              </div>
+              <div
+                css={commentBox}
+                onClick={() =>
+                  selectComment !== post.id ? setSelectComment(post.id) : setSelectComment(-1)
+                }
+              >
+                <ChatBubbleOutlineIcon />
+                {post.commentCount}
+              </div>
             </div>
+            {selectComment === post.id && (
+              <div css={commentContentsBox}>
+                <h3>コメント</h3>
+                <div css={commentSendBox}>
+                  <TextBox
+                    label="コメント"
+                    value={commentState}
+                    onChange={(e) => setCommentState(e.target.value)}
+                    fullWidth
+                    multiline
+                    rows={3}
+                  />
+                  <ButtonBox onClick={() => onClickPostComment(post.id)}>送信</ButtonBox>
+                </div>
+                {postComment?.comment.map((comment) => (
+                  <div key={comment.id} className="commentContentsBox__box">
+                    <div className="commentContentsBox__userBox">
+                      <div css={userImgBox}>
+                        {comment.postUserResponse.image !== '' ? (
+                          <Image
+                            src={comment.postUserResponse.image}
+                            fill
+                            sizes="(max-width: 70px)"
+                            alt="ユーザー画像"
+                          />
+                        ) : (
+                          <Image
+                            src={NoimageUser}
+                            fill
+                            sizes="(max-width: 70px)"
+                            alt="ユーザー画像"
+                          />
+                        )}
+                      </div>
+                      <span>{comment.postUserResponse.name}</span>
+                    </div>
+                    <p>{comment.comment}</p>
+                  </div>
+                ))}
+                {postComment !== undefined && (
+                  <PaginationBox
+                    count={countPages(postComment?.totalCommentCount)}
+                    currentPage={currentPage}
+                    setCurrentPage={setCurrentPage}
+                    scrollTop={false}
+                  />
+                )}
+              </div>
+            )}
           </div>
         );
       })}
@@ -233,6 +339,16 @@ const userImgBox = css`
   height: 70px;
   position: relative;
 
+  @media (max-width: 768px) {
+    width: 60px;
+    height: 60px;
+  }
+
+  @media (max-width: 425px) {
+    width: 50px;
+    height: 50px;
+  }
+
   img {
     object-fit: cover;
     border-radius: 50%;
@@ -249,6 +365,7 @@ const favoriteBox = css`
 
   svg {
     margin-right: 8px;
+    cursor: pointer;
   }
 `;
 
@@ -272,5 +389,57 @@ const tagBox = css`
     font-size: 14px;
     color: #aaa;
     cursor: pointer;
+  }
+`;
+
+const commentSendBox = css`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  @media (max-width: 768px) {
+    display: block;
+  }
+
+  button {
+    margin-left: 20px;
+
+    @media (max-width: 768px) {
+      margin: 20px auto;
+      display: block;
+    }
+  }
+`;
+
+const postFootBox = css`
+  display: flex;
+  align-items: center;
+`;
+
+const commentBox = css`
+  margin-left: 20px;
+  display: flex;
+  align-items: center;
+
+  svg {
+    margin-right: 8px;
+    cursor: pointer;
+  }
+`;
+
+const commentContentsBox = css`
+  h3 {
+    text-align: center;
+  }
+  .commentContentsBox__box {
+    margin: 20px 0;
+    padding: 20px;
+    border: 1px solid #333;
+    border-radius: 10px;
+  }
+
+  .commentContentsBox__userBox {
+    display: flex;
+    align-items: center;
   }
 `;

@@ -7,13 +7,17 @@ type Props = {
   count: number;
   currentPage: number;
   setCurrentPage: React.Dispatch<React.SetStateAction<number>>;
+  scrollTop?: boolean;
 };
 
 export const PaginationBox = memo((props: Props) => {
-  const { count, currentPage, setCurrentPage } = props;
+  const { count, currentPage, setCurrentPage, scrollTop } = props;
 
   useEffect(() => {
-    scroll.scrollToTop();
+    if (scrollTop !== false) {
+      scroll.scrollToTop();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentPage]);
 
   return (
