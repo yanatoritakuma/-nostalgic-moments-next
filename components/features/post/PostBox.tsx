@@ -15,12 +15,8 @@ import { MessageContext } from '@/provider/MessageProvider';
 import { PostEditMenuBox } from '@/components/features/post/PostEditMenuBox';
 import { PostContext } from '@/provider/PostProvider';
 import { prefectures } from '@/const/prefecture';
-import { useQueryPostComment } from '@/hooks/postComment/useQueryPostComment';
-import { TextBox } from '@/components/elements/TextBox';
-import { ButtonBox } from '@/components/elements/ButtonBox';
 import { useMutatePostComment } from '@/hooks/postComment/useMutatePostComment';
-import { PaginationBox } from '@/components/common/PaginationBox';
-import { countPages } from '@/utils/countPages';
+import { CommentBox } from '@/components/features/post/CommentBox';
 
 type Props = {
   posts?: TPost[];
@@ -37,23 +33,6 @@ export const PostBox = memo((props: Props) => {
   const { postProcess, setPostProcess } = useContext(PostContext);
   const [moreFlag, setMoreFlag] = useState(-1);
   const [selectComment, setSelectComment] = useState(-1);
-  const [commentState, setCommentState] = useState('');
-  const [currentPage, setCurrentPage] = useState(1);
-  const { postCommentMutation } = useMutatePostComment();
-  const { data: postComment, refetch: postCommentRefetch } = useQueryPostComment(
-    selectComment,
-    currentPage,
-    10
-  );
-  console.log('postComment', postComment);
-  console.log('selectComment', selectComment);
-
-  useEffect(() => {
-    if (selectComment !== -1) {
-      postCommentRefetch();
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selectComment]);
 
   const onClickLike = async (postId: number) => {
     try {
@@ -102,28 +81,6 @@ export const PostBox = memo((props: Props) => {
     const foundItem = prefectures.find((prefecture) => prefecture.value === value);
     return foundItem ? foundItem.item : null;
   };
-
-  const onClickPostComment = async (postId: number) => {
-    try {
-      await postCommentMutation.mutateAsync({
-        comment: commentState,
-        post_id: postId,
-      });
-      postCommentRefetch();
-      if (refetch) {
-        refetch();
-      }
-      setCommentState('');
-    } catch (err) {
-      console.error(err);
-    }
-  };
-
-  // ページネーションで都道府県別投稿のAPI再取得
-  useEffect(() => {
-    postCommentRefetch();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [currentPage]);
 
   return (
     <>
@@ -227,55 +184,7 @@ export const PostBox = memo((props: Props) => {
                 {post.commentCount}
               </div>
             </div>
-            {selectComment === post.id && (
-              <div css={commentContentsBox}>
-                <h3>コメント</h3>
-                <div css={commentSendBox}>
-                  <TextBox
-                    label="コメント"
-                    value={commentState}
-                    onChange={(e) => setCommentState(e.target.value)}
-                    fullWidth
-                    multiline
-                    rows={3}
-                  />
-                  <ButtonBox onClick={() => onClickPostComment(post.id)}>送信</ButtonBox>
-                </div>
-                {postComment?.comment.map((comment) => (
-                  <div key={comment.id} className="commentContentsBox__box">
-                    <div className="commentContentsBox__userBox">
-                      <div css={userImgBox}>
-                        {comment.postUserResponse.image !== '' ? (
-                          <Image
-                            src={comment.postUserResponse.image}
-                            fill
-                            sizes="(max-width: 70px)"
-                            alt="ユーザー画像"
-                          />
-                        ) : (
-                          <Image
-                            src={NoimageUser}
-                            fill
-                            sizes="(max-width: 70px)"
-                            alt="ユーザー画像"
-                          />
-                        )}
-                      </div>
-                      <span>{comment.postUserResponse.name}</span>
-                    </div>
-                    <p>{comment.comment}</p>
-                  </div>
-                ))}
-                {postComment !== undefined && (
-                  <PaginationBox
-                    count={countPages(postComment?.totalCommentCount)}
-                    currentPage={currentPage}
-                    setCurrentPage={setCurrentPage}
-                    scrollTop={false}
-                  />
-                )}
-              </div>
-            )}
+            <CommentBox selectComment={selectComment} postId={post.id} refetch={refetch} />
           </div>
         );
       })}
