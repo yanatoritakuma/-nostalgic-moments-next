@@ -15,7 +15,6 @@ import { MessageContext } from '@/provider/MessageProvider';
 import { PostEditMenuBox } from '@/components/features/post/PostEditMenuBox';
 import { PostContext } from '@/provider/PostProvider';
 import { prefectures } from '@/const/prefecture';
-import { useMutatePostComment } from '@/hooks/postComment/useMutatePostComment';
 import { CommentBox } from '@/components/features/post/CommentBox';
 
 type Props = {

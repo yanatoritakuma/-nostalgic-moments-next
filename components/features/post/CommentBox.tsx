@@ -47,7 +47,7 @@ export const CommentBox = memo((props: Props) => {
     }
   };
 
-  // ページネーションで都道府県別投稿のAPI再取得
+  // ページネーションでAPI再取得
   useEffect(() => {
     postCommentRefetch();
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -56,12 +56,13 @@ export const CommentBox = memo((props: Props) => {
   useEffect(() => {
     if (selectComment !== -1) {
       postCommentRefetch();
+      setCurrentPage(1);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectComment]);
 
   return (
-    <div>
+    <div id={String(postId)}>
       {selectComment === postId && (
         <div css={commentContentsBox}>
           <h3>コメント</h3>
@@ -101,7 +102,7 @@ export const CommentBox = memo((props: Props) => {
               count={countPages(postComment?.totalCommentCount)}
               currentPage={currentPage}
               setCurrentPage={setCurrentPage}
-              scrollTop={false}
+              targetScroll={String(postId)}
             />
           )}
         </div>
