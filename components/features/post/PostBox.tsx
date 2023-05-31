@@ -150,7 +150,7 @@ export const PostBox = memo((props: Props) => {
               </div>
             ) : (
               <div css={postImgBox}>
-                <Image src={Noimage} fill sizes="100%" alt="投稿画像" />
+                <Image src={Noimage} fill priority sizes="100%" alt="投稿画像" />
               </div>
             )}
             <div css={postFootBox}>
