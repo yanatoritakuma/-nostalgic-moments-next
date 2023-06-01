@@ -4,6 +4,7 @@ import { TPost, TPostPages } from '@/types/post';
 import Image from 'next/image';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
+import ChatBubbleOutlineIcon from '@mui/icons-material/ChatBubbleOutline';
 import NoimageUser from '@/images/noimage-user.png';
 import Noimage from '@/images/noimage.png';
 import { useMutateLike } from '@/hooks/like/useMutateLike';
@@ -14,6 +15,7 @@ import { MessageContext } from '@/provider/MessageProvider';
 import { PostEditMenuBox } from '@/components/features/post/PostEditMenuBox';
 import { PostContext } from '@/provider/PostProvider';
 import { prefectures } from '@/const/prefecture';
+import { CommentBox } from '@/components/features/post/CommentBox';
 
 type Props = {
   posts?: TPost[];
@@ -29,6 +31,7 @@ export const PostBox = memo((props: Props) => {
   const { message, setMessage } = useContext(MessageContext);
   const { postProcess, setPostProcess } = useContext(PostContext);
   const [moreFlag, setMoreFlag] = useState(-1);
+  const [selectComment, setSelectComment] = useState(-1);
 
   const onClickLike = async (postId: number) => {
     try {
@@ -147,29 +150,45 @@ export const PostBox = memo((props: Props) => {
               </div>
             ) : (
               <div css={postImgBox}>
-                <Image src={Noimage} fill sizes="100%" alt="投稿画像" />
+                <Image src={Noimage} fill priority sizes="100%" alt="投稿画像" />
               </div>
             )}
-
-            <div css={favoriteBox}>
-              {post.like_id !== 0 ? (
-                <>
-                  <FavoriteIcon
-                    onClick={() => onClickDeleteLike(post.like_id)}
-                    className="favoriteBox__liked"
-                  />
-                  {post.like_count}
-                </>
-              ) : (
-                <>
-                  <FavoriteBorderIcon
-                    onClick={() => onClickLike(post.id)}
-                    className="favoriteBox__noLike"
-                  />
-                  {post.like_count}
-                </>
-              )}
+            <div css={postFootBox}>
+              <div css={favoriteBox}>
+                {post.like_id !== 0 ? (
+                  <>
+                    <FavoriteIcon
+                      onClick={() => onClickDeleteLike(post.like_id)}
+                      className="favoriteBox__liked"
+                    />
+                    {post.like_count}
+                  </>
+                ) : (
+                  <>
+                    <FavoriteBorderIcon
+                      onClick={() => onClickLike(post.id)}
+                      className="favoriteBox__noLike"
+                    />
+                    {post.like_count}
+                  </>
+                )}
+              </div>
+              <div
+                css={commentBox}
+                onClick={() =>
+                  selectComment !== post.id ? setSelectComment(post.id) : setSelectComment(-1)
+                }
+              >
+                <ChatBubbleOutlineIcon />
+                {post.commentCount}
+              </div>
             </div>
+            <CommentBox
+              selectComment={selectComment}
+              postId={post.id}
+              refetch={refetch}
+              user={user}
+            />
           </div>
         );
       })}
@@ -233,6 +252,16 @@ const userImgBox = css`
   height: 70px;
   position: relative;
 
+  @media (max-width: 768px) {
+    width: 60px;
+    height: 60px;
+  }
+
+  @media (max-width: 425px) {
+    width: 50px;
+    height: 50px;
+  }
+
   img {
     object-fit: cover;
     border-radius: 50%;
@@ -249,6 +278,7 @@ const favoriteBox = css`
 
   svg {
     margin-right: 8px;
+    cursor: pointer;
   }
 `;
 
@@ -271,6 +301,22 @@ const tagBox = css`
   .tagBox__more {
     font-size: 14px;
     color: #aaa;
+    cursor: pointer;
+  }
+`;
+
+const postFootBox = css`
+  display: flex;
+  align-items: center;
+`;
+
+const commentBox = css`
+  margin-left: 20px;
+  display: flex;
+  align-items: center;
+
+  svg {
+    margin-right: 8px;
     cursor: pointer;
   }
 `;

@@ -12,3 +12,9 @@ export type TReqUser = {
   image: string;
   email: string;
 };
+
+export type TResPostUser = {
+  id: number;
+  image: string;
+  name: string;
+};
