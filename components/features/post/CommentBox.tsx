@@ -13,6 +13,7 @@ import { countPages } from '@/utils/countPages';
 import NoimageUser from '@/images/noimage-user.png';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { TUser } from '@/types/user';
+import { postCommentValidation } from '@/utils/validations/postCommentValidation';
 
 type Props = {
   selectComment: number;
@@ -27,6 +28,7 @@ export const CommentBox = memo((props: Props) => {
   const { selectComment, postId, refetch, user } = props;
   const [commentState, setCommentState] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
+  const { postCommentValid } = postCommentValidation();
   const { postCommentMutation, deletePostCommentMutation } = useMutatePostComment();
   const { data: postComment, refetch: postCommentRefetch } = useQueryPostComment(
     selectComment,
@@ -92,7 +94,9 @@ export const CommentBox = memo((props: Props) => {
               multiline
               rows={3}
             />
-            <ButtonBox onClick={() => onClickPostComment(postId)}>送信</ButtonBox>
+            <ButtonBox onClick={() => postCommentValid(commentState) && onClickPostComment(postId)}>
+              送信
+            </ButtonBox>
           </div>
           {postComment?.comment.map((comment) => (
             <div key={comment.id} className="commentContentsBox__box">

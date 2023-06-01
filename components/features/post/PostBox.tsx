@@ -305,25 +305,6 @@ const tagBox = css`
   }
 `;
 
-const commentSendBox = css`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-
-  @media (max-width: 768px) {
-    display: block;
-  }
-
-  button {
-    margin-left: 20px;
-
-    @media (max-width: 768px) {
-      margin: 20px auto;
-      display: block;
-    }
-  }
-`;
-
 const postFootBox = css`
   display: flex;
   align-items: center;
@@ -337,22 +318,5 @@ const commentBox = css`
   svg {
     margin-right: 8px;
     cursor: pointer;
-  }
-`;
-
-const commentContentsBox = css`
-  h3 {
-    text-align: center;
-  }
-  .commentContentsBox__box {
-    margin: 20px 0;
-    padding: 20px;
-    border: 1px solid #333;
-    border-radius: 10px;
-  }
-
-  .commentContentsBox__userBox {
-    display: flex;
-    align-items: center;
   }
 `;
