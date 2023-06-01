@@ -7,7 +7,7 @@ import { PaginationBox } from '@/components/common/PaginationBox';
 import { useMutatePostComment } from '@/hooks/postComment/useMutatePostComment';
 import { useQueryPostComment } from '@/hooks/postComment/useQueryPostComment';
 import { QueryObserverResult, RefetchOptions, RefetchQueryFilters } from '@tanstack/react-query';
-import { TPostPages } from '@/types/post';
+import { TLikeTopTenPosts, TPostPages } from '@/types/post';
 import { TError } from '@/types/error';
 import { countPages } from '@/utils/countPages';
 import NoimageUser from '@/images/noimage-user.png';
@@ -21,11 +21,14 @@ type Props = {
   refetch?: <TPageData>(
     options?: (RefetchOptions & RefetchQueryFilters<TPageData>) | undefined
   ) => Promise<QueryObserverResult<TPostPages, TError>>;
+  likeRefetch?: <TPageData>(
+    options?: (RefetchOptions & RefetchQueryFilters<TPageData>) | undefined
+  ) => Promise<QueryObserverResult<TLikeTopTenPosts, TError>>;
   user?: TUser;
 };
 
 export const CommentBox = memo((props: Props) => {
-  const { selectComment, postId, refetch, user } = props;
+  const { selectComment, postId, refetch, likeRefetch, user } = props;
   const [commentState, setCommentState] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
   const { postCommentValid } = postCommentValidation();
@@ -43,9 +46,10 @@ export const CommentBox = memo((props: Props) => {
         post_id: postId,
       });
       postCommentRefetch();
-      if (refetch) {
-        refetch();
-      }
+
+      refetch && refetch();
+      likeRefetch && likeRefetch();
+
       setCommentState('');
     } catch (err) {
       console.error(err);
@@ -57,9 +61,9 @@ export const CommentBox = memo((props: Props) => {
       try {
         await deletePostCommentMutation.mutateAsync(id);
         postCommentRefetch();
-        if (refetch) {
-          refetch();
-        }
+
+        refetch && refetch();
+        likeRefetch && likeRefetch();
       } catch (err) {
         console.error(err);
       }

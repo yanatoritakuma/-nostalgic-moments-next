@@ -92,7 +92,7 @@ const Prefectures = (prefectures: Props) => {
   useEffect(() => {
     setTimeout(() => {
       prefecturesRefetch();
-    }, 1000);
+    }, 100);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user]);
 
