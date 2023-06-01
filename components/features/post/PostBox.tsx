@@ -183,7 +183,12 @@ export const PostBox = memo((props: Props) => {
                 {post.commentCount}
               </div>
             </div>
-            <CommentBox selectComment={selectComment} postId={post.id} refetch={refetch} />
+            <CommentBox
+              selectComment={selectComment}
+              postId={post.id}
+              refetch={refetch}
+              user={user}
+            />
           </div>
         );
       })}

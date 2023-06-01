@@ -11,6 +11,8 @@ import { TPostPages } from '@/types/post';
 import { TError } from '@/types/error';
 import { countPages } from '@/utils/countPages';
 import NoimageUser from '@/images/noimage-user.png';
+import DeleteIcon from '@mui/icons-material/Delete';
+import { TUser } from '@/types/user';
 
 type Props = {
   selectComment: number;
@@ -18,13 +20,14 @@ type Props = {
   refetch?: <TPageData>(
     options?: (RefetchOptions & RefetchQueryFilters<TPageData>) | undefined
   ) => Promise<QueryObserverResult<TPostPages, TError>>;
+  user?: TUser;
 };
 
 export const CommentBox = memo((props: Props) => {
-  const { selectComment, postId, refetch } = props;
+  const { selectComment, postId, refetch, user } = props;
   const [commentState, setCommentState] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
-  const { postCommentMutation } = useMutatePostComment();
+  const { postCommentMutation, deletePostCommentMutation } = useMutatePostComment();
   const { data: postComment, refetch: postCommentRefetch } = useQueryPostComment(
     selectComment,
     currentPage,
@@ -44,6 +47,20 @@ export const CommentBox = memo((props: Props) => {
       setCommentState('');
     } catch (err) {
       console.error(err);
+    }
+  };
+
+  const onClickDelitePostComment = async (id: number) => {
+    if (confirm('本当に削除しますか？')) {
+      try {
+        await deletePostCommentMutation.mutateAsync(id);
+        postCommentRefetch();
+        if (refetch) {
+          refetch();
+        }
+      } catch (err) {
+        console.error(err);
+      }
     }
   };
 
@@ -93,6 +110,11 @@ export const CommentBox = memo((props: Props) => {
                   )}
                 </div>
                 <span>{comment.postUserResponse.name}</span>
+                {comment.postUserResponse.id === user?.id && (
+                  <span onClick={() => onClickDelitePostComment(comment.id)}>
+                    <DeleteIcon className="commentContentsBox__deleteIcon" />
+                  </span>
+                )}
               </div>
               <p>{comment.comment}</p>
             </div>
@@ -127,6 +149,14 @@ const commentContentsBox = css`
   .commentContentsBox__userBox {
     display: flex;
     align-items: center;
+    position: relative;
+
+    .commentContentsBox__deleteIcon {
+      position: absolute;
+      top: 0;
+      right: 0;
+      color: #e9546b;
+    }
   }
 `;
 
