@@ -10,3 +10,7 @@ type TFollow = {
   follow_user_id: number;
   user_id: number;
 };
+
+export type TReqFollow = {
+  follow_user_id: number;
+};

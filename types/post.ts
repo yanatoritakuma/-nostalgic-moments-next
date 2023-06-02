@@ -15,6 +15,7 @@ export type TPost = {
   like_id: number;
   tagResponse: TTagRes[];
   commentCount: number;
+  follow_id: number;
 };
 
 export type TPostPages = {

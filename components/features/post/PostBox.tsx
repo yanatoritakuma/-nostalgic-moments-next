@@ -16,6 +16,8 @@ import { PostEditMenuBox } from '@/components/features/post/PostEditMenuBox';
 import { PostContext } from '@/provider/PostProvider';
 import { prefectures } from '@/const/prefecture';
 import { CommentBox } from '@/components/features/post/CommentBox';
+import { ButtonBox } from '@/components/elements/ButtonBox';
+import { useMutateFollow } from '@/hooks/follow/useMutateFollow';
 
 type Props = {
   posts?: TPost[];
@@ -31,6 +33,7 @@ type Props = {
 export const PostBox = memo((props: Props) => {
   const { posts, refetch, likeRefetch, user } = props;
   const { likeMutation, likeDeleteMutation } = useMutateLike();
+  const { followMutation, deleteFollowMutation } = useMutateFollow();
   const { message, setMessage } = useContext(MessageContext);
   const { postProcess, setPostProcess } = useContext(PostContext);
   const [moreFlag, setMoreFlag] = useState(-1);
@@ -62,6 +65,29 @@ export const PostBox = memo((props: Props) => {
   const onClickDeleteLike = async (likeId: number) => {
     try {
       await likeDeleteMutation.mutateAsync(likeId);
+      refetch && refetch();
+      likeRefetch && likeRefetch();
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  const onClickFollow = async (userId: number) => {
+    const reqFollow = {
+      follow_user_id: userId,
+    };
+    try {
+      await followMutation.mutateAsync(reqFollow);
+      refetch && refetch();
+      likeRefetch && likeRefetch();
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  const onClickDeleteFollow = async (followId: number) => {
+    try {
+      await deleteFollowMutation.mutateAsync(followId);
       refetch && refetch();
       likeRefetch && likeRefetch();
     } catch (err) {
@@ -104,10 +130,22 @@ export const PostBox = memo((props: Props) => {
                 </div>
               )}
               <span className="postUserBox__name">{post.postUserResponse.name}</span>
-              {post.user_id === user?.id && (
+              {post.user_id === user?.id ? (
                 <div className="postUserBox__editBox">
                   <PostEditMenuBox posts={posts} index={index} />
                 </div>
+              ) : post.follow_id === 0 ? (
+                <span className="postUserBox__followBtn">
+                  <ButtonBox onClick={() => onClickFollow(post.postUserResponse.id)}>
+                    フォローする
+                  </ButtonBox>
+                </span>
+              ) : (
+                <span className="postUserBox__followBtn">
+                  <ButtonBox onClick={() => onClickDeleteFollow(post.follow_id)}>
+                    フォロー中
+                  </ButtonBox>
+                </span>
               )}
             </div>
             <h3>{post.title}</h3>
@@ -226,6 +264,21 @@ const postUserBox = css`
     position: absolute;
     top: 0;
     right: 0;
+  }
+
+  .postUserBox__followBtn {
+    button {
+      background-color: #333;
+      border-radius: 20px;
+      position: absolute;
+      top: 0;
+      right: 0;
+
+      &:hover {
+        background-color: #333;
+        opacity: 0.7;
+      }
+    }
   }
 `;
 
