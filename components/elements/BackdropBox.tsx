@@ -4,7 +4,7 @@ import { memo, useContext } from 'react';
 import { BackdropContext } from '@/provider/BackdropProvider';
 
 export const BackdropBox = memo(() => {
-  const { backdropFlag, setBackdropFlag } = useContext(BackdropContext);
+  const { backdropFlag } = useContext(BackdropContext);
 
   return (
     <div>

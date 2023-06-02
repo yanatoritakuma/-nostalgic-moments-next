@@ -19,7 +19,7 @@ type Props = {
   previewUrl: string;
 };
 
-const UserInfoInputBox = memo((props: Props) => {
+export const UserInfoInputBox = memo((props: Props) => {
   const { authStatte, setAuthStatte, onChangeImageHandler, previewUrl } = props;
   return (
     <div css={userInfoInputBox}>
@@ -57,8 +57,6 @@ const UserInfoInputBox = memo((props: Props) => {
     </div>
   );
 });
-
-export default UserInfoInputBox;
 
 UserInfoInputBox.displayName = 'UserInfoInputBox';
 

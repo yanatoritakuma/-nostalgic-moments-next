@@ -1,8 +1,8 @@
 import { css } from '@emotion/react';
 import Image from 'next/image';
 import TopImg from '@/images/top.jpg';
-import Prefectures from '@/components/features/home/Prefectures';
-import TagSearch from '@/components/features/home/TagSearch';
+import { Prefectures } from '@/components/features/home/Prefectures';
+import { TagSearch } from '@/components/features/home/TagSearch';
 import { LikeTop } from '@/components/features/home/LikeTop';
 
 export default function Home() {

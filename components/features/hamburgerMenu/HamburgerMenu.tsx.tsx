@@ -10,7 +10,7 @@ type Props = {
   setHambBtn: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
-const HamburgerMenu = memo((props: Props) => {
+export const HamburgerMenu = memo((props: Props) => {
   const { hambBtn, setHambBtn } = props;
   const { logoutMutation } = useMutateAuth();
 
@@ -52,8 +52,6 @@ const HamburgerMenu = memo((props: Props) => {
     </Drawer>
   );
 });
-
-export default HamburgerMenu;
 
 HamburgerMenu.displayName = 'HamburgerMenu';
 

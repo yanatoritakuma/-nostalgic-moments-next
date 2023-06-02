@@ -3,7 +3,7 @@ import React, { memo } from 'react';
 import { AccordionBox } from '@/components/elements/AccordionBox';
 import { chubu, chugoku, kantou, kinki, tohoku } from '@/const/prefecture';
 
-const Prefectures = memo(() => {
+export const Prefectures = memo(() => {
   return (
     <section css={prefecturesBox}>
       <h2>都道府県から選ぶ</h2>
@@ -40,7 +40,6 @@ const Prefectures = memo(() => {
 });
 
 Prefectures.displayName = 'Prefectures';
-export default Prefectures;
 
 const prefecturesBox = css`
   padding: 60px 0;

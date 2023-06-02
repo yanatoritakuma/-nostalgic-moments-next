@@ -8,10 +8,10 @@ import CloseIcon from '@mui/icons-material/Close';
 import { useQueryUser } from '@/hooks/user/useQueryUser';
 import { ButtonBox } from '@/components/elements/ButtonBox';
 import { useRouter } from 'next/router';
-import HamburgerMenu from '@/components/features/hamburgerMenu/HamburgerMenu.tsx';
+import { HamburgerMenu } from '@/components/features/hamburgerMenu/HamburgerMenu.tsx';
 import HeaderIcon from '@/images/logo.png';
 
-const Header = memo(() => {
+export const Header = memo(() => {
   const [hambBtn, setHambBtn] = useState(false);
   const { data: user } = useQueryUser();
   const router = useRouter();
@@ -46,8 +46,6 @@ const Header = memo(() => {
     </>
   );
 });
-
-export default Header;
 
 Header.displayName = 'Header';
 

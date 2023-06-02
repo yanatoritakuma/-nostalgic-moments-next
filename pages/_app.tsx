@@ -4,7 +4,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { useEffect } from 'react';
 import axios from 'axios';
-import Header from '@/components/layout/Header';
+import { Header } from '@/components/layout/Header';
 import { MessageProvider } from '@/provider/MessageProvider';
 import { SnackbarBox } from '@/components/elements/SnackbarBox';
 import { BackdropBox } from '@/components/elements/BackdropBox';

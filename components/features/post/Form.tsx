@@ -5,7 +5,7 @@ import { TextBox } from '@/components/elements/TextBox';
 import { SelectBox } from '@/components/elements/SelectBox';
 import { prefectures } from '@/const/prefecture';
 import { ButtonBox } from '@/components/elements/ButtonBox';
-import useChangeImage from '@/hooks/useChangeImage';
+import { useChangeImage } from '@/hooks/useChangeImage';
 import { imageRegistration } from '@/utils/imageRegistration';
 import { useMutatePost } from '@/hooks/post/useMutatePost';
 import { useQueryUser } from '@/hooks/user/useQueryUser';

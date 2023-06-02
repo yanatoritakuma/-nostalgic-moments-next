@@ -4,7 +4,7 @@ import { useMutateAuth } from '@/hooks/auth/useMutateAuth';
 import { useEffect, useState } from 'react';
 import { ButtonBox } from '@/components/elements/ButtonBox';
 import { TextBox } from '@/components/elements/TextBox';
-import useChangeImage from '@/hooks/useChangeImage';
+import { useChangeImage } from '@/hooks/useChangeImage';
 import { imageRegistration } from '@/utils/imageRegistration';
 import { authValidation } from '@/utils/validations/authValidation';
 
