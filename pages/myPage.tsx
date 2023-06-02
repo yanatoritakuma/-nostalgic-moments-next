@@ -12,11 +12,14 @@ import CreateIcon from '@mui/icons-material/Create';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import { UserEditMenuBox } from '@/components/features/user/UserEditMenuBox';
 import NoimageUser from '@/images/noimage-user.png';
+import { useQueryFollow } from '@/hooks/follow/useQueryFollow';
 
 const myPage = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const { data: userPosts, refetch: userPostsRefetch } = useQueryUserPost(currentPage, 10);
   const { data: user } = useQueryUser();
+  const { data: follow } = useQueryFollow(1, 10);
+  console.log('follow', follow);
 
   const [selectTab, setSelectTab] = useState(0);
 
@@ -58,6 +61,10 @@ const myPage = () => {
             </div>
           </div>
           <span className="myPageBox__created">{StartDateUse(user.created_at)}</span>
+          <div css={countBox}>
+            <span>フォロー数: {follow?.followTotalPageCount}</span>
+            <span>フォロワー数: {follow?.followerTotalPageCount}</span>
+          </div>
           <div css={countBox}>
             <span>投稿数: {userPosts?.totalPageCount}</span>
             <span>いいね数: {userPosts?.totalLikeCount}</span>
