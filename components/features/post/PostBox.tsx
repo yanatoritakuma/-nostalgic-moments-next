@@ -1,6 +1,6 @@
 import { memo, useContext, useEffect, useState } from 'react';
 import { css } from '@emotion/react';
-import { TPost, TPostPages } from '@/types/post';
+import { TLikeTopTenPosts, TPost, TPostPages } from '@/types/post';
 import Image from 'next/image';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
@@ -22,11 +22,14 @@ type Props = {
   refetch?: <TPageData>(
     options?: (RefetchOptions & RefetchQueryFilters<TPageData>) | undefined
   ) => Promise<QueryObserverResult<TPostPages, TError>>;
+  likeRefetch?: <TPageData>(
+    options?: (RefetchOptions & RefetchQueryFilters<TPageData>) | undefined
+  ) => Promise<QueryObserverResult<TLikeTopTenPosts, TError>>;
   user: TUser | undefined;
 };
 
 export const PostBox = memo((props: Props) => {
-  const { posts, refetch, user } = props;
+  const { posts, refetch, likeRefetch, user } = props;
   const { likeMutation, likeDeleteMutation } = useMutateLike();
   const { message, setMessage } = useContext(MessageContext);
   const { postProcess, setPostProcess } = useContext(PostContext);
@@ -48,10 +51,9 @@ export const PostBox = memo((props: Props) => {
         return;
       }
 
-      if (refetch) {
-        await likeMutation.mutateAsync(req);
-        refetch();
-      }
+      await likeMutation.mutateAsync(req);
+      refetch && refetch();
+      likeRefetch && likeRefetch();
     } catch (err) {
       console.error(err);
     }
@@ -59,18 +61,18 @@ export const PostBox = memo((props: Props) => {
 
   const onClickDeleteLike = async (likeId: number) => {
     try {
-      if (refetch) {
-        await likeDeleteMutation.mutateAsync(likeId);
-        refetch();
-      }
+      await likeDeleteMutation.mutateAsync(likeId);
+      refetch && refetch();
+      likeRefetch && likeRefetch();
     } catch (err) {
       console.error(err);
     }
   };
 
   useEffect(() => {
-    if (refetch && postProcess) {
-      refetch();
+    if (postProcess) {
+      refetch && refetch();
+      likeRefetch && likeRefetch();
       setPostProcess(false);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -187,6 +189,7 @@ export const PostBox = memo((props: Props) => {
               selectComment={selectComment}
               postId={post.id}
               refetch={refetch}
+              likeRefetch={likeRefetch}
               user={user}
             />
           </div>

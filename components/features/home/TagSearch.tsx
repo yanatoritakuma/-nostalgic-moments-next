@@ -4,7 +4,7 @@ import { TextBox } from '@/components/elements/TextBox';
 import { ButtonBox } from '@/components/elements/ButtonBox';
 import { useRouter } from 'next/router';
 
-const TagSearch = memo(() => {
+export const TagSearch = memo(() => {
   const [searcTag, setSearcTag] = useState('');
   const router = useRouter();
 
@@ -31,7 +31,6 @@ const TagSearch = memo(() => {
   );
 });
 
-export default TagSearch;
 TagSearch.displayName = 'TagSearch';
 
 const tagSearchBox = css`

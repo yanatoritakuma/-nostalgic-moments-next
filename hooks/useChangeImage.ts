@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-const useChangeImage = () => {
+export const useChangeImage = () => {
   // アップロード画像state
   const [photoUrl, setPhotoUrl] = useState<File | null>(null);
 
@@ -13,5 +13,3 @@ const useChangeImage = () => {
 
   return { onChangeImageHandler, photoUrl, setPhotoUrl };
 };
-
-export default useChangeImage;

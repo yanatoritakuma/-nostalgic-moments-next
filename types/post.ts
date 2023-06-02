@@ -32,3 +32,7 @@ export type TReqPost = {
   prefecture: string;
   address: string;
 };
+
+export type TLikeTopTenPosts = {
+  likeTopTenPosts: TPost[];
+};
