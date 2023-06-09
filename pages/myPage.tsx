@@ -13,15 +13,17 @@ import FavoriteIcon from '@mui/icons-material/Favorite';
 import { UserEditMenuBox } from '@/components/features/user/UserEditMenuBox';
 import NoimageUser from '@/images/noimage-user.png';
 import { useQueryFollow } from '@/hooks/follow/useQueryFollow';
+import { FollowsBox } from '@/components/features/follow/followsBox';
 
 const myPage = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const { data: userPosts, refetch: userPostsRefetch } = useQueryUserPost(currentPage, 10);
   const { data: user } = useQueryUser();
   const { data: follow } = useQueryFollow(1, 10);
-  console.log('follow', follow);
 
   const [selectTab, setSelectTab] = useState(0);
+  const [followsFlag, setFollowsFlag] = useState(false);
+  const [selectLabel, setSelectLabel] = useState(0);
 
   // ページネーションで都道府県別投稿のAPI再取得
   useEffect(() => {
@@ -62,8 +64,28 @@ const myPage = () => {
           </div>
           <span className="myPageBox__created">{StartDateUse(user.created_at)}</span>
           <div css={countBox}>
-            <span>フォロー数: {follow?.followTotalPageCount}</span>
-            <span>フォロワー数: {follow?.followerTotalPageCount}</span>
+            <span
+              onClick={() => {
+                setFollowsFlag(true);
+                setSelectLabel(0);
+              }}
+            >
+              フォロー数: {follow?.followTotalPageCount}
+            </span>
+            <span
+              onClick={() => {
+                setFollowsFlag(true);
+                setSelectLabel(1);
+              }}
+            >
+              フォロワー数: {follow?.followerTotalPageCount}
+            </span>
+            <FollowsBox
+              open={followsFlag}
+              setOpen={() => setFollowsFlag(false)}
+              selectLabel={selectLabel}
+              follow={follow}
+            />
           </div>
           <div css={countBox}>
             <span>投稿数: {userPosts?.totalPageCount}</span>
