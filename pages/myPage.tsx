@@ -19,7 +19,7 @@ const myPage = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const { data: userPosts, refetch: userPostsRefetch } = useQueryUserPost(currentPage, 10);
   const { data: user } = useQueryUser();
-  const { data: follow } = useQueryFollow(1, 10);
+  const { data: follow, refetch: followRefetch } = useQueryFollow(1, 10);
 
   const [selectTab, setSelectTab] = useState(0);
   const [followsFlag, setFollowsFlag] = useState(false);
@@ -66,26 +66,31 @@ const myPage = () => {
           <div css={countBox}>
             <span
               onClick={() => {
-                setFollowsFlag(true);
                 setSelectLabel(0);
+                setFollowsFlag(true);
               }}
             >
               フォロー数: {follow?.followTotalPageCount}
             </span>
             <span
               onClick={() => {
-                setFollowsFlag(true);
                 setSelectLabel(1);
+                setFollowsFlag(true);
               }}
             >
               フォロワー数: {follow?.followerTotalPageCount}
             </span>
-            <FollowsBox
-              open={followsFlag}
-              setOpen={() => setFollowsFlag(false)}
-              selectLabel={selectLabel}
-              follow={follow}
-            />
+
+            {follow !== undefined && (
+              <FollowsBox
+                open={followsFlag}
+                setOpen={() => setFollowsFlag(false)}
+                selectLabel={selectLabel}
+                setSelectLabel={setSelectLabel}
+                follow={follow}
+                followRefetch={followRefetch}
+              />
+            )}
           </div>
           <div css={countBox}>
             <span>投稿数: {userPosts?.totalPageCount}</span>

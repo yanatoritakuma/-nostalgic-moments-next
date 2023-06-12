@@ -1,36 +1,104 @@
-import { memo, useState } from 'react';
+import { memo, useEffect, useState } from 'react';
 import { css } from '@emotion/react';
 import Box from '@mui/material/Box';
 import Modal from '@mui/material/Modal';
 import { TabsBox } from '@/components/elements/TabsBox';
-import { FollowsListBox } from '@/components/features/follow/FollowsListBox';
 import { TResFollow } from '@/types/follow';
+import Image from 'next/image';
+import NoimageUser from '@/images/noimage-user.png';
+import { useMutateFollow } from '@/hooks/follow/useMutateFollow';
+import { ButtonBox } from '@/components/elements/ButtonBox';
+import { QueryObserverResult, RefetchOptions, RefetchQueryFilters } from '@tanstack/react-query';
+import { TError } from '@/types/error';
 
 type Props = {
   open: boolean;
   setOpen: (value: React.SetStateAction<boolean>) => void;
   selectLabel: number;
-  follow: TResFollow | undefined;
+  setSelectLabel: React.Dispatch<React.SetStateAction<number>>;
+  follow: TResFollow;
+  followRefetch: <TPageData>(
+    options?: (RefetchOptions & RefetchQueryFilters<TPageData>) | undefined
+  ) => Promise<QueryObserverResult<TResFollow, TError>>;
 };
 
 export const FollowsBox = memo((props: Props) => {
-  const { open, setOpen, selectLabel, follow } = props;
-  const [selectTab, setSelectTab] = useState(selectLabel);
+  const { open, setOpen, selectLabel, setSelectLabel, follow, followRefetch } = props;
+  const [selectFollow, setSselectFollow] = useState(follow?.follows);
+  const { followMutation, deleteFollowMutation } = useMutateFollow();
+  console.log('follow', follow);
+
+  useEffect(() => {
+    if (selectLabel === 0) {
+      setSselectFollow(follow?.follows);
+    } else {
+      setSselectFollow(follow?.followers);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectLabel, follow]);
+
+  const onClickFollow = async (userId: number) => {
+    const reqFollow = {
+      follow_user_id: userId,
+    };
+    try {
+      await followMutation.mutateAsync(reqFollow);
+      followRefetch();
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  const onClickDeleteFollow = async (followId: number) => {
+    try {
+      await deleteFollowMutation.mutateAsync(followId);
+      followRefetch();
+    } catch (err) {
+      console.error(err);
+    }
+  };
 
   return (
     <Modal open={open} onClose={() => setOpen(false)}>
       <Box css={followsBox}>
-        <h3>{selectTab === 0 ? 'フォロー' : 'フォロワー'}</h3>
+        <h3>{selectLabel === 0 ? 'フォロー' : 'フォロワー'}</h3>
         <TabsBox
           labels={['フォロー', 'フォロワー']}
-          selectTab={selectTab}
-          setSelectTab={setSelectTab}
+          selectTab={selectLabel}
+          setSelectTab={setSelectLabel}
         />
-        {selectTab === 0 ? (
-          <FollowsListBox follows={follow?.follows} />
-        ) : (
-          <FollowsListBox follows={follow?.followers} />
-        )}
+        {selectFollow?.map((follow) => (
+          <div key={follow.id} css={listBox}>
+            <div css={userImgBox}>
+              {follow.followUserResponse.image !== '' ? (
+                <Image
+                  src={follow.followUserResponse.image}
+                  fill
+                  sizes="(max-width: 70px)"
+                  alt="ユーザー画像"
+                />
+              ) : (
+                <Image src={NoimageUser} fill sizes="(max-width: 70px)" alt="ユーザー画像" />
+              )}
+            </div>
+            <span>{follow.followUserResponse.name}</span>
+            {follow.followUserResponse.followBackId === 0 ? (
+              <span className="postUserBox__followBtn">
+                <ButtonBox onClick={() => onClickFollow(follow.followUserResponse.id)}>
+                  フォローする
+                </ButtonBox>
+              </span>
+            ) : (
+              <span className="postUserBox__followBtn">
+                <ButtonBox
+                  onClick={() => onClickDeleteFollow(follow.followUserResponse.followBackId)}
+                >
+                  フォロー中
+                </ButtonBox>
+              </span>
+            )}
+          </div>
+        ))}
       </Box>
     </Modal>
   );
@@ -60,5 +128,39 @@ const followsBox = css`
   button {
     margin: 20px auto;
     display: block;
+  }
+`;
+
+const listBox = css`
+  margin: 12px 0;
+  display: flex;
+  align-items: center;
+  position: relative;
+
+  .postUserBox__followBtn {
+    position: absolute;
+    right: 0;
+  }
+`;
+
+const userImgBox = css`
+  margin-right: 12px;
+  width: 70px;
+  height: 70px;
+  position: relative;
+
+  @media (max-width: 768px) {
+    width: 60px;
+    height: 60px;
+  }
+
+  @media (max-width: 425px) {
+    width: 50px;
+    height: 50px;
+  }
+
+  img {
+    object-fit: cover;
+    border-radius: 50%;
   }
 `;
