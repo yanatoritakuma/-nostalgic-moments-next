@@ -10,6 +10,8 @@ import { useMutateFollow } from '@/hooks/follow/useMutateFollow';
 import { ButtonBox } from '@/components/elements/ButtonBox';
 import { QueryObserverResult, RefetchOptions, RefetchQueryFilters } from '@tanstack/react-query';
 import { TError } from '@/types/error';
+import { PaginationBox } from '@/components/common/PaginationBox';
+import { countPages } from '@/utils/countPages';
 
 type Props = {
   open: boolean;
@@ -20,10 +22,21 @@ type Props = {
   followRefetch: <TPageData>(
     options?: (RefetchOptions & RefetchQueryFilters<TPageData>) | undefined
   ) => Promise<QueryObserverResult<TResFollow, TError>>;
+  currentFollowPage: number;
+  setCurrentFollowPage: React.Dispatch<React.SetStateAction<number>>;
 };
 
 export const FollowsBox = memo((props: Props) => {
-  const { open, setOpen, selectLabel, setSelectLabel, follow, followRefetch } = props;
+  const {
+    open,
+    setOpen,
+    selectLabel,
+    setSelectLabel,
+    follow,
+    followRefetch,
+    currentFollowPage,
+    setCurrentFollowPage,
+  } = props;
   const [selectFollow, setSselectFollow] = useState(follow?.follows);
   const { followMutation, deleteFollowMutation } = useMutateFollow();
   console.log('follow', follow);
@@ -99,6 +112,13 @@ export const FollowsBox = memo((props: Props) => {
             )}
           </div>
         ))}
+        <PaginationBox
+          count={countPages(
+            selectLabel === 0 ? follow.followTotalPageCount : follow.followerTotalPageCount
+          )}
+          currentPage={currentFollowPage}
+          setCurrentPage={setCurrentFollowPage}
+        />
       </Box>
     </Modal>
   );

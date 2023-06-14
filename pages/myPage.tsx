@@ -17,9 +17,10 @@ import { FollowsBox } from '@/components/features/follow/followsBox';
 
 const myPage = () => {
   const [currentPage, setCurrentPage] = useState(1);
+  const [currentFollowPage, setCurrentFollowPage] = useState(1);
   const { data: userPosts, refetch: userPostsRefetch } = useQueryUserPost(currentPage, 10);
   const { data: user } = useQueryUser();
-  const { data: follow, refetch: followRefetch } = useQueryFollow(1, 10);
+  const { data: follow, refetch: followRefetch } = useQueryFollow(currentFollowPage, 10);
 
   const [selectTab, setSelectTab] = useState(0);
   const [followsFlag, setFollowsFlag] = useState(false);
@@ -35,6 +36,18 @@ const myPage = () => {
   useEffect(() => {
     setCurrentPage(1);
   }, [selectTab]);
+
+  // フォローモーダルのページネーションでフォローAPI再取得
+  useEffect(() => {
+    followRefetch();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentFollowPage]);
+
+  // フォローモーダルのタブ切り替えでフォローモーダルを1ページに戻す
+  useEffect(() => {
+    setCurrentFollowPage(1);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectLabel]);
 
   const StartDateUse = (dateString: string) => {
     const date = new Date(dateString);
@@ -89,6 +102,8 @@ const myPage = () => {
                 setSelectLabel={setSelectLabel}
                 follow={follow}
                 followRefetch={followRefetch}
+                currentFollowPage={currentFollowPage}
+                setCurrentFollowPage={setCurrentFollowPage}
               />
             )}
           </div>
