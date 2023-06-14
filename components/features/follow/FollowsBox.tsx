@@ -39,7 +39,6 @@ export const FollowsBox = memo((props: Props) => {
   } = props;
   const [selectFollow, setSselectFollow] = useState(follow?.follows);
   const { followMutation, deleteFollowMutation } = useMutateFollow();
-  console.log('follow', follow);
 
   useEffect(() => {
     if (selectLabel === 0) {
@@ -94,10 +93,14 @@ export const FollowsBox = memo((props: Props) => {
                 <Image src={NoimageUser} fill sizes="(max-width: 70px)" alt="ユーザー画像" />
               )}
             </div>
-            <span>{follow.followUserResponse.name}</span>
+            <span className="listBox__name">{follow.followUserResponse.name}</span>
             {follow.followUserResponse.followBackId === 0 ? (
               <span className="postUserBox__followBtn">
-                <ButtonBox onClick={() => onClickFollow(follow.followUserResponse.id)}>
+                <ButtonBox
+                  onClick={() => onClickFollow(follow.followUserResponse.id)}
+                  size="small"
+                  variant="outlined"
+                >
                   フォローする
                 </ButtonBox>
               </span>
@@ -105,6 +108,7 @@ export const FollowsBox = memo((props: Props) => {
               <span className="postUserBox__followBtn">
                 <ButtonBox
                   onClick={() => onClickDeleteFollow(follow.followUserResponse.followBackId)}
+                  size="small"
                 >
                   フォロー中
                 </ButtonBox>
@@ -160,6 +164,22 @@ const listBox = css`
   .postUserBox__followBtn {
     position: absolute;
     right: 0;
+
+    button {
+      width: 104px;
+    }
+  }
+
+  .listBox__name {
+    width: 56%;
+    overflow-wrap: break-word;
+
+    @media (max-width: 768px) {
+      width: 50%;
+    }
+    @media (max-width: 425px) {
+      width: 30%;
+    }
   }
 `;
 

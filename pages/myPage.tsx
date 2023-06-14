@@ -82,6 +82,7 @@ const myPage = () => {
                 setSelectLabel(0);
                 setFollowsFlag(true);
               }}
+              style={{ cursor: 'pointer' }}
             >
               フォロー数: {follow?.followTotalPageCount}
             </span>
@@ -90,6 +91,7 @@ const myPage = () => {
                 setSelectLabel(1);
                 setFollowsFlag(true);
               }}
+              style={{ cursor: 'pointer' }}
             >
               フォロワー数: {follow?.followerTotalPageCount}
             </span>

@@ -10,10 +10,11 @@ type Props = {
   onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
   variant?: 'text' | 'contained' | 'outlined';
   disabled?: boolean;
+  size?: 'small' | 'medium' | 'large';
 };
 
 export const ButtonBox = memo((props: Props) => {
-  const { children, onClick, upload, onChange, variant, disabled } = props;
+  const { children, onClick, upload, onChange, variant, disabled, size } = props;
 
   return (
     <>
@@ -22,6 +23,7 @@ export const ButtonBox = memo((props: Props) => {
           onClick={onClick}
           variant={variant !== undefined ? variant : 'contained'}
           disabled={disabled}
+          size={size}
         >
           {children}
         </Button>
