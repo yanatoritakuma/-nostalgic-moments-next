@@ -13,7 +13,7 @@ import FavoriteIcon from '@mui/icons-material/Favorite';
 import { UserEditMenuBox } from '@/components/features/user/UserEditMenuBox';
 import NoimageUser from '@/images/noimage-user.png';
 import { useQueryFollow } from '@/hooks/follow/useQueryFollow';
-import { FollowsBox } from '@/components/features/follow/followsBox';
+import { FollowsBox } from '@/components/features/follow/FollowsBox';
 
 const myPage = () => {
   const [currentPage, setCurrentPage] = useState(1);
