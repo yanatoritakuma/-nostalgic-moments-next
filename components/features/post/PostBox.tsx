@@ -136,13 +136,17 @@ export const PostBox = memo((props: Props) => {
                 </div>
               ) : post.follow_id === 0 ? (
                 <span className="postUserBox__followBtn">
-                  <ButtonBox onClick={() => onClickFollow(post.postUserResponse.id)}>
+                  <ButtonBox
+                    onClick={() => onClickFollow(post.postUserResponse.id)}
+                    size="small"
+                    variant="outlined"
+                  >
                     フォローする
                   </ButtonBox>
                 </span>
               ) : (
                 <span className="postUserBox__followBtn">
-                  <ButtonBox onClick={() => onClickDeleteFollow(post.follow_id)}>
+                  <ButtonBox onClick={() => onClickDeleteFollow(post.follow_id)} size="small">
                     フォロー中
                   </ButtonBox>
                 </span>
@@ -258,6 +262,16 @@ const postUserBox = css`
 
   .postUserBox__name {
     font-size: 18px;
+    overflow-wrap: break-word;
+    width: 56%;
+
+    @media (max-width: 425px) {
+      font-size: 14px;
+    }
+
+    @media (max-width: 375px) {
+      width: 104px;
+    }
   }
 
   .postUserBox__editBox {
@@ -268,16 +282,9 @@ const postUserBox = css`
 
   .postUserBox__followBtn {
     button {
-      background-color: #333;
-      border-radius: 20px;
       position: absolute;
       top: 0;
       right: 0;
-
-      &:hover {
-        background-color: #333;
-        opacity: 0.7;
-      }
     }
   }
 `;
