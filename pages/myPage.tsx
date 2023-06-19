@@ -70,7 +70,7 @@ const myPage = () => {
                 <Image src={NoimageUser} fill sizes="(max-width: 70px)" alt="ユーザー画像" />
               )}
             </div>
-            {user.name}
+            <span className="userBox__name">{user.name}</span>
             <div className="userBox__editBox">
               <UserEditMenuBox />
             </div>
@@ -207,8 +207,14 @@ const userBox = css`
   align-items: center;
   position: relative;
 
-  .postUserBox__name {
+  .userBox__name {
     font-size: 18px;
+    word-wrap: break-word;
+    width: 54%;
+
+    @media (max-width: 425px) {
+      font-size: 14px;
+    }
   }
 
   .userBox__editBox {

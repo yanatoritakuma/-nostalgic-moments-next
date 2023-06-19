@@ -255,6 +255,7 @@ const postBox = css`
   border: 2px solid #aaa;
   border-radius: 10px;
   max-width: 1200px;
+  word-wrap: break-word;
 
   @media (max-width: 425px) {
     padding: 12px;

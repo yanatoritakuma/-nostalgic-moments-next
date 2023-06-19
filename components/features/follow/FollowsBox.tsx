@@ -167,6 +167,11 @@ const listBox = css`
 
     button {
       width: 104px;
+
+      @media (max-width: 425px) {
+        width: 82px;
+        font-size: 10px;
+      }
     }
   }
 
@@ -178,7 +183,7 @@ const listBox = css`
       width: 50%;
     }
     @media (max-width: 425px) {
-      width: 30%;
+      width: 40%;
     }
   }
 `;
