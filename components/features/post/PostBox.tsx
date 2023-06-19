@@ -16,6 +16,8 @@ import { PostEditMenuBox } from '@/components/features/post/PostEditMenuBox';
 import { PostContext } from '@/provider/PostProvider';
 import { prefectures } from '@/const/prefecture';
 import { CommentBox } from '@/components/features/post/CommentBox';
+import { ButtonBox } from '@/components/elements/ButtonBox';
+import { useMutateFollow } from '@/hooks/follow/useMutateFollow';
 
 type Props = {
   posts?: TPost[];
@@ -31,26 +33,25 @@ type Props = {
 export const PostBox = memo((props: Props) => {
   const { posts, refetch, likeRefetch, user } = props;
   const { likeMutation, likeDeleteMutation } = useMutateLike();
+  const { followMutation, deleteFollowMutation } = useMutateFollow();
   const { message, setMessage } = useContext(MessageContext);
   const { postProcess, setPostProcess } = useContext(PostContext);
   const [moreFlag, setMoreFlag] = useState(-1);
   const [selectComment, setSelectComment] = useState(-1);
 
   const onClickLike = async (postId: number) => {
+    if (!user) {
+      setMessage({
+        ...message,
+        text: 'いいねをするにはログインが必要です',
+        type: 'error',
+      });
+      return;
+    }
     try {
       const req = {
         post_id: postId,
       };
-
-      if (!user) {
-        setMessage({
-          ...message,
-          text: 'いいねをするにはログインが必要です',
-          type: 'error',
-        });
-        return;
-      }
-
       await likeMutation.mutateAsync(req);
       refetch && refetch();
       likeRefetch && likeRefetch();
@@ -62,6 +63,37 @@ export const PostBox = memo((props: Props) => {
   const onClickDeleteLike = async (likeId: number) => {
     try {
       await likeDeleteMutation.mutateAsync(likeId);
+      refetch && refetch();
+      likeRefetch && likeRefetch();
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  const onClickFollow = async (userId: number) => {
+    if (!user) {
+      setMessage({
+        ...message,
+        text: 'フォローをするにはログインが必要です',
+        type: 'error',
+      });
+      return;
+    }
+    const reqFollow = {
+      follow_user_id: userId,
+    };
+    try {
+      await followMutation.mutateAsync(reqFollow);
+      refetch && refetch();
+      likeRefetch && likeRefetch();
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  const onClickDeleteFollow = async (followId: number) => {
+    try {
+      await deleteFollowMutation.mutateAsync(followId);
       refetch && refetch();
       likeRefetch && likeRefetch();
     } catch (err) {
@@ -104,10 +136,26 @@ export const PostBox = memo((props: Props) => {
                 </div>
               )}
               <span className="postUserBox__name">{post.postUserResponse.name}</span>
-              {post.user_id === user?.id && (
+              {post.user_id === user?.id ? (
                 <div className="postUserBox__editBox">
                   <PostEditMenuBox posts={posts} index={index} />
                 </div>
+              ) : post.follow_id === 0 ? (
+                <span className="postUserBox__followBtn">
+                  <ButtonBox
+                    onClick={() => onClickFollow(post.postUserResponse.id)}
+                    size="small"
+                    variant="outlined"
+                  >
+                    フォローする
+                  </ButtonBox>
+                </span>
+              ) : (
+                <span className="postUserBox__followBtn">
+                  <ButtonBox onClick={() => onClickDeleteFollow(post.follow_id)} size="small">
+                    フォロー中
+                  </ButtonBox>
+                </span>
               )}
             </div>
             <h3>{post.title}</h3>
@@ -207,6 +255,7 @@ const postBox = css`
   border: 2px solid #aaa;
   border-radius: 10px;
   max-width: 1200px;
+  word-wrap: break-word;
 
   @media (max-width: 425px) {
     padding: 12px;
@@ -220,12 +269,34 @@ const postUserBox = css`
 
   .postUserBox__name {
     font-size: 18px;
+    overflow-wrap: break-word;
+    width: 56%;
+
+    @media (max-width: 425px) {
+      font-size: 14px;
+    }
+
+    @media (max-width: 375px) {
+      width: 104px;
+    }
   }
 
   .postUserBox__editBox {
     position: absolute;
     top: 0;
     right: 0;
+  }
+
+  .postUserBox__followBtn {
+    button {
+      position: absolute;
+      top: 0;
+      right: 0;
+
+      @media (max-width: 425px) {
+        font-size: 10px;
+      }
+    }
   }
 `;
 

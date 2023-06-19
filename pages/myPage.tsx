@@ -12,13 +12,19 @@ import CreateIcon from '@mui/icons-material/Create';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import { UserEditMenuBox } from '@/components/features/user/UserEditMenuBox';
 import NoimageUser from '@/images/noimage-user.png';
+import { useQueryFollow } from '@/hooks/follow/useQueryFollow';
+import { FollowsBox } from '@/components/features/follow/FollowsBox';
 
 const myPage = () => {
   const [currentPage, setCurrentPage] = useState(1);
+  const [currentFollowPage, setCurrentFollowPage] = useState(1);
   const { data: userPosts, refetch: userPostsRefetch } = useQueryUserPost(currentPage, 10);
   const { data: user } = useQueryUser();
+  const { data: follow, refetch: followRefetch } = useQueryFollow(currentFollowPage, 10);
 
   const [selectTab, setSelectTab] = useState(0);
+  const [followsFlag, setFollowsFlag] = useState(false);
+  const [selectLabel, setSelectLabel] = useState(0);
 
   // ページネーションで都道府県別投稿のAPI再取得
   useEffect(() => {
@@ -30,6 +36,18 @@ const myPage = () => {
   useEffect(() => {
     setCurrentPage(1);
   }, [selectTab]);
+
+  // フォローモーダルのページネーションでフォローAPI再取得
+  useEffect(() => {
+    followRefetch();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentFollowPage]);
+
+  // フォローモーダルのタブ切り替えでフォローモーダルを1ページに戻す
+  useEffect(() => {
+    setCurrentFollowPage(1);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectLabel]);
 
   const StartDateUse = (dateString: string) => {
     const date = new Date(dateString);
@@ -52,12 +70,45 @@ const myPage = () => {
                 <Image src={NoimageUser} fill sizes="(max-width: 70px)" alt="ユーザー画像" />
               )}
             </div>
-            {user.name}
+            <span className="userBox__name">{user.name}</span>
             <div className="userBox__editBox">
               <UserEditMenuBox />
             </div>
           </div>
           <span className="myPageBox__created">{StartDateUse(user.created_at)}</span>
+          <div css={countBox}>
+            <span
+              onClick={() => {
+                setSelectLabel(0);
+                setFollowsFlag(true);
+              }}
+              style={{ cursor: 'pointer' }}
+            >
+              フォロー数: {follow?.followTotalPageCount}
+            </span>
+            <span
+              onClick={() => {
+                setSelectLabel(1);
+                setFollowsFlag(true);
+              }}
+              style={{ cursor: 'pointer' }}
+            >
+              フォロワー数: {follow?.followerTotalPageCount}
+            </span>
+
+            {follow !== undefined && (
+              <FollowsBox
+                open={followsFlag}
+                setOpen={() => setFollowsFlag(false)}
+                selectLabel={selectLabel}
+                setSelectLabel={setSelectLabel}
+                follow={follow}
+                followRefetch={followRefetch}
+                currentFollowPage={currentFollowPage}
+                setCurrentFollowPage={setCurrentFollowPage}
+              />
+            )}
+          </div>
           <div css={countBox}>
             <span>投稿数: {userPosts?.totalPageCount}</span>
             <span>いいね数: {userPosts?.totalLikeCount}</span>
@@ -156,8 +207,14 @@ const userBox = css`
   align-items: center;
   position: relative;
 
-  .postUserBox__name {
+  .userBox__name {
     font-size: 18px;
+    word-wrap: break-word;
+    width: 54%;
+
+    @media (max-width: 425px) {
+      font-size: 14px;
+    }
   }
 
   .userBox__editBox {

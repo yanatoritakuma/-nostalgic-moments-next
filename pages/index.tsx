@@ -4,6 +4,7 @@ import TopImg from '@/images/top.jpg';
 import { Prefectures } from '@/components/features/home/Prefectures';
 import { TagSearch } from '@/components/features/home/TagSearch';
 import { LikeTop } from '@/components/features/home/LikeTop';
+import { TimelLine } from '@/components/features/home/TimelLine';
 
 export default function Home() {
   return (
@@ -16,6 +17,7 @@ export default function Home() {
       <Prefectures />
       <TagSearch />
       <LikeTop />
+      <TimelLine />
     </main>
   );
 }

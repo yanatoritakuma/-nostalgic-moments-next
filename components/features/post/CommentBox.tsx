@@ -117,7 +117,9 @@ export const CommentBox = memo((props: Props) => {
                     <Image src={NoimageUser} fill sizes="(max-width: 70px)" alt="ユーザー画像" />
                   )}
                 </div>
-                <span>{comment.postUserResponse.name}</span>
+                <span className="commentContentsBox__userName">
+                  {comment.postUserResponse.name}
+                </span>
                 {comment.postUserResponse.id === user?.id && (
                   <span onClick={() => onClickDelitePostComment(comment.id)}>
                     <DeleteIcon className="commentContentsBox__deleteIcon" />
@@ -165,6 +167,12 @@ const commentContentsBox = css`
       right: 0;
       color: #e9546b;
     }
+  }
+
+  .commentContentsBox__userName {
+    background-color: skyblue;
+    word-wrap: break-word;
+    width: 60%;
   }
 `;
 
