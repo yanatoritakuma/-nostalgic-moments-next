@@ -70,6 +70,11 @@ const headerInBox = css`
     height: 60px;
     position: relative;
 
+    @media (max-width: 425px) {
+      width: 150px;
+      height: 40px;
+    }
+
     img {
       object-fit: cover;
     }
@@ -84,6 +89,11 @@ const BtnBox = css`
       border-radius: 20px;
       border: 2px solid;
       opacity: 0.7;
+    }
+
+    @media (max-width: 425px) {
+      padding: 6px;
+      font-size: 10px;
     }
   }
 `;

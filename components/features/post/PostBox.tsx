@@ -40,20 +40,18 @@ export const PostBox = memo((props: Props) => {
   const [selectComment, setSelectComment] = useState(-1);
 
   const onClickLike = async (postId: number) => {
+    if (!user) {
+      setMessage({
+        ...message,
+        text: 'いいねをするにはログインが必要です',
+        type: 'error',
+      });
+      return;
+    }
     try {
       const req = {
         post_id: postId,
       };
-
-      if (!user) {
-        setMessage({
-          ...message,
-          text: 'いいねをするにはログインが必要です',
-          type: 'error',
-        });
-        return;
-      }
-
       await likeMutation.mutateAsync(req);
       refetch && refetch();
       likeRefetch && likeRefetch();
@@ -73,6 +71,14 @@ export const PostBox = memo((props: Props) => {
   };
 
   const onClickFollow = async (userId: number) => {
+    if (!user) {
+      setMessage({
+        ...message,
+        text: 'フォローをするにはログインが必要です',
+        type: 'error',
+      });
+      return;
+    }
     const reqFollow = {
       follow_user_id: userId,
     };
@@ -285,6 +291,10 @@ const postUserBox = css`
       position: absolute;
       top: 0;
       right: 0;
+
+      @media (max-width: 425px) {
+        font-size: 10px;
+      }
     }
   }
 `;
