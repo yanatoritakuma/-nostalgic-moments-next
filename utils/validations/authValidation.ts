@@ -24,6 +24,12 @@ export const authValidation = () => {
         text: '名前は必須です。',
         type: 'error',
       });
+    } else if (register.name.length > 30) {
+      return setMessage({
+        ...message,
+        text: '名前は30文字以下で入力してください。',
+        type: 'error',
+      });
     } else {
       return true;
     }
