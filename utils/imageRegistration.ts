@@ -9,9 +9,9 @@ export const imageRegistration = () => {
 
   const onClickRegistration = (
     photoUrl: File | null,
-    dbRegistration: (file: string | null) => void,
     setPhotoUrl: React.Dispatch<React.SetStateAction<File | null>>,
     setPreviewUrl: React.Dispatch<React.SetStateAction<string>>,
+    dbRegistration?: (file: string | null) => void,
     user?: TUser
   ) => {
     setBackdropFlag(true);
@@ -40,12 +40,16 @@ export const imageRegistration = () => {
             .child(fileName)
             .getDownloadURL()
             .then((fireBaseUrl) => {
-              dbRegistration(fireBaseUrl);
+              if (dbRegistration) {
+                dbRegistration(fireBaseUrl);
+              }
             });
         }
       );
     } else {
-      dbRegistration(null);
+      if (dbRegistration) {
+        dbRegistration(null);
+      }
     }
     setPhotoUrl(null);
     setPreviewUrl('');

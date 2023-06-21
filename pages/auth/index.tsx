@@ -7,6 +7,7 @@ import { TextBox } from '@/components/elements/TextBox';
 import { useChangeImage } from '@/hooks/useChangeImage';
 import { imageRegistration } from '@/utils/imageRegistration';
 import { authValidation } from '@/utils/validations/authValidation';
+import { useRouter } from 'next/router';
 
 const auth = () => {
   const [isLogin, setIsLogin] = useState(true);
@@ -14,6 +15,7 @@ const auth = () => {
   const { onChangeImageHandler, photoUrl, setPhotoUrl } = useChangeImage();
   const { onClickRegistration } = imageRegistration();
   const { validation } = authValidation();
+  const router = useRouter();
 
   const [authStatte, setAuthStatte] = useState({
     email: '',
@@ -42,19 +44,21 @@ const auth = () => {
     };
   }, [photoUrl]);
 
-  const createAccount = async (file: string | null) => {
+  const createAccount = async () => {
     try {
       await registerMutation.mutateAsync({
         email: authStatte.email,
         password: authStatte.password,
         name: authStatte.name,
-        image: file || '',
+        image: '',
       });
 
       await loginMutation.mutateAsync({
         email: authStatte.email,
         password: authStatte.password,
       });
+
+      await router.push('/auth/profilePicture');
     } catch (err) {
       console.error(err);
     }
@@ -67,7 +71,8 @@ const auth = () => {
         password: authStatte.password,
       });
     } else {
-      onClickRegistration(photoUrl, createAccount, setPhotoUrl, setPreviewUrl);
+      //   onClickRegistration(photoUrl, setPhotoUrl, setPreviewUrl, createAccount);
+      createAccount();
     }
   };
 

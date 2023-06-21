@@ -7,7 +7,7 @@ import { PostBox } from '@/components/features/post/PostBox';
 const likeTop = () => {
   const { data: user } = useQueryUser();
   const { data: likeTopPost, refetch } = useQueryLikeTopPost(user?.id);
-  console.log(likeTopPost);
+
   useEffect(() => {
     setTimeout(() => {
       refetch();

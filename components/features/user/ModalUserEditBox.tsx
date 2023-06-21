@@ -88,7 +88,7 @@ export const ModalUserEditBox = memo((props: Props) => {
         <ButtonBox
           onClick={() => {
             if (upDateValidation(authStatte, photoUrl)) {
-              onClickRegistration(photoUrl, upDate, setPhotoUrl, setPreviewUrl);
+              onClickRegistration(photoUrl, setPhotoUrl, setPreviewUrl, upDate);
               setOpen(false);
             }
           }}
