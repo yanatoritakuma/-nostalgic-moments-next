@@ -66,7 +66,9 @@ const profilePicture = () => {
             <Image src={previewUrl} fill alt="プレビュー" />
           </div>
         )}
-        <ButtonBox onChange={onChangeImageHandler} upload />
+        <div className="profilePictureInBox__uploadIcon">
+          <ButtonBox onChange={onChangeImageHandler} upload />
+        </div>
         <ButtonBox
           onClick={() => {
             if (accountRegisterValidation(photoUrl)) {
@@ -112,6 +114,14 @@ const profilePictureInBox = css`
     margin: 20px auto;
     display: block;
     width: 200px;
+  }
+
+  .profilePictureInBox__uploadIcon {
+    text-align: center;
+    svg {
+      width: 38px;
+      height: 38px;
+    }
   }
 `;
 
