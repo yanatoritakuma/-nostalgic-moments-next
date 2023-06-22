@@ -23,7 +23,7 @@ export const ModalUserEditBox = memo((props: Props) => {
   const { updateUserMutation } = useMutateUser();
   const { onClickRegistration } = imageRegistration();
   const { deleteImg } = deleteImgStorage();
-  const { upDateValidation } = userValidation();
+  const { accountRegisterValidation } = userValidation();
 
   const [authStatte, setAuthStatte] = useState({
     email: '',
@@ -87,7 +87,7 @@ export const ModalUserEditBox = memo((props: Props) => {
         />
         <ButtonBox
           onClick={() => {
-            if (upDateValidation(authStatte, photoUrl)) {
+            if (accountRegisterValidation(photoUrl, authStatte)) {
               onClickRegistration(photoUrl, setPhotoUrl, setPreviewUrl, upDate);
               setOpen(false);
             }

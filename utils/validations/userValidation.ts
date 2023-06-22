@@ -9,20 +9,20 @@ type TReqUpDate = {
 export const userValidation = () => {
   const { message, setMessage } = useContext(MessageContext);
 
-  const upDateValidation = (register: TReqUpDate, photoUrl: File | null) => {
+  const accountRegisterValidation = (photoUrl: File | null, register?: TReqUpDate) => {
     const containsJapanese = (fileName: string) => {
       const japaneseRegex =
         /[一-龠々〆ヵヶぁ-ゔゞァ-・ヽヾ゛゜ー「」｢｣()〔〕［］｛｝〈〉《》【】〖〗〘〙〚〛〜～]/;
       return japaneseRegex.test(fileName);
     };
 
-    if (register.email === '') {
+    if (register && register.email === '') {
       return setMessage({
         ...message,
         text: 'メールアドレスは必須です。',
         type: 'error',
       });
-    } else if (register.name === '') {
+    } else if (register && register.name === '') {
       return setMessage({
         ...message,
         text: '名前は必須です。',
@@ -39,5 +39,5 @@ export const userValidation = () => {
     }
   };
 
-  return { upDateValidation };
+  return { accountRegisterValidation };
 };

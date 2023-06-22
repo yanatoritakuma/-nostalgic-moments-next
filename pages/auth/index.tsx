@@ -1,19 +1,14 @@
 import { css } from '@emotion/react';
-import Image from 'next/image';
 import { useMutateAuth } from '@/hooks/auth/useMutateAuth';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { ButtonBox } from '@/components/elements/ButtonBox';
 import { TextBox } from '@/components/elements/TextBox';
-import { useChangeImage } from '@/hooks/useChangeImage';
-import { imageRegistration } from '@/utils/imageRegistration';
 import { authValidation } from '@/utils/validations/authValidation';
 import { useRouter } from 'next/router';
 
 const auth = () => {
   const [isLogin, setIsLogin] = useState(true);
   const { loginMutation, registerMutation } = useMutateAuth();
-  const { onChangeImageHandler, photoUrl, setPhotoUrl } = useChangeImage();
-  const { onClickRegistration } = imageRegistration();
   const { validation } = authValidation();
   const router = useRouter();
 
@@ -22,27 +17,6 @@ const auth = () => {
     password: '',
     name: '',
   });
-
-  const [previewUrl, setPreviewUrl] = useState('');
-
-  useEffect(() => {
-    if (!photoUrl) {
-      return;
-    }
-
-    let reader: FileReader | null = new FileReader();
-    reader.onloadend = () => {
-      const res = reader?.result;
-      if (res && typeof res === 'string') {
-        setPreviewUrl(res);
-      }
-    };
-    reader.readAsDataURL(photoUrl);
-
-    return () => {
-      reader = null;
-    };
-  }, [photoUrl]);
 
   const createAccount = async () => {
     try {
@@ -107,26 +81,18 @@ const auth = () => {
           password
         />
         {!isLogin && (
-          <>
-            <TextBox
-              className="text"
-              label="名前"
-              value={authStatte.name}
-              onChange={(e) =>
-                setAuthStatte({
-                  ...authStatte,
-                  name: e.target.value,
-                })
-              }
-              fullWidth
-            />
-            <ButtonBox onChange={onChangeImageHandler} upload />
-          </>
-        )}
-        {previewUrl !== '' && (
-          <div css={previewBox}>
-            <Image src={previewUrl} fill alt="プレビュー" />
-          </div>
+          <TextBox
+            className="text"
+            label="名前"
+            value={authStatte.name}
+            onChange={(e) =>
+              setAuthStatte({
+                ...authStatte,
+                name: e.target.value,
+              })
+            }
+            fullWidth
+          />
         )}
         <ButtonBox onClick={() => validation(authStatte, isLogin) && onClikcAuth()}>
           {isLogin ? 'ログイン' : 'アカウント作成'}

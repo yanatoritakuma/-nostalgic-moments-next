@@ -7,6 +7,7 @@ import { useChangeImage } from '@/hooks/useChangeImage';
 import { imageRegistration } from '@/utils/imageRegistration';
 import { useMutateUser } from '@/hooks/user/useMutateUser';
 import { useRouter } from 'next/router';
+import { userValidation } from '@/utils/validations/userValidation';
 
 const profilePicture = () => {
   const { data: user } = useQueryUser();
@@ -14,6 +15,7 @@ const profilePicture = () => {
   const { updateUserMutation } = useMutateUser();
   const [previewUrl, setPreviewUrl] = useState('');
   const { onChangeImageHandler, photoUrl, setPhotoUrl } = useChangeImage();
+  const { accountRegisterValidation } = userValidation();
   const router = useRouter();
 
   const registrationImage = async (file: string | null) => {
@@ -66,9 +68,11 @@ const profilePicture = () => {
         )}
         <ButtonBox onChange={onChangeImageHandler} upload />
         <ButtonBox
-          onClick={() =>
-            onClickRegistration(photoUrl, setPhotoUrl, setPreviewUrl, registrationImage)
-          }
+          onClick={() => {
+            if (accountRegisterValidation(photoUrl)) {
+              onClickRegistration(photoUrl, setPhotoUrl, setPreviewUrl, registrationImage);
+            }
+          }}
           disabled={photoUrl === null}
         >
           プロフィール画像設定
