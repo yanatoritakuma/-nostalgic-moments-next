@@ -45,7 +45,6 @@ const auth = () => {
         password: authStatte.password,
       });
     } else {
-      //   onClickRegistration(photoUrl, setPhotoUrl, setPreviewUrl, createAccount);
       createAccount();
     }
   };
@@ -137,17 +136,5 @@ const inputBox = css`
     display: block;
     text-align: center;
     cursor: pointer;
-  }
-`;
-
-const previewBox = css`
-  margin: 12px auto;
-  width: 300px;
-  height: 284px;
-  position: relative;
-
-  img {
-    object-fit: cover;
-    border-radius: 50%;
   }
 `;
