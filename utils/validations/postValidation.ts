@@ -1,6 +1,7 @@
 import { MessageContext } from '@/provider/MessageProvider';
 import { TReqPost } from '@/types/post';
 import { useContext } from 'react';
+import validator from 'validator';
 
 export const postValidation = () => {
   const { message, setMessage } = useContext(MessageContext);
@@ -12,43 +13,43 @@ export const postValidation = () => {
       return japaneseRegex.test(fileName);
     };
 
-    if (post.title === '') {
+    if (validator.isEmpty(post.title)) {
       return setMessage({
         ...message,
         text: 'タイトルは必須です。',
         type: 'error',
       });
-    } else if (post.title.length > 50) {
+    } else if (!validator.isLength(post.title, { max: 50 })) {
       return setMessage({
         ...message,
         text: 'タイトルは50文字以下で入力してください。',
         type: 'error',
       });
-    } else if (post.text === '') {
+    } else if (validator.isEmpty(post.text)) {
       return setMessage({
         ...message,
         text: '内容は必須です。',
         type: 'error',
       });
-    } else if (post.text.length > 150) {
+    } else if (!validator.isLength(post.text, { max: 150 })) {
       return setMessage({
         ...message,
         text: '内容は150文字以下で入力してください。',
         type: 'error',
       });
-    } else if (post.prefecture === '') {
+    } else if (validator.isEmpty(post.prefecture)) {
       return setMessage({
         ...message,
         text: '都道府県は必須です。',
         type: 'error',
       });
-    } else if (post.address === '') {
+    } else if (validator.isEmpty(post.address)) {
       return setMessage({
         ...message,
         text: '住所は必須です。',
         type: 'error',
       });
-    } else if (post.address.length > 50) {
+    } else if (!validator.isLength(post.address, { max: 50 })) {
       return setMessage({
         ...message,
         text: '住所は50文字以下で入力してください。',
