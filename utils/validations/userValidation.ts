@@ -1,5 +1,6 @@
 import { MessageContext } from '@/provider/MessageProvider';
 import { useContext } from 'react';
+import validator from 'validator';
 
 type TReqUpDate = {
   email: string;
@@ -20,6 +21,12 @@ export const userValidation = () => {
       return setMessage({
         ...message,
         text: 'メールアドレスは必須です。',
+        type: 'error',
+      });
+    } else if (register && !validator.isEmail(register.email)) {
+      return setMessage({
+        ...message,
+        text: 'メールアドレスの形式が正しくありません。',
         type: 'error',
       });
     } else if (register && register.name === '') {

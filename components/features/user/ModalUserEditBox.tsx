@@ -63,15 +63,19 @@ export const ModalUserEditBox = memo((props: Props) => {
     };
   }, [photoUrl]);
 
-  const upDate = (file: string | null) => {
-    if (user) {
-      updateUserMutation
-        .mutateAsync({
-          name: authStatte.name,
-          image: file ? file : user.image,
-          email: authStatte.email,
-        })
-        .then(() => file && deleteImg(user.image, 'userImages', user.id));
+  const upDate = async (file: string | null) => {
+    try {
+      if (user) {
+        await updateUserMutation
+          .mutateAsync({
+            name: authStatte.name,
+            image: file ? file : user.image,
+            email: authStatte.email,
+          })
+          .then(() => file && deleteImg(user.image, 'userImages', user.id));
+      }
+    } catch (err) {
+      console.log(err);
     }
   };
 
