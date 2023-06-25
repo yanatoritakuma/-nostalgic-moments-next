@@ -2,13 +2,10 @@ import { memo, useEffect, useState } from 'react';
 import { css } from '@emotion/react';
 import Box from '@mui/material/Box';
 import Modal from '@mui/material/Modal';
-import { useChangeImage } from '@/hooks/useChangeImage';
 import { UserInfoInputBox } from '@/components/features/user/UserInfoInputBox';
 import { useQueryUser } from '@/hooks/user/useQueryUser';
 import { ButtonBox } from '@/components/elements/ButtonBox';
 import { useMutateUser } from '@/hooks/user/useMutateUser';
-import { imageRegistration } from '@/utils/imageRegistration';
-import { deleteImgStorage } from '@/utils/deleteImgStorage';
 import { userValidation } from '@/utils/validations/userValidation';
 
 type Props = {
@@ -18,18 +15,14 @@ type Props = {
 
 export const ModalUserEditBox = memo((props: Props) => {
   const { open, setOpen } = props;
-  const { onChangeImageHandler, photoUrl, setPhotoUrl } = useChangeImage();
   const { data: user } = useQueryUser();
   const { updateUserMutation } = useMutateUser();
-  const { onClickRegistration } = imageRegistration();
-  const { deleteImg } = deleteImgStorage();
   const { accountRegisterValidation } = userValidation();
 
   const [authStatte, setAuthStatte] = useState({
     email: '',
     name: '',
   });
-  const [previewUrl, setPreviewUrl] = useState('');
 
   useEffect(() => {
     if (user !== undefined) {
@@ -38,41 +31,18 @@ export const ModalUserEditBox = memo((props: Props) => {
         email: user.email,
         name: user.name,
       });
-
-      setPreviewUrl(user.image);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user, open]);
 
-  useEffect(() => {
-    if (!photoUrl) {
-      return;
-    }
-
-    let reader: FileReader | null = new FileReader();
-    reader.onloadend = () => {
-      const res = reader?.result;
-      if (res && typeof res === 'string') {
-        setPreviewUrl(res);
-      }
-    };
-    reader.readAsDataURL(photoUrl);
-
-    return () => {
-      reader = null;
-    };
-  }, [photoUrl]);
-
-  const upDate = async (file: string | null) => {
+  const onClickUpDate = async () => {
     try {
       if (user) {
-        await updateUserMutation
-          .mutateAsync({
-            name: authStatte.name,
-            image: file ? file : user.image,
-            email: authStatte.email,
-          })
-          .then(() => file && deleteImg(user.image, 'userImages', user.id));
+        await updateUserMutation.mutateAsync({
+          name: authStatte.name,
+          image: user.image,
+          email: authStatte.email,
+        });
       }
     } catch (err) {
       console.log(err);
@@ -83,16 +53,11 @@ export const ModalUserEditBox = memo((props: Props) => {
     <Modal open={open} onClose={() => setOpen(false)}>
       <Box css={editBox}>
         <h3>編集</h3>
-        <UserInfoInputBox
-          authStatte={authStatte}
-          setAuthStatte={setAuthStatte}
-          onChangeImageHandler={onChangeImageHandler}
-          previewUrl={previewUrl}
-        />
+        <UserInfoInputBox authStatte={authStatte} setAuthStatte={setAuthStatte} />
         <ButtonBox
           onClick={() => {
-            if (accountRegisterValidation(photoUrl, authStatte)) {
-              onClickRegistration(photoUrl, setPhotoUrl, setPreviewUrl, upDate);
+            if (accountRegisterValidation(null, authStatte)) {
+              onClickUpDate();
               setOpen(false);
             }
           }}

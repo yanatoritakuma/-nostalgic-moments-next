@@ -11,7 +11,6 @@ export const userValidation = () => {
   const { message, setMessage } = useContext(MessageContext);
 
   const accountRegisterValidation = (photoUrl: File | null, register?: TReqUpDate) => {
-    console.log(photoUrl?.name);
     const containsJapanese = (fileName: string) => {
       const japaneseRegex =
         /[一-龠々〆ヵヶぁ-ゔゞァ-・ヽヾ゛゜ー「」｢｣()〔〕［］｛｝〈〉《》【】〖〗〘〙〚〛〜～]/;
