@@ -1,18 +1,28 @@
-import { memo, useState } from 'react';
+import { memo, useContext, useState } from 'react';
 import { css } from '@emotion/react';
 import { TextBox } from '@/components/elements/TextBox';
 import { ButtonBox } from '@/components/elements/ButtonBox';
 import { useRouter } from 'next/router';
+import { MessageContext } from '@/provider/MessageProvider';
 
 export const TagSearch = memo(() => {
   const [searcTag, setSearcTag] = useState('');
   const router = useRouter();
+  const { message, setMessage } = useContext(MessageContext);
 
   const onClikcSearcTag = () => {
-    router.push({
-      pathname: '/tagSearch',
-      query: { tag: searcTag },
-    });
+    if (searcTag !== '') {
+      router.push({
+        pathname: '/tagSearch',
+        query: { tag: searcTag },
+      });
+    } else {
+      setMessage({
+        ...message,
+        text: '空文字で検索はできません。',
+        type: 'error',
+      });
+    }
   };
 
   return (

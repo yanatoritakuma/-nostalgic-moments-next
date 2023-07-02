@@ -170,7 +170,6 @@ const commentContentsBox = css`
   }
 
   .commentContentsBox__userName {
-    background-color: skyblue;
     word-wrap: break-word;
     width: 60%;
   }

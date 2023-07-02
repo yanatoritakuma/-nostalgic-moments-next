@@ -1,17 +1,18 @@
 import { MessageContext } from '@/provider/MessageProvider';
 import { useContext } from 'react';
+import validator from 'validator';
 
 export const tagValidation = () => {
   const { message, setMessage } = useContext(MessageContext);
 
   const tagVali = (tag: string, tagArray: string[]) => {
-    if (tag === '') {
+    if (validator.isEmpty(tag)) {
       return setMessage({
         ...message,
         text: '空文字は追加できません。',
         type: 'error',
       });
-    } else if (tag.length > 30) {
+    } else if (!validator.isLength(tag, { max: 30 })) {
       return setMessage({
         ...message,
         text: '30文字以内で入力してください。',

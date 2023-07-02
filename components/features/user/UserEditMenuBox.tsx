@@ -7,11 +7,13 @@ import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { ModalUserPostDeleteBox } from '@/components/features/post/ModalUserPostDeleteBox';
 import { ModalUserEditBox } from '@/components/features/user/ModalUserEditBox';
+import { ModalProfileChangeBox } from '@/components/features/user/ModalProfileChangeBox';
 
 export const UserEditMenuBox = memo(() => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [modalFlag, setModalFlag] = useState({
     edit: false,
+    profile: false,
     delete: false,
   });
 
@@ -48,6 +50,18 @@ export const UserEditMenuBox = memo(() => {
             setAnchorEl(null);
             setModalFlag({
               ...modalFlag,
+              profile: true,
+            });
+          }}
+        >
+          <EditIcon />
+          プロフィール画像変更
+        </MenuItem>
+        <MenuItem
+          onClick={() => {
+            setAnchorEl(null);
+            setModalFlag({
+              ...modalFlag,
               delete: true,
             });
           }}
@@ -62,6 +76,15 @@ export const UserEditMenuBox = memo(() => {
           setModalFlag({
             ...modalFlag,
             edit: false,
+          })
+        }
+      />
+      <ModalProfileChangeBox
+        open={modalFlag.profile}
+        setOpen={() =>
+          setModalFlag({
+            ...modalFlag,
+            profile: false,
           })
         }
       />

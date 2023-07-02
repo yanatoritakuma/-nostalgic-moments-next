@@ -247,9 +247,9 @@ export const Form = memo((props: Props) => {
           postValid(postState, photoUrl) &&
           (onClickRegistration(
             photoUrl,
-            type === 'new' ? onClickRegister : onClickUpdate,
             setPhotoUrl,
             setPreviewUrl,
+            type === 'new' ? onClickRegister : onClickUpdate,
             user
           ),
           type === 'edit' && setOpen && setOpen(false))
