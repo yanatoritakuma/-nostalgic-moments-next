@@ -43,7 +43,7 @@ export const ModalProfileChangeBox = memo((props: Props) => {
             image: file ? file : user.image,
             email: user.email,
           })
-          .then(() => file && deleteImg(user.image, 'userImages', user.id));
+          .then(() => file && user.image !== '' && deleteImg(user.image, 'userImages', user.id));
       }
     } catch (err) {
       console.error(err);
@@ -75,7 +75,7 @@ export const ModalProfileChangeBox = memo((props: Props) => {
         <h3>プロフィール画像変更</h3>
         {previewUrl !== '' && (
           <div css={previewBox}>
-            <Image src={previewUrl} fill alt="プレビュー" />
+            <Image src={previewUrl} fill sizes="100%" alt="プレビュー" />
           </div>
         )}
         <div className="profilePictureInBox__uploadIcon">
