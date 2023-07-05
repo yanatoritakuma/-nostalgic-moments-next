@@ -1,10 +1,11 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { css } from '@emotion/react';
 import { useQueryPrefecturesPost } from '@/hooks/post/useQueryPrefecturesPost';
 import { PostBox } from '@/components/features/post/PostBox';
 import { PaginationBox } from '@/components/common/PaginationBox';
 import { countPages } from '@/utils/countPages';
 import { useQueryUser } from '@/hooks/user/useQueryUser';
+import { apiTimeOut } from '@/utils/apiTimeOut';
 
 export async function getStaticPaths() {
   return {
@@ -76,12 +77,14 @@ const Prefectures = (prefectures: Props) => {
   const prefecturesName = prefectures.prefectures;
   const [currentPage, setCurrentPage] = useState(1);
   const { data: user } = useQueryUser();
-  const { data: prefecturesPost, refetch: prefecturesRefetch } = useQueryPrefecturesPost(
-    prefecturesName,
-    currentPage,
-    10,
-    user?.id
-  );
+  const {
+    data: prefecturesPost,
+    refetch: prefecturesRefetch,
+    isLoading: prefecturesIsLoading,
+  } = useQueryPrefecturesPost(prefecturesName, currentPage, 10, user?.id);
+
+  // APIタイムアウト監視
+  apiTimeOut(prefecturesIsLoading);
 
   // ページネーションで都道府県別投稿のAPI再取得
   useEffect(() => {

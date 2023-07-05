@@ -10,6 +10,7 @@ import { SnackbarBox } from '@/components/elements/SnackbarBox';
 import { BackdropBox } from '@/components/elements/BackdropBox';
 import { BackdropProvider } from '@/provider/BackdropProvider';
 import { PostProvider } from '@/provider/PostProvider';
+import { ApiTimeoutBox } from '@/components/common/ApiTimeOutBox';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -41,6 +42,7 @@ export default function App({ Component, pageProps }: AppProps) {
             <ReactQueryDevtools />
             <SnackbarBox />
             <BackdropBox />
+            <ApiTimeoutBox />
           </PostProvider>
         </BackdropProvider>
       </MessageProvider>
