@@ -11,8 +11,6 @@ type TMessage = {
       type: 'error' | 'warning' | 'info' | 'success';
     }>
   >;
-  apiTimeOutFlag: boolean;
-  setApiTimeOutFlag: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
 export const MessageContext = createContext<TMessage>({
@@ -22,9 +20,6 @@ export const MessageContext = createContext<TMessage>({
   },
   // eslint-disable-next-line @typescript-eslint/no-empty-function
   setMessage: () => {},
-  apiTimeOutFlag: false,
-  // eslint-disable-next-line @typescript-eslint/no-empty-function
-  setApiTimeOutFlag: () => {},
 });
 
 type Props = {
@@ -41,11 +36,7 @@ export const MessageProvider = (props: Props) => {
     type: 'success',
   });
 
-  const [apiTimeOutFlag, setApiTimeOutFlag] = useState(false);
-
   return (
-    <MessageContext.Provider value={{ message, setMessage, apiTimeOutFlag, setApiTimeOutFlag }}>
-      {children}
-    </MessageContext.Provider>
+    <MessageContext.Provider value={{ message, setMessage }}>{children}</MessageContext.Provider>
   );
 };

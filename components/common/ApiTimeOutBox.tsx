@@ -1,11 +1,41 @@
-import { memo, useContext } from 'react';
+import { memo, useContext, useEffect } from 'react';
 import { css } from '@emotion/react';
 import Modal from '@mui/material/Modal';
-import { MessageContext } from '@/provider/MessageProvider';
 import Link from 'next/link';
+import { BackdropContext } from '@/provider/BackdropProvider';
 
 export const ApiTimeoutBox = memo(() => {
-  const { apiTimeOutFlag, setApiTimeOutFlag } = useContext(MessageContext);
+  const { apiTimeOutFlag, setApiTimeOutFlag, backdropFlag, setBackdropFlag } =
+    useContext(BackdropContext);
+
+  useEffect(() => {
+    let timeoutId: NodeJS.Timeout;
+
+    // タイムアウトを設定（3分間）
+    const setAlertTimeout = () => {
+      timeoutId = setTimeout(() => {
+        if (backdropFlag === true) {
+          setApiTimeOutFlag(true);
+          setBackdropFlag(false);
+        }
+      }, 30000);
+    };
+
+    // データがロードされたらタイムアウトをクリア
+    const clearAlertTimeout = () => {
+      clearTimeout(timeoutId);
+    };
+
+    // コンポーネントのマウント時にタイムアウトを設定
+    setAlertTimeout();
+
+    // コンポーネントのアンマウント時にタイムアウトをクリア
+    return () => {
+      clearAlertTimeout();
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [backdropFlag]);
+
   return (
     <Modal open={apiTimeOutFlag} onClose={() => setApiTimeOutFlag(false)}>
       <div css={apiTimeoutBox}>
