@@ -1,12 +1,14 @@
+import { useState } from 'react';
 import { css } from '@emotion/react';
 import { useMutateAuth } from '@/hooks/auth/useMutateAuth';
-import { useState } from 'react';
 import { ButtonBox } from '@/components/elements/ButtonBox';
 import { TextBox } from '@/components/elements/TextBox';
 import { authValidation } from '@/utils/validations/authValidation';
 import { useRouter } from 'next/router';
+import { useQueryUser } from '@/hooks/user/useQueryUser';
 
 const auth = () => {
+  const { data: user } = useQueryUser();
   const [isLogin, setIsLogin] = useState(true);
   const { loginMutation, registerMutation } = useMutateAuth();
   const { validation } = authValidation();
@@ -51,56 +53,61 @@ const auth = () => {
 
   return (
     <main css={authBox}>
-      <h2>{isLogin ? 'ログイン' : 'アカウント作成'}</h2>
+      {user === undefined ? (
+        <>
+          <h2>{isLogin ? 'ログイン' : 'アカウント作成'}</h2>
+          <div css={inputBox}>
+            <TextBox
+              className="text"
+              label="メール"
+              value={authStatte.email}
+              onChange={(e) =>
+                setAuthStatte({
+                  ...authStatte,
+                  email: e.target.value,
+                })
+              }
+              fullWidth
+            />
+            <TextBox
+              className="text"
+              label="パスワード"
+              value={authStatte.password}
+              onChange={(e) =>
+                setAuthStatte({
+                  ...authStatte,
+                  password: e.target.value,
+                })
+              }
+              fullWidth
+              password
+            />
+            {!isLogin && (
+              <TextBox
+                className="text"
+                label="名前"
+                value={authStatte.name}
+                onChange={(e) =>
+                  setAuthStatte({
+                    ...authStatte,
+                    name: e.target.value,
+                  })
+                }
+                fullWidth
+              />
+            )}
+            <ButtonBox onClick={() => validation(authStatte, isLogin) && onClikcAuth()}>
+              {isLogin ? 'ログイン' : 'アカウント作成'}
+            </ButtonBox>
 
-      <div css={inputBox}>
-        <TextBox
-          className="text"
-          label="メール"
-          value={authStatte.email}
-          onChange={(e) =>
-            setAuthStatte({
-              ...authStatte,
-              email: e.target.value,
-            })
-          }
-          fullWidth
-        />
-        <TextBox
-          className="text"
-          label="パスワード"
-          value={authStatte.password}
-          onChange={(e) =>
-            setAuthStatte({
-              ...authStatte,
-              password: e.target.value,
-            })
-          }
-          fullWidth
-          password
-        />
-        {!isLogin && (
-          <TextBox
-            className="text"
-            label="名前"
-            value={authStatte.name}
-            onChange={(e) =>
-              setAuthStatte({
-                ...authStatte,
-                name: e.target.value,
-              })
-            }
-            fullWidth
-          />
-        )}
-        <ButtonBox onClick={() => validation(authStatte, isLogin) && onClikcAuth()}>
-          {isLogin ? 'ログイン' : 'アカウント作成'}
-        </ButtonBox>
-
-        <span className="footSpan" onClick={() => setIsLogin(!isLogin)}>
-          {isLogin ? 'アカウント作成画面に切り替え' : 'ログイン画面に切り替え'}
-        </span>
-      </div>
+            <span className="footSpan" onClick={() => setIsLogin(!isLogin)}>
+              {isLogin ? 'アカウント作成画面に切り替え' : 'ログイン画面に切り替え'}
+            </span>
+          </div>
+        </>
+      ) : (
+        <h3>ログイン済みです。</h3>
+      )}
     </main>
   );
 };
@@ -112,7 +119,8 @@ const authBox = css`
   max-width: 1440px;
   width: 100%;
 
-  h2 {
+  h2,
+  h3 {
     text-align: center;
   }
 `;

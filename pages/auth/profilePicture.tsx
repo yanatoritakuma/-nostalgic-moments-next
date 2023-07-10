@@ -54,33 +54,41 @@ const profilePicture = () => {
 
   return (
     <main css={profilePictureBox}>
-      <div css={profilePictureInBox}>
-        <h2>アカウントを作成しました！</h2>
-        <p>
-          はじめまして、
-          {user?.name}さん
-        </p>
-        <p>プロフィール画像の設定をしませんか？</p>
-        {previewUrl !== '' && (
-          <div css={previewBox}>
-            <Image src={previewUrl} fill alt="プレビュー" />
+      {user !== undefined && user.image === '' ? (
+        <div css={profilePictureInBox}>
+          <h2>アカウントを作成しました！</h2>
+          <p>
+            はじめまして、
+            {user?.name}さん
+          </p>
+          <p>プロフィール画像の設定をしませんか？</p>
+          {previewUrl !== '' && (
+            <div css={previewBox}>
+              <Image src={previewUrl} fill alt="プレビュー" />
+            </div>
+          )}
+          <div className="profilePictureInBox__uploadIcon">
+            <ButtonBox onChange={onChangeImageHandler} upload />
           </div>
-        )}
-        <div className="profilePictureInBox__uploadIcon">
-          <ButtonBox onChange={onChangeImageHandler} upload />
+          <ButtonBox
+            onClick={() => {
+              if (accountRegisterValidation(photoUrl)) {
+                onClickRegistration(photoUrl, setPhotoUrl, setPreviewUrl, registrationImage);
+              }
+            }}
+            disabled={photoUrl === null}
+          >
+            プロフィール画像設定
+          </ButtonBox>
+          <ButtonBox onClick={() => router.push('/')}>今は設定しない</ButtonBox>
         </div>
-        <ButtonBox
-          onClick={() => {
-            if (accountRegisterValidation(photoUrl)) {
-              onClickRegistration(photoUrl, setPhotoUrl, setPreviewUrl, registrationImage);
-            }
-          }}
-          disabled={photoUrl === null}
-        >
-          プロフィール画像設定
-        </ButtonBox>
-        <ButtonBox onClick={() => router.push('/')}>今は設定しない</ButtonBox>
-      </div>
+      ) : (
+        <h3>
+          ログインしていないか
+          <br />
+          既にアカウントにプロフィール画像は設定済みです。
+        </h3>
+      )}
     </main>
   );
 };
@@ -98,6 +106,11 @@ const profilePictureBox = css`
     @media (max-width: 425px) {
       font-size: 20px;
     }
+  }
+
+  h3 {
+    padding: 20px;
+    text-align: center;
   }
 
   p {
