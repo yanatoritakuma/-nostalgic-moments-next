@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { css } from '@emotion/react';
 import { PostBox } from '@/components/features/post/PostBox';
 import { useQueryTagPost } from '@/hooks/post/useQueryTagPost';
@@ -6,18 +6,24 @@ import { useQueryUser } from '@/hooks/user/useQueryUser';
 import { useRouter } from 'next/router';
 import { PaginationBox } from '@/components/common/PaginationBox';
 import { countPages } from '@/utils/countPages';
+import { BackdropContext } from '@/provider/BackdropProvider';
 
 const tagSearch = () => {
   const router = useRouter();
   const [currentPage, setCurrentPage] = useState(1);
+  const { setBackdropFlag } = useContext(BackdropContext);
   const { tag } = router.query;
   const { data: user } = useQueryUser();
-  const { data: tagPost, refetch: tagPostRefetch } = useQueryTagPost(
-    String(tag),
-    currentPage,
-    10,
-    user?.id
-  );
+  const {
+    data: tagPost,
+    refetch: tagPostRefetch,
+    isLoading: tagPostIsLoading,
+  } = useQueryTagPost(String(tag), currentPage, 10, user?.id);
+
+  // API通信時間監視
+  useEffect(() => {
+    setBackdropFlag(tagPostIsLoading);
+  }, [tagPostIsLoading, setBackdropFlag]);
 
   useEffect(() => {
     tagPostRefetch();
