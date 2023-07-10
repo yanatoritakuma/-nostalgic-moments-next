@@ -34,6 +34,12 @@ export const useMutateAuth = () => {
           type: 'error',
         });
       },
+      onMutate: () => {
+        setBackdropFlag(true);
+      },
+      onSettled: () => {
+        setBackdropFlag(false);
+      },
     }
   );
 
@@ -50,6 +56,12 @@ export const useMutateAuth = () => {
           text: 'アカウント作成に失敗しました。',
           type: 'error',
         });
+      },
+      onMutate: () => {
+        setBackdropFlag(true);
+      },
+      onSettled: () => {
+        setBackdropFlag(false);
       },
     }
   );
@@ -72,6 +84,12 @@ export const useMutateAuth = () => {
           text: 'ログアウトに失敗しました。',
           type: 'error',
         });
+      },
+      onMutate: () => {
+        setBackdropFlag(true);
+      },
+      onSettled: () => {
+        setBackdropFlag(false);
       },
     }
   );

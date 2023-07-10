@@ -1,15 +1,26 @@
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { css } from '@emotion/react';
 import { PaginationBox } from '@/components/common/PaginationBox';
 import { PostBox } from '@/components/features/post/PostBox';
 import { useQueryTimeline } from '@/hooks/post/useQueryTimeline';
 import { useQueryUser } from '@/hooks/user/useQueryUser';
 import { countPages } from '@/utils/countPages';
+import { BackdropContext } from '@/provider/BackdropProvider';
 
 const timelLine = () => {
   const [currentPage, setCurrentPage] = useState(1);
+  const { setBackdropFlag } = useContext(BackdropContext);
   const { data: user } = useQueryUser();
-  const { data: timeline, refetch: timelineRefetch } = useQueryTimeline(currentPage, 10);
+  const {
+    data: timeline,
+    refetch: timelineRefetch,
+    isLoading: timelineIsLoading,
+  } = useQueryTimeline(currentPage, 10);
+
+  // API通信時間監視
+  useEffect(() => {
+    setBackdropFlag(timelineIsLoading);
+  }, [timelineIsLoading, setBackdropFlag]);
 
   // ページネーションでタイムラインのAPI再取得
   useEffect(() => {
