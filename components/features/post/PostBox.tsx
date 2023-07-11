@@ -2,6 +2,7 @@ import { memo, useContext, useEffect, useState } from 'react';
 import { css } from '@emotion/react';
 import { TLikeTopTenPosts, TPost, TPostPages } from '@/types/post';
 import Image from 'next/image';
+import Link from 'next/link';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import ChatBubbleOutlineIcon from '@mui/icons-material/ChatBubbleOutline';
@@ -170,7 +171,9 @@ export const PostBox = memo((props: Props) => {
               {moreFlag !== index ? (
                 <>
                   {post.tagResponse.slice(0, 3).map((tag, tagInd) => (
-                    <span key={tagInd}>#{tag.name}</span>
+                    <Link key={tagInd} href={`/tagSearch?tag=${tag.name}`}>
+                      #{tag.name}
+                    </Link>
                   ))}
                   {post.tagResponse.length > 3 && (
                     <>
@@ -184,7 +187,9 @@ export const PostBox = memo((props: Props) => {
               ) : (
                 <>
                   {post.tagResponse.map((tag, tagInd) => (
-                    <span key={tagInd}>#{tag.name}</span>
+                    <Link key={tagInd} href={`/tagSearch?tag=${tag.name}`}>
+                      #{tag.name}
+                    </Link>
                   ))}
                   {post.tagResponse.length > 3 && (
                     <span className="tagBox__more" onClick={() => setMoreFlag(-1)}>
@@ -363,13 +368,17 @@ const tagBox = css`
   justify-content: left;
   align-items: center;
 
-  span {
-    margin: 0 8px 8px 0;
+  a {
+    margin: 0 4px 0 4px;
     display: -webkit-box;
     -webkit-line-clamp: 3;
     -webkit-box-orient: vertical;
     overflow: hidden;
     text-overflow: ellipsis;
+    font-size: 14px;
+    color: #0095d9;
+    text-decoration: none;
+    line-height: 1.5em;
   }
 
   .tagBox__more {
