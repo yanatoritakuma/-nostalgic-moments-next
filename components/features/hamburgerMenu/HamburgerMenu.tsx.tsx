@@ -40,9 +40,6 @@ export const HamburgerMenu = memo((props: Props) => {
       >
         ログアウト
       </span>
-      <Link href="/" onClick={() => setHambBtn(false)}>
-        退会
-      </Link>
     </Box>
   );
 
@@ -70,5 +67,9 @@ const menuBox = css`
     text-decoration: none;
     cursor: pointer;
     color: #333;
+  }
+
+  span {
+    cursor: pointer;
   }
 `;

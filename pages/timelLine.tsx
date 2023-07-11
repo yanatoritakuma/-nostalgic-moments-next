@@ -1,4 +1,5 @@
 import { useContext, useEffect, useState } from 'react';
+import Link from 'next/link';
 import { css } from '@emotion/react';
 import { PaginationBox } from '@/components/common/PaginationBox';
 import { PostBox } from '@/components/features/post/PostBox';
@@ -31,7 +32,7 @@ const timelLine = () => {
   return (
     <main css={timelLineBox}>
       <h2>タイムライン</h2>
-      {timeline !== undefined && (
+      {timeline !== undefined ? (
         <>
           <PostBox posts={timeline.posts} user={user} refetch={timelineRefetch} />
           <PaginationBox
@@ -39,6 +40,13 @@ const timelLine = () => {
             currentPage={currentPage}
             setCurrentPage={setCurrentPage}
           />
+        </>
+      ) : (
+        <>
+          <span className="timelLineBox__noPost">
+            ログインしていないため、タイムラインは閲覧できません
+          </span>
+          <Link href="/auth">ログイン画面へ</Link>
         </>
       )}
       {timeline?.posts.length === 0 && (
@@ -69,5 +77,13 @@ const timelLineBox = css`
   .timelLineBox__noPost {
     display: block;
     text-align: center;
+  }
+
+  a {
+    margin: 20px auto;
+    color: #0095d9;
+    text-decoration: none;
+    display: block;
+    width: fit-content;
   }
 `;
